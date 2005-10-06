@@ -1,0 +1,18 @@
+<---------------------------------------------------------------->
+< Jam Plugin:                                                    >
+< Abyss' Highest Expierence (AHX)            v. 1.0,  23.04.2000 >
+<---------------------------------------------------------------->
+
+Extension:	.AHX, .THX
+    Coder:	Abyss / Cream
+  Machine:	STE / Falcon / TT
+
+		Amiga replayer by Abyss (Not to be mistaken with
+		Abyss of Cream). The original AHX replayer uses
+		a lot of cpu-time, so that 8Mhz machines can only
+		replay at 12Khz. 
+
+		You can  download  songs  from  our  website
+	        www.creamhq.de or from  exotica.fix.no
+	 
+<---------------------------------------------------------------->

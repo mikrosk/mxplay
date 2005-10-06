@@ -1,0 +1,629 @@
+#include <mint/osbind.h>
+#include <mint/ostruct.h>
+#include <mint/falcon.h>
+#include <mint/basepage.h>
+#include <cflib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <fcntl.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include "mxplay.h"
+#include "dialogs.h"
+#include "audio_plugins.h"
+#include "dsp_fix.h"
+#include "skins/skin.h"
+#include "misc.h"
+#include "info_dialogs.h"
+
+//#define xxx	/* see panel.c */
+
+struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
+BOOL						g_modulePlaying = FALSE;
+BOOL						g_modulePaused = FALSE;
+char						g_currModuleName[PATH_MAX+1] = "-";
+
+static struct SAudioPlugin*	pSAudioPlugin[MAX_AUDIO_PLUGINS];
+static int					audioPluginsCount;
+static char*				pCurrModule;
+static int					dspLocked = FALSE;
+static int					dmaLocked = FALSE;
+static char**				pInputArray;
+
+static int AudioPluginInit( struct SAudioPlugin* plugin )
+{
+	if( plugin->Init != NULL )
+	{
+		return Supexec( &plugin->Init );
+	}
+	else
+	{
+		return MXP_ERROR;
+	}
+}
+
+static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module, unsigned int length )
+{
+	pInputArray[0] = (char*)module;
+	pInputArray[1] = (char*)length;
+	
+	plugin->inBuffer = (long)pInputArray;
+	if( plugin->RegisterModule != NULL )
+	{
+		return Supexec( &plugin->RegisterModule );
+	}
+	else
+	{
+		return MXP_ERROR;
+	}
+}
+
+static struct SAudioPlugin* AudioPluginLoad( char* filename )
+{
+	BASEPAGE*	bp;
+	char*		cmdline[128];
+
+	cmdline[0] = 0;	/* 0 bytes long */
+	cmdline[1] = '\0';	/* terminate it */
+	
+	bp = (BASEPAGE*)Pexec( PE_LOAD, filename, cmdline, NULL );
+	if( (long)bp <= 0 )
+	{
+		return NULL;
+	}
+	else
+	{
+		Mshrink( bp->p_lowtpa,		/* basepage address */
+		0x100 +						/* length of basepage */
+		bp->p_tlen +				/* length of text segment */
+		bp->p_dlen +				/* length of data segment */
+		bp->p_blen +				/* length of BSS segment */
+		4096 );						/* length of stack */
+		
+		memset( bp->p_bbase, bp->p_blen, 0 );
+		
+		return (struct SAudioPlugin*)bp->p_tbase;	/* text segment address */
+	}
+}
+
+/*
+ * Fill scrollable infoline in the main panel.
+ */
+void AudioPluginGetInfoLine( struct SParameter* param )
+{
+	char	infoLine[1023+1];
+	int		i;
+	char	tempString[255+1];
+	
+	strcpy( infoLine, "" );
+	
+	for( i = 0; param[i].pName != NULL; i++ )
+	{
+		if( ( param[i].type & MXP_FLG_INFOLINE ) != 0 )
+		{
+			strcat( infoLine, param[i].pName );	/* i.e. "Songname" */
+			strcat( infoLine, ": " );
+			
+			ConvertMxpParamTypes( g_pCurrAudioPlugin, &param[i], tempString );
+			strcat( infoLine, tempString );
+					
+			strcat( infoLine, "  " );	/* delimiter */
+		}
+	}
+	
+	strcpy( g_panelInfoLine, infoLine );	/* update the real one */
+}
+
+/*
+ * Load music file
+ */
+BOOL LoadAudioModule( char* path, char* name )
+{
+	char			tempString[PATH_MAX+FILENAME_MAX+1];
+	int				handle;
+	unsigned long	length;
+	char*			pTempModule = NULL;
+	FILE* fs;
+	
+	#ifdef xxx
+	fs = fopen("d:\\log.txt", "a");
+	fprintf( fs, "start load\n" );
+	fclose( fs );
+	#endif
+	
+	/* no more available */
+	if( pCurrModule != NULL )
+	{
+
+		#ifdef xxx
+		fs = fopen("d:\\log.txt", "a");
+		fprintf( fs, "free\n" );
+		fclose( fs );
+		#endif
+		
+		Mfree( pCurrModule );
+		
+		#ifdef xxx
+		fs = fopen("d:\\log.txt", "a");
+		fprintf( fs, "za free\n" );
+		fclose( fs );
+		#endif
+		
+		pCurrModule = NULL;
+	}
+	
+	CombinePath( tempString, path, name );
+	
+	#ifdef xxx
+	fs = fopen("d:\\log.txt", "a");
+	fprintf( fs, "za combine\n" );
+	fclose( fs );
+	#endif	
+	
+	handle = open( tempString, O_RDONLY );
+
+	#ifdef xxx
+	fs = fopen("d:\\log.txt", "a");
+	fprintf( fs, "open\n" );
+	fclose( fs );
+	#endif
+	
+	if( handle < 0 )
+	{
+		ShowLoadErrorDialog( name );
+		return FALSE;
+	}
+	else
+	{
+		#ifdef xxx
+		fs = fopen("d:\\log.txt", "a");
+		fprintf( fs, "pre fn size\n" );
+		fclose( fs );
+		#endif
+		
+		length = GetFileNameSize( tempString );
+		
+		#ifdef xxx
+		fs = fopen("d:\\log.txt", "a");
+		fprintf( fs, "za fn size\n" );
+		fclose( fs );
+		#endif
+		
+		if( length == 0 )
+		{
+			return FALSE;
+		}
+		
+		/* Global ST RAM */
+		if( getcookie( "MiNT", NULL ) == TRUE )
+		{
+			
+			#ifdef xxx
+			fs = fopen("d:\\log.txt", "a");
+			fprintf( fs, "nasiel mint\n" );
+			fclose( fs );
+			#endif
+			
+			pTempModule = (char*)Mxalloc( length, MX_STRAM | 0x0008 | MX_GLOBAL );
+		}
+		else
+		{
+			
+			#ifdef xxx
+			fs = fopen("d:\\log.txt", "a");
+			fprintf( fs, "nenasiel mint\n" );
+			fclose( fs );
+			#endif
+			
+			pTempModule = (char*)Mxalloc( length, MX_STRAM );
+		}
+		if( VerifyAlloc( pTempModule ) == FALSE )
+		{
+			return FALSE;
+		}
+		
+		#ifdef xxx
+		fs = fopen("d:\\log.txt", "a");
+		fprintf( fs, "zacina citat\n" );
+		fclose( fs );
+		#endif
+
+		if( read( (short)handle, pTempModule, length ) < 0 )
+		{
+			ShowLoadErrorDialog( name );
+			Mfree( pTempModule );
+			pTempModule = NULL;
+			close( handle );
+			return FALSE;
+		}
+		else
+		{
+			#ifdef xxx
+			fs = fopen("d:\\log.txt", "a");
+			fprintf( fs, "zatvara handle\n" );
+			fclose( fs );
+			#endif
+			
+			close( handle );
+			
+			#ifdef xxx
+			fs = fopen("d:\\log.txt", "a");
+			fprintf( fs, "pred register, g_currfile: %s\n", tempString );
+			fclose( fs );
+			#endif
+			
+			if( AudioPluginRegisterModule( g_pCurrAudioPlugin, pTempModule, length ) != MXP_OK )
+			{
+				ShowBadHeaderDialog();
+				strcpy( g_panelInfoLine, "" );	/* infoline is no more actual */
+				strcpy( g_currModuleName, "-" );	/* this is even more critical */
+				Mfree( pTempModule );
+				pTempModule = NULL;
+				return FALSE;
+			}
+			else
+			{
+				#ifdef xxx
+				fs = fopen("d:\\log.txt", "a");
+				fprintf( fs, "za register, g_currfile: %s\n", tempString );
+				fclose( fs );
+				#endif
+				
+				strcpy( g_currModuleName, tempString );
+				pCurrModule = pTempModule;
+			}
+			return TRUE;
+		}
+	}
+}
+
+/*
+ * Return pointer to the plugin able to replay
+ * current mod or NULL
+ */
+struct SAudioPlugin* LookForAudioPlugin( char* extension )
+{
+	int 				i, j;
+	struct SExtension*	ext;
+	char				tempString[FILENAME_MAX+1];
+	
+	strcpy( tempString, extension );
+	str_toupper( tempString );
+	
+	for( i = 0; i < audioPluginsCount; i++ )
+	{
+		ext = pSAudioPlugin[i]->pSExtension;
+		for( j = 0; ; j++ )
+		{
+			/* end of extension list? */
+			if( ext[j].ext == NULL )
+			{
+				break;
+			}
+			/* nope, continue with finding supported extension */
+			else if( strcmp( ext[j].ext, tempString ) == 0 )
+			{
+				return pSAudioPlugin[i];
+			}
+		}
+	}
+	return NULL;
+}
+
+/*
+ * Search for all audio plugins
+ * in ./plugins/audio directory
+ */
+
+void LoadAudioPlugins( void )
+{
+	DIR*			pDirStream;
+	struct dirent*	pDirEntry;
+	char			tempString[PATH_MAX+1];
+	char			ext[FILENAME_MAX+1];
+	
+	/* Global ST/TT RAM */
+	pInputArray = (char**)malloc_global( 2 * sizeof( char* ) );
+	if( VerifyAlloc( pInputArray ) == FALSE )
+	{
+		ExitPlayer( 1 );
+	}
+	
+	pDirStream = opendir( AUDIO_PLUGINS_PATH );	
+	if( pDirStream != NULL )
+	{
+		while( ( pDirEntry = readdir( pDirStream ) ) != NULL )
+		{
+			if( IsDirectory( AUDIO_PLUGINS_PATH, pDirEntry->d_name ) == FALSE )
+			{
+				split_extension( pDirEntry->d_name, NULL, ext );
+				if( strcmp( ext, "mxp" ) == 0 || strcmp( ext, "MXP" ) == 0 )
+				{
+					strcpy( tempString, gl_appdir );
+					CombinePath( tempString, tempString, AUDIO_PLUGINS_PATH );	/* path\plugins\audio */
+					CombinePath( tempString, tempString, pDirEntry->d_name );	/* path\plugins\audio\plugin.mxp */
+
+					pSAudioPlugin[audioPluginsCount] = AudioPluginLoad( tempString );
+					if( pSAudioPlugin[audioPluginsCount] != NULL )
+					{
+						if( AudioPluginInit( pSAudioPlugin[audioPluginsCount] ) != MXP_OK )
+						{
+							ShowAudioInitErrorDialog( pDirEntry->d_name );
+							Mfree( pSAudioPlugin[audioPluginsCount] );
+						}
+						else
+						{
+							audioPluginsCount++;
+						}
+					}
+				}
+			}
+		}
+		
+		if( audioPluginsCount == 0 )
+		{
+			ShowNoAudioFoundDialog();
+		}
+	}
+	else
+	{
+		ShowNoAudioFoundDialog();
+	}
+	
+	closedir( pDirStream );
+}
+
+/*
+ * Play current module
+ */
+int AudioPluginModulePlay( void )
+{
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Set != NULL )
+	{
+		g_modulePlaying = TRUE;
+#ifndef DISABLE_PLUGINS
+		return Supexec( &g_pCurrAudioPlugin->Set );
+#else
+		return MXP_OK;
+#endif
+	}
+	
+	return MXP_OK;
+}
+
+/*
+ * Stop current module playback
+ */
+int AudioPluginModuleStop( void )
+{
+	int ret;
+	
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Unset != NULL )
+	{
+		g_modulePaused = FALSE;
+		g_modulePlaying = FALSE;
+#ifndef DISABLE_PLUGINS
+		ret = Supexec( &g_pCurrAudioPlugin->Unset );
+		dsp_load_program( NULL, 0 );	/* reset DSP */
+		return ret;
+#else
+		return MXP_OK;
+#endif
+	}
+	
+	return MXP_OK;
+}
+
+/*
+ * Pause current module playback
+ */
+int AudioPluginModulePause( void )
+{
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModulePause != NULL )
+	{
+		g_modulePaused = !g_modulePaused;
+#ifndef DISABLE_PLUGINS
+		return Supexec( &g_pCurrAudioPlugin->ModulePause );
+#else
+		return MXP_OK;
+#endif
+	}
+	
+	return MXP_ERROR;
+}
+
+BOOL AudioPluginLockResources( void )
+{
+	long flags;
+	
+	if( g_pCurrAudioPlugin != NULL )
+	{
+		flags = g_pCurrAudioPlugin->pSInfo->flags;
+		if( flags & MXP_FLG_USE_DSP )
+		{
+			if( g_hasDsp == TRUE )
+			{
+				if( Dsp_Lock() != E_OK )
+				{
+					if( ShowDspLockedDialog() == 1 )
+					{
+						dspLocked = FALSE;
+						return FALSE;
+					}
+					else
+					{
+						Dsp_Unlock();
+						if( Dsp_Lock() != E_OK )
+						{
+							/* gcc complains here */
+						}
+						dspLocked = TRUE;
+					}
+				}
+				else
+				{
+					dspLocked = TRUE;
+				}
+			}
+			else
+			{
+				ShowDmaRequiredDialog();
+				return FALSE;
+			}
+		}
+		if( flags & MXP_FLG_USE_DMA )
+		{
+			if( g_hasDma == TRUE )
+			{
+				if( Locksnd() == -129 )
+				{
+					if( ShowDmaLockedDialog() == 1 )
+					{
+						dmaLocked = FALSE;
+						return FALSE;
+					}
+					else
+					{
+						Unlocksnd();
+						Locksnd();
+						dmaLocked = TRUE;
+					}
+				}
+				else
+				{
+					dmaLocked = TRUE;
+				}
+			}
+			else
+			{
+				ShowDmaRequiredDialog();
+				return FALSE;
+			}
+		}
+		if( flags & MXP_FLG_USE_020 )
+		{
+			if( g_cpu < 20 )
+			{
+				Show020RequiredDialog();
+				return FALSE;
+			}
+		}
+		if( flags & MXP_FLG_USE_FPU )
+		{
+			if( g_fpu == 0 )
+			{
+				ShowFpuRequiredDialog();
+				return FALSE;
+			}
+		}
+		
+	}
+	return TRUE;
+}
+
+BOOL AudioPluginFreeResources( void )
+{
+	long flags;
+
+	if( g_pCurrAudioPlugin != NULL )
+	{
+		flags = g_pCurrAudioPlugin->pSInfo->flags;
+		if( ( flags & MXP_FLG_USE_DSP ) && dspLocked )
+		{
+			Dsp_Unlock();
+			dspLocked = FALSE;
+		}
+		if( ( flags & MXP_FLG_USE_DMA ) && dmaLocked )
+		{
+			if( Unlocksnd() == -128 )
+			{
+				dmaLocked = FALSE;
+				ShowDmaNotLockedDialog();
+				return FALSE;
+			}
+		}
+	}
+	return TRUE;
+}
+
+/*
+ * Get basic information about plugin
+ */
+void AudioPluginGetBaseInfo( struct SAudioPlugin* plugin,
+							 char** pluginAuthor, char** pluginVersion,
+							 char** replayName, char** replayAuthor, char** replayVersion,
+							 long* flags )
+{
+	struct SInfo* info = plugin->pSInfo;
+	
+	*pluginAuthor = info->pPluginAuthor;
+	*pluginVersion = info->pPluginVersion;
+	*replayName = info->pReplayName;
+	*replayAuthor = info->pReplayAuthor;
+	*replayVersion = info->pReplayVersion;
+	*flags = info->flags;
+}
+
+/*
+ * Get playtime of current module
+ */
+unsigned long AudioPluginGetPlayTime( void )
+{
+	if( g_pCurrAudioPlugin != NULL )
+	{
+#ifndef DISABLE_PLUGINS
+		return Supexec( &g_pCurrAudioPlugin->PlayTime );
+#else
+		return 300;
+#endif
+	}
+	
+	return 0;
+}
+
+/*
+ * Get parameter pointer for the given name
+ */
+struct SParameter* AudioPluginGetParam( struct SAudioPlugin* plugin, char* name )
+{
+	struct SParameter* param = plugin->pSParameter;
+	
+	while( param->pName != NULL )
+	{
+		if( strncmp( param->pName, name, strlen( name ) ) == 0 )
+		{
+			return param;
+		}
+		param++;
+	}
+	
+	return NULL;
+}
+
+/*
+ * Set given parameter to value on input
+ */
+int AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long value )
+{
+	int ret;
+	
+	plugin->inBuffer = value;
+	ret = Supexec( param->Set );
+	AudioPluginGetInfoLine( plugin->pSParameter );	/* start from the first parameter */
+	return ret;
+}
+
+/*
+ * Get given parameter's value
+ */
+int AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long* value )
+{
+	int ret;
+	
+	ret = Supexec( param->Get );
+	*value = plugin->inBuffer;
+	return ret;
+}

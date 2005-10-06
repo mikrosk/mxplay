@@ -1,0 +1,22 @@
+<---------------------------------------------------------------->
+< Jam Plugin:                                                    >
+< Chris Huelsbeck's universal TFMX-pro (DSP) v. 1.0,  03.02.2000 >
+<---------------------------------------------------------------->
+
+Extensions:	.TFX
+     Coder:	Abyss,Tao / Cream  ( DSP by Tat / Avena )
+   Machine:	Falcon
+
+		Amiga replayroutine by Chris Huelsbeck. 
+		(7Voice-replay by Jochen Hippel).
+
+     Note:	Huelsbeck's TFMX modules use seperate samplesets,
+		which need to have the same filename as the song-
+	        file, except of the extension (SMP). So make sure
+	        to rename the files this way: 
+
+                songname.tfx / sampleset.smp  
+
+		You can download the archive from our website
+		(www.creamhq.de) or exotica.fix.no
+<---------------------------------------------------------------->

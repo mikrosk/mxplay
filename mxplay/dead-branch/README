@@ -1,0 +1,8 @@
+This is the 'dead branch' of mxPlay development. It's custom dialog 
+based one, with own sliders and resizers. I drop this way since using 
+AES sliders are much faster and much easier to handle... however, if 
+there's someone brave who want to resurrect this version/approach, 
+you'll welcomed. Try it on own risk. The best functionality was 
+observed under XaAES.
+
+mikro@hysteria.sk

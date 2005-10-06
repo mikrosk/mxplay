@@ -1,0 +1,33 @@
+<---------------------------------------------------------------->
+< Jam Plugin:                                                    >
+< Universal Jochen Hippel COSO/TFMX          v. 1.0,  03.02.2000 >
+<---------------------------------------------------------------->
+
+Extensions:	.HIP, .SOC, .SCO, .SCW, .HIW, H7V
+     Coder: 	Abyss,Tao / Cream.
+   Machine:	STE / Falcon / TT
+
+		Amiga replayroutines by Jochen Hippel.
+
+     Note:	To achieve a universal Player to replay Jochen's 
+		different formats properly,  the tunes have been
+            	special extensions for the player detection.
+	      	(Jochen  himself  couldn't tell us how to detect 
+		all of them automatically)
+
+		You can download the almost complete archive from
+		our  website  (www.creamhq.de).  Downloaded songs
+ 	      	from archives like  'exotica.fix.no' need to be
+		renamed and given following extensions:
+
+		.HIP :  standard TFMX/COSO.
+	      	.SCO :  COSO (old vibrato)
+ 	      	.SOC :  COSO (new vibrato)
+		.SCW :  COSO (Wings Of Death)
+		.HIW :  TFMX (Wings Of Death)
+	      	.H7V :  TFMX/COSO 7-voice.
+
+		7-voice-songs can atm. only be replayed on 
+		Falcon and TT.
+		
+  <------------------------------------------------------------>

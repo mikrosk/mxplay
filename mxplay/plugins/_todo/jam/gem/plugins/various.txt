@@ -1,0 +1,15 @@
+<---------------------------------------------------------------->
+< Jam Plugin:                                                    >
+< Various Formats  	                     v. 1.0,  24.06.2000 >
+<---------------------------------------------------------------->
+
+Extension:	.DW, .TF
+    Coder:	Abyss, Tao / Cream
+  Machine:	STE / Falcon / TT
+
+     Note:	Replays the original Amigasongs by David Whittaker
+		and Tim Follin.  This plugin is planned to be ext-
+		ended with other custom formats.
+
+	        Songs can be found at: exotica.fix.no 
+<---------------------------------------------------------------->

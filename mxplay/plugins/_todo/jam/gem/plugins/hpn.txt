@@ -1,0 +1,15 @@
+<---------------------------------------------------------------->
+< Jam Plugin:                                                    >
+< Mad Max Big Demo Songs                     v. 0.9,  16.04.2001 >
+<---------------------------------------------------------------->
+
+Extension:	.HPN
+    Coder:	Abyss, Tao / Cream
+  Machine:	M/ST/E / Falcon / TT
+
+		If you don't like SID-emulations and if you want to
+		have the oldskool B.I.G - Demo songs with sidvoice-
+		feeling, then this is for you...	 
+
+		Just copy 'hpn.jam' into your Jam-plugins folder...
+<---------------------------------------------------------------->
