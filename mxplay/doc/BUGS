@@ -1,0 +1,45 @@
+Known bugs:
+
+- the most critical one: for some strange reason, mxPlay will 
+  sometime cause bus error. It occurs not very frequently. The most 
+  probably the instability is caused by some plugin(s) but.. I'm not 
+  100% sure.. so please, try to catch at least WHEN it occurs or 
+  better, try to look into source for the case I something 
+  overlooked..
+
+- text fields doesn't work under XaAES. Ozk did make some changes to 
+  CFLib and I'm not sure if this isn't the problem.
+
+- text cursor in text field is initialized on a bad position
+
+- problems with drag&drop/va-start/argv. No, this is NOT an mxPlay 
+  bug. Just to want to tell you the only desktop which handles these 
+  issues correctly is Teradesk (since I flooded the author with the 
+  ton of bugreports ;-). Thing is on the second place and the worst 
+  one from this point of view is Jinnee. Yeah yeah, try to contact 
+  ASH... :)
+
+- mute isn't working. I know, I'm planning to implement some working 
+  version.. but nobody stops you to send me better one :)
+
+- icon redraw errors under TOS. For some strange reason TOS instead 
+  of selecting some icon inverse the current bitmap. This happens 
+  only if you click on some icon. So for example, press '*' and 
+  playlist icon will be (de)activating with no problem. But If you 
+  click on this icon, you will see strange rectangle around it...
+
+- generally, there's quite big chance you observe some bus error 
+  under TOS... I'm really sorry for that - since mxPlay uses 
+  resizable, on-the-fly constructed dialogs there's a lot of tricky 
+  AES stuff.. mxPlay was developed under XaAES, Xi is using MagiC and 
+  from time to time I switched to N.AES.. so be patient and report 
+  bugs :)
+
+- flashing scrolling line - this isn't a bug, it's just slowness of 
+  AES and/or CPU you use.. little hint: try to locate panel as on 
+  bottom as possible :)
+
+If you find any other bugs or you find some solution how to fix 
+these, don't hesistate to contact me:
+
+mikro@hysteria.sk

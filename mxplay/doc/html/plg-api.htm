@@ -1,0 +1,541 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>mxPlay Programmer's Plugin API Reference</title>
+	</head>
+
+	<body>
+		<h2><p align = "center">mxPlay Programmer's Plugin API Reference</p></h2>
+		<ol>
+			<li><a href = "#1">Introduction</a></li>
+			<li><a href = "#2">Structures</a></li>
+			<li><a href = "#3">Functions</a></li>
+			<li><a href = "#4">Remarks</a></li>
+			<li><a href = "#5">Contact</a></li>
+		</ol>
+		<hr>
+
+<h3><p><a name = "1">1. Introduction</a></p></h3>
+<p align = "justify">
+Writing any plugin-based application is always very tricky. You have 
+to provide some universal, in the future expandable, easy to 
+understand and, at last but not least, working interface between 
+'server' application and 'client' plugin.
+</p>
+<p align = "justify">
+My goal was to remove as much work from programmer as possible. I 
+think this approach is not only good for programmer but it increases 
+overall stability since application has control over more things.
+</p>
+<p align = "justify">
+All mentioned constants and structures are defined in the file 
+MXP_INC.S.
+</p>
+
+<h3><p><a name = "2">2. Structures</a></p></h3>
+<p align = "justify">
+Each plugin should be compiled as normal .PRG binary, for example 
+from Devpac.
+</p>
+
+<h4><p>2.1 Header</p></h4>
+<p align = "justify">
+Offsets are relative to the begin of text segment. So it's very 
+useful to create some label at the begin of your code and to use 
+predefined offets.
+</p>
+
+<p align = "justify">For example:</p>
+<code>
+ogg_header:<br>
+&nbsp dc.l &nbsp 	"MXP1"<br>
+&nbsp 	ds.l &nbsp 1<br>
+&nbsp 	bra.w&nbsp register_module<br>
+&nbsp 	:<br>
+&nbsp 	:<br>
+</code>
+
+<p align = "justify">and then access to the members using:</p>
+<code>
+lea &nbsp&nbsp ogg_header,a0<br>
+move.l 	d0,(a0,MXP_PLUGIN_PARAMETER)<br>
+</code>
+
+<p align = "justify">or:</p>
+
+<code>move.l d0,ogg_header+MXP_PLUGIN_PARAMETER<br>
+</code>
+
+<p align = "justify">Please note all entries are 4 bytes long.</p>
+
+<h5><p>2.1.1 MXP_PLUGIN_ID</p></h5>
+<p align = "justify">
+Characters 'MXP1', i.e. ASCII identifier.
+</p>
+
+<h5><p>2.1.2 MXP_PLUGIN_PARAMETER</p></h5>
+<p align = "justify">
+Storage place for both application and plugin. This is the only place 
+where they are allowed to write. For more about this, see chapter 4.2 
+'Communication Issues'. The content can be either constant or 
+pointer, depending on the passed data, see discussion about 
+structures bellow.
+</p>
+<p align = "justify">
+I didn't want to use register-based communication since every C 
+compiler passes parameters on stack differently and I wanted to do 
+portable code.
+</p>
+
+<h5><p>2.1.3 MXP_PLUGIN_REGISTER_MOD</p></h5>
+<p align = "justify">
+Relative jump to Register() function.
+</p>
+
+<h5><p>2.1.4 MXP_PLUGIN_PLAYTIME</p></h5>
+<p align = "justify">
+Relative jump to Playtime() function.
+</p>
+
+<h5><p>2.1.5 MXP_PLUGIN_INIT</p></h5>
+<p align = "justify">
+Relative jump to Init() function.
+</p>
+
+<h5><p>2.1.6 MXP_PLUGIN_SET</p></h5>
+<p align = "justify">
+Relative jump to Set() function.
+</p>
+
+<h5><p>2.1.7 MXP_PLUGIN_UNSET</p></h5>
+<p align = "justify">
+Relative jump to Unset() function.
+</p>
+
+<h5><p>2.1.8 MXP_PLUGIN_DEINIT</p></h5>
+<p align = "justify">
+Relative jump to Deinit() function.
+</p>
+
+<h5><p>2.1.9 MXP_PLUGIN_MUSIC_FWD</p></h5>
+<p align = "justify">
+Relative jump to Forward() function.
+</p>
+
+<h5><p>2.1.10 MXP_PLUGIN_MUSIC_RWD</p></h5>
+<p align = "justify">
+Relative jump to Rewind() function.
+</p>
+
+<h5><p>2.1.11 MXP_PLUGIN_MUSIC_PAUSE</p></h5>
+<p align = "justify">
+Relative jump to Pause() function.
+</p>
+
+<h5><p>2.1.12 MXP_PLUGIN_INFO</p></h5>
+<p align = "justify">
+Pointer to the 'Info' structure.
+</p>
+
+<h5><p>2.1.13 MXP_PLUGIN_EXTENSIONS</p></h5>
+<p align = "justify">
+Pointer to the list of 'Extensions' structures.
+</p>
+
+<h5><p>2.1.14 MXP_PLUGIN_SETTINGS</p></h5>
+<p align = "justify">
+Pointer to the list of 'Settings' structures.
+</p>
+
+<h4><p>2.2 Info Structure</p></h4>
+<p align = "justify">
+Defined as 'mxp_struct_info'. Each entry is 4 bytes long. The 
+number of structures is limited to one. Best approach is to use it 
+for example as:
+</p>
+
+<code>
+	lea &nbsp &nbsp ogg_header,a0<br>
+	movea.l	(a0,MXP_PLUGIN_INFO),a0<br>
+	move.l&nbsp (a0,mxp_struct_info_plugin_author),d0<br>
+	:<br>
+	:<br>
+</code>
+
+<h5><p>2.2.1 mxp_struct_info_plugin_author</p></h5>
+<p align = "justify">
+Pointer to NULL terminated string with plugin author's name.
+</p>
+
+<h5><p>2.2.2 mxp_struct_info_plugin_version</p></h5>
+<p align = "justify">
+Pointer to NULL terminated string with plugin version.
+</p>
+
+<h5><p>2.2.3 mxp_struct_info_replay_name</p></h5>
+<p align = "justify">
+Pointer to NULL terminated string with replay routine's name.
+</p>
+
+<h5><p>2.2.4 mxp_struct_info_replay_author</p></h5>
+<p align = "justify">
+Pointer to NULL terminated string with replay routine's author name.
+</p>
+
+<h5><p>2.2.5 mxp_struct_info_replay_version</p></h5>
+<p align = "justify">
+Pointer to NULL terminated string with replay routine's version.
+</p>
+
+<h5><p>2.2.6 mxp_struct_info_flags</p></h5>
+<p align = "justify">
+This bitfield tells plugin which resources wish to use. Currently 
+defined are:
+</p>
+<ul>
+	<li><p align = "justify">MXP_FLG_USE_DSP: plugin uses DSP</p></li>
+	<li><p align = "justify">MXP_FLG_USE_DMA: plugin uses DMA sound system</p></li>
+	<li><p align = "justify">MXP_FLG_USE_020: plugin uses 020+ CPU</p></li>
+	<li><p align = "justify">MXP_FLG_USE_FPU: plugin uses FPU</p></li>
+</ul>
+
+<p align = "justify">So you use for example:</p>
+<code>
+dc.l &nbsp MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_USE_020<br>
+</code>
+
+<h4><p>2.3 Settings Structure</p></h4>
+<p align = "justify">
+Defined as 'mxp_struct_settings'. Each entry is 4 bytes long. The 
+number of structures is unlimited.
+</p>
+
+<h5><p>2.3.1 mxp_struct_settings_name</p></h5>
+<p align = "justify">
+Pointer to NULL terminated string with parameter's name. If NULL, no 
+more parameters are read. This name is used as unique identifier so 
+you can't use two parameters with the same name.
+</p>
+ 
+<h5><p>2.3.2 mxp_struct_settings_type</p></h5>
+<p align = "justify">
+Type of parameter. Currently defined are:
+</p>
+<ul>
+	<li><p align = "justify">MXP_PAR_TYPE_BOOL: handle as 1 / 0 switch.</p></li>
+	<li><p align = "justify">MXP_PAR_TYPE_CHAR: handle as string parameter</p></li>
+	<li><p align = "justify">MXP_PAR_TYPE_INT:  handle as signed integer parameter</p></li>
+</ul>
+
+<p align = "justify">
+These types tell player what value will get after calling 'get' 
+function or to what type should convert value which is on input of 
+'set' function.
+</p>
+<p align = "justify">
+Please, don't use very long names for these parametes, you wont break 
+anything, but you can get to the situation when you will have 
+'very_long_parameter_name1' and 'very_long_parameter_name2' and 
+application will see one 'very_long_parame' parameter).
+</p>
+<p align = "justify">
+There's a little different behaviour by interpreting values of these 
+parameters according to the group they belong to.
+</p>
+<p align = "justify">
+For plugin parametes applies one general rule: output size is limited 
+by the size of Plugin Info dialog. It's simply because there's a very 
+small chance you will ever need more than a few charactes (in fact I 
+can't imagine what kind of parameter you could pass to the plugin as 
+CHAR type). Except this, there's a different interpretation of the 
+BOOL parameter (comparing to module parameters): it's shown as 
+checkable custom defined colour icon. So state '1' means icon checked 
+and vice versa.
+</p>
+<p align = "justify">
+However, module parameters give the user possibility to scroll these 
+values. So your parameter value (e.g. songname) can contain unlimited 
+number of characters. Around this value will be shown left/right 
+arrows which allow user to view te rest of text. Please note EVERY 
+parameter will be converted to the string - both BOOL type (as 'Yes' 
+/ 'No') and integer.
+</p>
+<p align = "justify">
+Each parameter type could/should be ORed with one or more flags:
+</p>
+<ul>
+	<li><p align = "justify">MXP_FLG_INFOLINE: parameter + its value will be shown on panel in scrolling infoline</p></li>
+	<li><p align = "justify">MXP_FLG_MOD_PARAM: parameter + its value will be shown in Module Info window</p></li>
+	<li><p align = "justify">MXP_FLG_PLG_PARAM: parameter + its value will be shown in Plugin Info window</p></li>
+</ul>
+
+<p align = "justify">For example:</p>
+<code>
+&nbsp		dc.l &nbsp	param_original<br>
+&nbsp		dc.l &nbsp	MXP_PAR_TYPE_BOOL|MXP_FLG_MOD_PARAM<br>
+&nbsp		:<br>
+&nbsp		:<br>param_original:<br>
+&nbsp		dc.b &nbsp	'Original',0<br>
+</code>
+
+<p align = "justify">
+and when 'get' will return 0, in the Module Info window you will see 
+'Original: No'.
+</p>
+
+<h5><p>2.3.3 mxp_struct_settings_routine_set</p></h5>
+<p align = "justify">
+Pointer to the 'Set' function. As was mentioned, if NULL, parameter 
+will be marked as 'read only' (will be shaded in info window). Of 
+course, this has some sense only in plugin parameters.
+</p>
+<p align = "justify">
+Please, don't mess up this function with the one discussed in chapter 
+3.
+</p>
+<p align = "justify">
+Typical use of this function is to switch on/off some parameter 
+(interpolation, surround, ...) or to pass some integer value (e.g. 
+playtime if plugin doesn't provide accurate playtime determination). 
+However, there's also text parameter for some special use.
+</p>
+<p align = "justify">
+After calling this function from application, plugin should expect 
+value at MXP_PLUGIN_PARAMETER place. Application doesn't check any 
+return code.
+</p>
+
+<h5><p>2.3.4 mxp_struct_settings_routine_get</p></h5>
+<p align = "justify">
+Pointer to 'Get' function. This pointer can never be NULL! Plugin 
+should return wanted value at MXP_PLUGIN_PARAMETER place. Application 
+doesn't check any return code.
+</p>
+
+<h4><p>2.4 Extensions Structure</p></h4>
+<p align = "justify">
+Defined as 'mxp_struct_extensions'. Each entry is 4 bytes long. The 
+number of structures is unlimited.
+</p>
+
+<h5><p>2.4.1 mxp_struct_extensions_string</p></h5>
+<p align = "justify">
+Pointer to NULL terminated string with supported module file 
+extension. If NULL, no more parameters are read.
+</p>
+
+<h5><p>2.4.2 mxp_struct_extensions_name</p></h5>
+<p align = "justify">
+Pointer to NULL terminated string with the module extension full name.
+</p>
+
+<code>
+For example:<br>
+&nbsp	dc.l &nbsp	am_extension_string<br>
+&nbsp	dc.l &nbsp	am_extension_name<br>
+&nbsp	:<br>
+&nbsp	:<br>
+
+am_extension_string:<br>
+&nbsp	dc.b &nbsp	"AM",0<br>
+am_extension_name:<br>
+&nbsp	dc.b &nbsp	"ACE Module",0<br>
+</code>
+
+<h3><p><a name = "3">3. Functions</a></p></h3>
+<p align = "justify">
+This is the base interface between application and plugin. All 
+functions except Playtime() should return result status in d0 
+register - MXP_OK or MXP_ERROR.
+</p>
+
+<h4><p>3.1 Register()</p></h4>
+<p align = "justify">
+Register module. On the input (in the input buffer) plugin should 
+expect pointer to two another pointers:
+</p>
+<ul>
+	<li><p align = "justify">buffer with module binary</p></li>
+	<li><p align = "justify">length of this buffer</p></li>
+</ul>
+
+<p align = "justify">
+Correct handling of this input is as follows:
+</p>
+
+<code>
+&nbsp		movea.l&nbsp ogg_header+MXP_PLUGIN_PARAMETER,a0<br>
+&nbsp		move.l &nbsp	(a0)+,ogg_buffer<br>
+&nbsp		move.l &nbsp	(a0),ogg_buffer_length<br>
+</code>
+
+<p align = "justify">
+Please note you have to fill all things in Settings structure *NOW* ! 
+</p>
+<p align = "justify">
+Return MXP_OK if plugin is able to replay given module. Return 
+MXP_ERROR if not. This could occur when you compare file header to 
+some expected value and the values don't match.
+</p>
+
+<h4><p>3.2 Playtime()</p></h4>
+<p align = "justify">
+Return playtime for given module - some plugins are able to calculate 
+it. If your plugin isn't able to do it, return let's say 2 minutes 
+and allow user to change this value.
+</p>
+
+<h4><p>3.3 Init()</p></h4>
+<p align = "justify">
+Initialize plugin. Allocate space, precalc tables etc. Don't do 
+anything with HW registers!
+</p>
+
+<h4><p>3.4 Set()</p></h4>
+<p align = "justify">
+Set module, i.e. save HW registers, set new ones, activate playing.
+</p>
+
+<h4><p>3.5 Unset()</p></h4>
+<p align = "justify">
+Opaque to Set(), i.e. stop playing, restore HW registers.
+</p>
+
+<h4><p>3.6 Forward()</p></h4>
+<p align = "justify">
+Skip some time forward. Currently unimplemented.
+</p>
+
+<h4><p>3.7 Rewind()</p></h4>
+<p align = "justify">
+Move back some time. Currently unimplemented.
+</p>
+
+<h4><p>3.8 Pause()</p></h4>
+<p align = "justify">
+Pause playing. You have to care about on/off state, application will 
+just call this function. Don't forget to deactivate pause status when 
+Unset() is called.
+</p>
+
+<h3><p><a name = "4">4. Remarks</a></p></h3>
+<p align = "justify">
+Some important remarks about plugin making.
+</p>
+
+<h4><p>4.1 Startup Process</p></h4>
+<ol>
+	<li><p align = "justify">Load plugin, call Init().</p></li>
+	<li><p align = "justify">When user loads module, call Register(). [after this step infoline 
+   will be filled via Get() functions in Settings structure]</p></li>
+	<li><p align = "justify">If Register() was OK, call Set(); if not, release module from 
+   memory (!)</p></li>
+	<li><p align = "justify">When user stops playing, call Unset().</p></li>
+	<li><p align = "justify">When user presses pause key, call Pause().</p></li>
+	<li><p align = "justify">[Currently unimplemented] When user request to remove plugin, call 
+   Deinit().</p></li>
+</ol>
+
+<h4><p>4.2 Communication Issues</p></h4>
+<p align = "justify">
+The application and plugin behave as classical client/server model. 
+Each plugin is handled as new process (using Pexec() call). That 
+means they are independent processes which theoretically can't share 
+any memory. There are some solutions how to do it, I chose probably 
+the simplest one - they share some global memory. This applies to two 
+buffers:
+</p>
+<ul>
+	<li><p align = "justify">module buffer, which has to be accessible by both plugin and 
+  application</p></li>
+
+	<li><p align = "justify">communication buffer, where plugin and application exchange data</p></li>
+</ul>
+
+<p align = "justify">
+Since plugin has no reason to access any of application's data, 
+there's no problem to set memory model as 'Private' for the 
+application. However, application needs some access to plugin's 
+structures (parameters) so *YOU HAVE TO SET AT LEAST READABLE ACCESS 
+TO THE PLUGIN*. This can by done by many tools, from CPX to Jinnee's 
+info dialog.
+</p>
+
+<h4><p>4.3 Stability</p></h4>
+<p align = "justify">
+In the ideal case when application is free of bugs there's still very 
+important thing which applies to overall application stability: 
+stability of plugins.
+</p>
+<p align = "justify">
+Typical example, how to hang FreeMiNT kernel and/or XaAES is to use 
+some custom exception vector, e.g. Timer A/B/C/D. If there is no way 
+how to avoid using it, please (PLEASE!) use following approach:
+</p>
+
+<ul>
+	<li><p align = "justify">always save/restore everything you use</p></li>
+
+	<li><p align = "justify">try to call original exception vector after you finished your stuff 
+  (yes, there are some potential problems with the situation if some 
+  other application uses similar approach and then such application 
+  restore original exception pointer... this is trying to solve XBRA 
+  protocol but... you know ;)</p></li>
+
+	<li><p align = "justify">set memory model to 'Super'. This means except your plugin you 
+  provide access to your application space also for all applications 
+  in Supervisor mode (i.e. FreeMiNT kernel). This fix well know FATAL 
+  ERRORs in FreeMiNT with memory protection.</p></li>
+</ul>
+
+<p align = "justify">
+I have to say, it's not ideal solution but there's no other way. MiNT 
+guys are very upset when comes a talk to similar practices but do we 
+want some good player or not?
+</p>
+
+<h4><p>4.4 What You Don't Need To Do</p></h4>
+<p align = "justify">
+Application try to do some work for you, concretly:
+</p>
+
+<ul>
+	<li><p align = "justify">lock/unlock resources you've specified in the info structure. So 
+  you don't need to do it by hand. Or... you MUST NOT to do it ;)</p></li>
+
+	<li><p align = "justify">convert bools and ints to strings and vice versa. So if you want to 
+  show your plugin replays 8 channel module you don't need to convert 
+  the number '8' to the string.</p></li>
+
+	<li><p align = "justify">Mshrink(). Avoid using of this call, this is called on the startup 
+  time.</p></li>
+
+	<li><p align = "justify">Super() calls. You don't need to call this call anytime. Every 
+  function as called via Supexec(). Yeah yeah, I know, not very safe 
+  but I have the control over super/user stack which I found as the 
+  most important factor.</p></li>
+</ul>
+
+<h3><p><a name = "5">5. Contact</a></p></h3>
+<p align = "justify">
+Since I'm the author of this API it comes to me as very easy and 
+understable. However, don't hesistate to contact me with ANY your 
+question, I'm open to answer even the most primitive one you can 
+imagine ;) The main goal is to motivate people to code as much 
+plugins as possible. So don't wait, take your favorite replay routine 
+and make new MXP plugin!
+</p>
+
+<p align = "justify">
+You can reach me 7 days of week at:</p>
+
+<p>mikro at hysteria dot sk</p>
+<p align = "justify">
+In case of some unexpected things (server crash etc) you can contact 
+Xi, the author of the most of plugins in this release:</p>
+
+</p>xi at napri dot sk</p><br>
+<p>... happy plugging!</p>
+	</body>
+</html>
