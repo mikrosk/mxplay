@@ -1,14 +1,24 @@
+
+ifeq ($(CROSS),yes)
+CC			= m68k-atari-mint-gcc
+AS			= m68k-atari-mint-as
+STRIP			= m68k-atari-mint-strip -s
+INCLUDE_GEM_PATH	= /usr/m68k-atari-mint/include
+LIB_GEM_PATH		= /usr/m68k-atari-mint/lib
+else
 CC			= gcc
+AS			= as
 STRIP			= strip -s
+INCLUDE_GEM_PATH	= /usr/GEM/include
+LIB_GEM_PATH		= /usr/GEM/lib
+endif
+
 COMPRESS		= upx
 CHANGE_FLAGS		= flags -l -r -a
 MAKE			= make
 
 DEBUG_FLAGS		= -g
 OPT_FLAGS		= -O2 -fomit-frame-pointer
-
-INCLUDE_GEM_PATH	= /usr/GEM/include
-LIB_GEM_PATH		= /usr/GEM/lib
 
 CFLAGS			= -Wall -Wshadow -I$(INCLUDE_GEM_PATH) $(CPU_FLAGS)
 
