@@ -1,8 +1,0 @@
-FIRR_TAB.TTP
-.C	[-b4 -r6 -d0 -m0 -rs -fm -j*i]
-.S	[-m0]
-=
-C.O
-FIRR_TAB.C	[-b4 -r6 -v -d0 -f8 -m3 -rs -fm -j*i]
-C:\LC\LIB\LCG.LIB
-LC.LIB
