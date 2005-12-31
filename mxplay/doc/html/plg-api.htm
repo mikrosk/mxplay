@@ -208,7 +208,8 @@ dc.l &nbsp MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_USE_020<br>
 <h4><p>2.3 Settings Structure</p></h4>
 <p align = "justify">
 Defined as 'mxp_struct_settings'. Each entry is 4 bytes long. The 
-number of structures is unlimited.
+number of structures is unlimited. The length of parameter name and parameter (in case it's a string) is limited to
+255 characters plus terminator ('\0', zero byte) !!!
 </p>
 
 <h5><p>2.3.1 mxp_struct_settings_name</p></h5>
@@ -476,6 +477,11 @@ how to avoid using it, please (PLEASE!) use following approach:
 
 <ul>
 	<li><p align = "justify">always save/restore everything you use</p></li>
+	
+	<li><p align = "justify">take care about memory - don't overwrite the memory area you didn't allocated,
+	never go behind the size of your BSS segment, ... best way how to check the memory correctness is to 
+	test the plugin behaviour under FreeMiNT with memory protection (try to test plugin for some hours with tens of 
+	files in playlist)</p></li>
 
 	<li><p align = "justify">try to call original exception vector after you finished your stuff 
   (yes, there are some potential problems with the situation if some 
@@ -486,7 +492,9 @@ how to avoid using it, please (PLEASE!) use following approach:
 	<li><p align = "justify">set memory model to 'Super'. This means except your plugin you 
   provide access to your application space also for all applications 
   in Supervisor mode (i.e. FreeMiNT kernel). This fix well know FATAL 
-  ERRORs in FreeMiNT with memory protection.</p></li>
+  ERRORs in FreeMiNT with memory protection. You can do it by hand (in Jinnee for example) or by some directive - 
+  in Devpac write "COMMENT HEAD=%100111" in the beginning of source file ("Super" protection model (%10xxxx), no MinimalHeap (%xx0xxx), 
+  MallocInTT-RAM (%xxx1xx), LoadInTT-RAM (%xxxx1x), FastLoad (%xxxxx1) ).</p></li>
 </ul>
 
 <p align = "justify">
