@@ -263,6 +263,11 @@ parameter will be converted to the string - both BOOL type (as 'Yes'
 / 'No') and integer.
 </p>
 <p align = "justify">
+And finally, there's another special feature - if you leave string parameter (type of CHAR) empty, i.e. string consists of zero byte only, the application
+will interpret it as it should be replaced with the filename of module. This feature is here for historical reason (no "File:" line in Module Info) but it helps
+with debugging too :)
+</p>
+<p align = "justify">
 Each parameter type could/should be ORed with one or more flags:
 </p>
 <ul>
