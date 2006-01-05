@@ -92,7 +92,7 @@ static BOOL ModuleInfoGetModuleParam( struct SAudioPlugin* plugin, OBJECT* tree,
 {
 	struct SParameter*	pModuleAudioParam;
 	struct SInfoParam*	pModuleInfoParam;
-	char text[256];
+	char text[255+1];
 
 	pModuleInfoParam = ModuleInfoGetInfoParam( obj );
 	if( pModuleInfoParam != NULL )
@@ -648,6 +648,7 @@ static void ModuleInfoDownCommon( int count )
 			moduleInfoParamCurrent = moduleParamCount - currSlots;
 		}
 		
+		ModuleInfoResetDialog();
 		ModuleInfoCreateDialog();
 		ModuleInfoCheckParams();
 		ModuleInfoSliderSet();

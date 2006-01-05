@@ -430,6 +430,7 @@ int AudioPluginModuleStop( void )
 		g_modulePlaying = FALSE;
 #ifndef DISABLE_PLUGINS
 		ret = Supexec( &g_pCurrAudioPlugin->Unset );
+		// TODO: only if dsp is used by mxPlay (+ sound reset implementation?)
 		dsp_load_program( NULL, 0 );	/* reset DSP */
 		return ret;
 #else
@@ -455,7 +456,43 @@ int AudioPluginModulePause( void )
 #endif
 	}
 	
-	return MXP_ERROR;
+	return MXP_UNIMPLEMENTED;
+}
+
+/*
+ * Forward module. Still very simple implementation,
+ * 'bigStep' is ignored for this moment.
+ */
+int AudioPluginModuleFwd( BOOL bigStep )
+{
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModuleFwd != NULL )
+	{
+#ifndef DISABLE_PLUGINS
+		return Supexec( &g_pCurrAudioPlugin->ModuleFwd );
+#else
+		return MXP_OK;
+#endif
+	}
+	
+	return MXP_UNIMPLEMENTED;
+}
+
+/*
+ * Rewind module. Still very simple implementation,
+ * 'bigStep' is ignored for this moment.
+ */
+int AudioPluginModuleRwd( BOOL bigStep )
+{
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModuleRwd != NULL )
+	{
+#ifndef DISABLE_PLUGINS
+		return Supexec( &g_pCurrAudioPlugin->ModuleRwd );
+#else
+		return MXP_OK;
+#endif
+	}
+	
+	return MXP_UNIMPLEMENTED;
 }
 
 BOOL AudioPluginLockResources( void )

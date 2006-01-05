@@ -53,7 +53,7 @@ static long		moduleHistoryUsed = 0;
 
 static struct SFileListFile* FileListGetLastEntry( void )
 {
-	struct SFileListFile* pSList = pFileListFile;
+	struct SFileListFile* pSList = FileListGetFirstEntry();
 	
 	if( pSList != NULL )
 	{
@@ -66,7 +66,15 @@ static struct SFileListFile* FileListGetLastEntry( void )
 }
 
 /*
- * Return file number in range 1 - g_filesCount.
+ * return the first entry in the filelist
+ */
+struct SFileListFile* FileListGetFirstEntry( void )
+{
+	return pFileListFile;
+}
+
+/*
+ * Return file number in range 1 - g_filesCount for given file structure.
  */
 long FileListGetFileNumber( struct SFileListFile* pSFile )
 {
@@ -101,6 +109,25 @@ long FileListGetFileNumber( struct SFileListFile* pSFile )
 	return -1;
 }
 
+/*
+ * Return file structure for given number.
+ */
+struct SFileListFile* FileListGetEntry( int fileNumber )
+{
+	struct SFileListFile* pSFile = FileListGetFirstEntry();
+	
+	while( pSFile != NULL )
+	{
+		if( pSFile->number == fileNumber )
+		{
+			return pSFile;
+		}
+		pSFile = pSFile->pSNext;
+	}
+	
+	return NULL;
+}
+
 void FileListSetCurrFile( struct SFileListFile* pSFile )
 {
 	char tempString[PATH_MAX+1];
@@ -121,27 +148,6 @@ void FileListSetCurrFile( struct SFileListFile* pSFile )
 	}
 }
 
-struct SFileListFile* FileListGetFirstEntry( void )
-{
-	return pFileListFile;
-}
-
-struct SFileListFile* FileListGetEntry( int fileNumber )
-{
-	struct SFileListFile* pSFile = pFileListFile;
-	
-	while( pSFile != NULL )
-	{
-		if( pSFile->number == fileNumber )
-		{
-			return pSFile;
-		}
-		pSFile = pSFile->pSNext;
-	}
-	
-	return NULL;
-}
-
 void FileListSaveToHistory( void )
 {
 	if( moduleHistoryUsed < MODULE_HISTORY_SIZE )
@@ -157,8 +163,9 @@ void FileListSaveToHistory( void )
 
 BOOL FileListSetNext( void )
 {
-	int						fileNumber = -1;
-	struct SFileListFile*	pSFile;
+	long	fileNumber = -1;
+	int		i;
+	struct SFileListFile* pSFile;
 	
 	if( g_random == FALSE )
 	{
@@ -175,6 +182,16 @@ BOOL FileListSetNext( void )
 	else if( g_filesCount > 0 )
 	{
 		fileNumber = random() % g_filesCount;
+		
+		/* find the 'fileNumber'-th entry; this is not the same as file number! */
+		pSFile = FileListGetFirstEntry();
+		for( i = 0; i != fileNumber; i++ )
+		{
+			/* fileNumber is always in range from 0 to g_filesCount - 1 */
+			pSFile = pSFile->pSNext;
+		}
+		
+		fileNumber = pSFile->number;
 	}
 	
 	if( fileNumber == -1 )

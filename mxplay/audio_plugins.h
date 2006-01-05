@@ -99,6 +99,8 @@ extern BOOL					LoadAudioModule( char* path, char* filename );
 extern int					AudioPluginModulePlay( void );
 extern int					AudioPluginModuleStop( void );
 extern int					AudioPluginModulePause( void );
+extern int					AudioPluginModuleFwd( BOOL bigStep );
+extern int					AudioPluginModuleRwd( BOOL bigStep );
 extern BOOL					AudioPluginLockResources( void );
 extern BOOL					AudioPluginFreeResources( void );
 extern void					AudioPluginGetBaseInfo( struct SAudioPlugin* plugin, char** pluginAuthor, char** pluginVersion, char** replayName, char** replayAuthor, char** replayVersion, long* flags );

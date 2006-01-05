@@ -1,26 +1,24 @@
+# makefile for mxPlay, support for both native- and cross-compiling
+
+CROSS=yes
 
 ifeq ($(CROSS),yes)
-CC			= m68k-atari-mint-gcc
-AS			= m68k-atari-mint-as
-STRIP			= m68k-atari-mint-strip -s
-INCLUDE_GEM_PATH	= /usr/m68k-atari-mint/include
-LIB_GEM_PATH		= /usr/m68k-atari-mint/lib
+ prefix			= m68k-atari-mint-
 else
-CC			= gcc
-AS			= as
-STRIP			= strip -s
-INCLUDE_GEM_PATH	= /usr/GEM/include
-LIB_GEM_PATH		= /usr/GEM/lib
+ prefix			= 
 endif
 
-COMPRESS		= upx
-CHANGE_FLAGS		= flags -l -r -a
+CC			= ${prefix}gcc
+AS			= ${prefix}as
+STRIP			= ${prefix}strip -s
+FLAGS			= ${prefix}flags -l -r -a
+
+UPX			= upx
 MAKE			= make
 
 DEBUG_FLAGS		= -g
 OPT_FLAGS		= -O2 -fomit-frame-pointer
-
-CFLAGS			= -Wall -Wshadow -I$(INCLUDE_GEM_PATH) $(CPU_FLAGS)
+CFLAGS			= -Wall -Wshadow $(CPU_FLAGS)
 
 SOBJS			= dsp_fix.s vbl_timer_asm.s
 COBJS			= main.c audio_plugins.c dialogs.c panel.c filelist.c misc.c av.c \
@@ -32,38 +30,37 @@ OBJS			= $(COBJS:.c=.o) $(SOBJS:.s=.o)
 PROGRAM			= mxPlay-mint.app
 PROGRAM_NO_MINT		= mxPlay.app
 
-
 ifneq ($(FPU),no)
-CPU_FLAGS		= -m68020-60		# use 020+ and FPU code
-LIBS			= -lcflib020 -lgem020	# for libc / mxPlay / gem libs
+ CPU_FLAGS		= -m68020-60		# use 020+ and FPU code
+ LIBS			= -lcflib020 -lgem020	# for libc / mxPlay / gem libs
 else
-CPU_FLAGS		= -m68030		# use 030 code for mxPlay
-LIBS			= -lcflib -lgem		# libc and gem libs are "normal"
+ CPU_FLAGS		= -m68030		# use 030 code for mxPlay
+ LIBS			= -lcflib -lgem		# libc and gem libs are "normal"
 endif
 
 ifneq ($(TARGET),MiNT)
-CFLAGS += -DNO_MINT
-ASFLAGS += --defsym NO_MINT=1
+ CFLAGS += -DNO_MINT
+ ASFLAGS += --defsym NO_MINT=1
 endif
 
 ifeq ($(CONFIG),Release)
-CFLAGS += $(OPT_FLAGS)
+ CFLAGS += $(OPT_FLAGS)
 endif
 
 ifeq ($(CONFIG),Debug)
-CFLAGS += $(DEBUG_FLAGS)
-#CFLAGS += -DDISABLE_PLUGINS
+ CFLAGS += $(DEBUG_FLAGS)
+ #CFLAGS += -DDISABLE_PLUGINS
 endif
 
 
 all: mint
 
-
+# no idea why CFLAGS is ignored in final linking (LDFLAGS += $(CPU_FLAGS) didn't help, too)
 $(PROGRAM): $(OBJS)
-	$(CC) -o $@ $(OBJS) -L$(LIB_GEM_PATH) $(LIBS)
+	$(CC) $(CPU_FLAGS) -o $@ $(OBJS) $(LIBS)
 	
 $(PROGRAM_NO_MINT): $(OBJS)
-	$(CC) -o $@ $(OBJS) -L$(LIB_GEM_PATH) $(LIBS)
+	$(CC) $(CPU_FLAGS) -o $@ $(OBJS) $(LIBS)
 
 mint:
 	$(MAKE) $(PROGRAM) CONFIG="Debug" TARGET="MiNT"
@@ -91,6 +88,7 @@ dist-nomint:
 
 # real lameness
 dist-all:
+	make clean
 	make dist-mint FPU=no
 	mv $(PROGRAM) ../mxPlayM.app
 	make clean
@@ -111,16 +109,16 @@ strip-nomint:
 	$(STRIP) $(PROGRAM_NO_MINT)
 	
 compress-mint:
-	$(COMPRESS) $(PROGRAM)
+	$(UPX) $(PROGRAM)
 	
 compress-nomint:
-	$(COMPRESS) $(PROGRAM_NO_MINT)
+	$(UPX) $(PROGRAM_NO_MINT)
 	
 flags-mint:
-	$(CHANGE_FLAGS) $(PROGRAM)
+	$(FLAGS) $(PROGRAM)
 	
 flags-nomint:
-	$(CHANGE_FLAGS) $(PROGRAM_NO_MINT)
+	$(FLAGS) $(PROGRAM_NO_MINT)
 
 clean:
-	rm -f *.o *.bak *.app
+	rm -f *.o *.bak *~ *.app

@@ -320,7 +320,7 @@ int ShowAudioInitErrorDialog( char* filename )
 
 int ShowBadHeaderDialog( void )
 {
-	return do_walert( 1, TRUE, "[3][Bad file header!|mxPlay cannot play this file.][Bad extension]", "Error" );
+	return do_walert( 1, TRUE, "[3][Error in Register()!|mxPlay cannot play this file.][Bad header?]", "Error" );
 }
 
 int ShowBadPluginDialog( char* filename )

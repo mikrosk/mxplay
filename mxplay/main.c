@@ -215,6 +215,10 @@ void HandleMessage( short msg[8] )
 					case PANEL_PLAYTIME:
 						PanelPlayTime();
 					break;
+					
+					case PANEL_VOLUME_SLIDER_BOX:
+						PanelVolumeSliderBox( currMouseX );
+					break;
 				}
 			break;
 		}
@@ -291,7 +295,7 @@ int main( int argc, char* argv[] )
 	// TODO: remove!!!
 	if( strcmp( gl_appdir, "\\" ) == 0 )
 	{
-		strcpy( gl_appdir, "I:\\root\\projects\\mxPlay" );
+		strcpy( gl_appdir, "I:\\root\\projects\\mxPlay\\src" );
 	}
 	/* alloc & create all dialogs */
 	InitDialogs();

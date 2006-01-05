@@ -353,34 +353,46 @@ void PanelPause( void )
 
 void PanelFwd( void )
 {
-	//PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_FWD );
+	int ret;
 	
 	if( g_modulePlaying == TRUE )
 	{
-		if( g_withShift == TRUE )
-		{
-			/* big forward-step */
-			g_withShift = FALSE;
-		}
-	}
 	
-	DeselectObject( g_winDialogs[WD_PANEL], PANEL_FWD );
+		PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_FWD );
+	
+		if( ( ret = AudioPluginModuleFwd( g_withShift ) ) != MXP_OK )
+		{
+			ShowPluginErrorDialog( ret );
+			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
+		}
+		
+		/* was big forward-step */
+		g_withShift = FALSE;
+		
+		DeselectObject( g_winDialogs[WD_PANEL], PANEL_FWD );
+	}
 }
 
 void PanelRwd( void )
 {
-	//PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_RWD );
+	int ret;
 	
 	if( g_modulePlaying == TRUE )
 	{
-		if( g_withShift == TRUE )
-		{
-			/* big rewind-step */
-			g_withShift = FALSE;
-		}
-	}
 	
-	DeselectObject( g_winDialogs[WD_PANEL], PANEL_RWD );
+		PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_RWD );
+	
+		if( ( ret = AudioPluginModuleRwd( g_withShift ) ) != MXP_OK )
+		{
+			ShowPluginErrorDialog( ret );
+			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
+		}
+		
+		/* was big rewind-step */
+		g_withShift = FALSE;
+		
+		DeselectObject( g_winDialogs[WD_PANEL], PANEL_RWD );
+	}
 }
 
 void PanelPrev( void )
@@ -506,7 +518,17 @@ void PanelMute( void )
 {
 	if( g_mute == FALSE )
 	{
-		//Soundcmd( SETPRESCALE, 0 );	/* CCLK_6K */
+		/* illegal connection */
+		if( g_hasDma == TRUE )
+		{
+			Devconnect( DMAPLAY, DAC, CLK25M, CLKOLD, NO_SHAKE );
+		}
+		else /* yamaha */
+		{
+			Devconnect( ADC, DAC, CLK25M, CLKOLD, NO_SHAKE );
+		}
+		Soundcmd( SETPRESCALE, 0 );	/* CCLK_6K */
+		
 		g_mute = TRUE;
 		SelectObject( g_winDialogs[WD_PANEL], PANEL_MUTE );
 	}
