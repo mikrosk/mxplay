@@ -1,0 +1,14 @@
+Version 1.1.0
+=============
+
+- you can click on volume slider box in untopped window and new 
+  volume will be set.
+
+- added limited support for rewind / forward functions. time isn't 
+  updated and also 'big step' (with shift key) is ignored.
+
+- fixed bug when user open Module Info dialog, move to some place on 
+  desktop and use slider to scroll down
+
+- fixed bug in random mode playing after playlist reload with another 
+  files - random function returned illegal file numbers
