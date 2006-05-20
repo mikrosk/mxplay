@@ -1,0 +1,5 @@
+party:  Noise 
+year:   2006
+compo:  mxPlayer skin
+name:   LCARS
+author: krupkaj / JAYSoft
