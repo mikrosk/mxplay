@@ -43,9 +43,9 @@
 #include "file_select.h"
 #include "panel.h"
 
-char	g_homePath[PATH_MAX+1];
-char	g_rscName[FILENAME_MAX+1];
-char	g_playlistFile[PATH_MAX+1] = "";
+char	g_homePath[MXP_PATH_MAX+1];
+char	g_rscName[MXP_FILENAME_MAX+1];
+char	g_playlistFile[MXP_PATH_MAX+1] = "";
 int		g_panelX = -1;
 int		g_panelY = -1;
 int		g_playlistX = -1;
@@ -92,8 +92,8 @@ void UnpadString( char* string )
  */
 void SharedFileOpen( WDIALOG* wd, short obj )
 {
-	char	path[PATH_MAX+1] = "";
-	char	name[FILENAME_MAX+1] = "";
+	char	path[MXP_PATH_MAX+1] = "";
+	char	name[MXP_FILENAME_MAX+1] = "";
 	
 	SelectObject( wd, obj );
 	
@@ -137,8 +137,8 @@ void SharedFileOpen( WDIALOG* wd, short obj )
  */
 void SharedDirOpen( WDIALOG* wd, short obj )
 {
-	char	path[PATH_MAX+1] = "";
-	char	name[FILENAME_MAX+1] = "";
+	char	path[MXP_PATH_MAX+1] = "";
+	char	name[MXP_FILENAME_MAX+1] = "";
 
 	SelectObject( wd, obj );
 	
@@ -308,7 +308,7 @@ unsigned long GetFileNameSize( char* filename )
  */
 BOOL IsDirectory( char* path, char* name )
 {
-	char tempString[PATH_MAX+FILENAME_MAX+1];
+	char tempString[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
 	
 	CombinePath( tempString, path, name );
 	
@@ -321,30 +321,45 @@ BOOL IsDirectory( char* path, char* name )
 void ARGVParseArgs( int argc, char* argv[] )
 {
 	int i;
-	char	tempPath[PATH_MAX+FILENAME_MAX+1];
-	char	tempName[FILENAME_MAX+1];
+	char	tempPath[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
+	char	tempName[MXP_FILENAME_MAX+1];
 	//FILE* fs = fopen("u:\\ram\\log.txt", "a");
 	//fprintf( fs, "ARGV:\n" );
 	//fprintf( fs, "%s\n", argv[0] );
+	//fclose(fs);
 
 	for( i = 1; i < argc; i++ )
 	{
+		//fs = fopen("u:\\ram\\log.txt", "a");
 		//fprintf( fs, "%s\n", argv[i] );
+		//fclose(fs);
 		if( file_exists( argv[i] ) == TRUE || path_exists( argv[i] ) == TRUE )
 		{
+			//fs = fopen("u:\\ram\\log.txt", "a");
+			//fprintf( fs, "%s: za exists\n", argv[i] );
+			//fclose(fs);
 			if( strchr( argv[i], '\\' ) == NULL && strchr( argv[i], '/' ) == NULL )
 			{
 				
 				get_path( tempPath, 0 );	/* we've got just filename without path */
 				strcpy( tempName, argv[i] );
+				//fs = fopen("u:\\ram\\log.txt", "a");
+			//fprintf( fs, "%s: za getpath\n", argv[i] );
+			//fclose(fs);
 			}
 			else
 			{
 				split_filename( argv[i], tempPath, tempName );
+				//fs = fopen("u:\\ram\\log.txt", "a");
+			//fprintf( fs, "%s: za splitname\n", argv[i] );
+			//fclose(fs);
 			}
 			
 			if( PlayListAdd( tempPath,tempName ) == FALSE )
 			{
+				//fs = fopen("u:\\ram\\log.txt", "a");
+			//fprintf( fs, "%s: za playlistadd\n", argv[i] );
+			//fclose(fs);
 				break;
 			}
 		}
@@ -367,9 +382,9 @@ void ParseArgs( char* cmdline )
 	BOOL	inQuote = FALSE;
 	int		i = 0;
 	int		j = 0;
-	char	path[PATH_MAX+1];
-	char	name[FILENAME_MAX+1];
-	char	all[PATH_MAX+FILENAME_MAX+1];
+	char	path[MXP_PATH_MAX+1];
+	char	name[MXP_FILENAME_MAX+1];
+	char	all[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
 	//	FILE* fs = fopen("u:\\ram\\log.txt", "a");
 	//fprintf( fs, "d&d/va cmdline:\n" );
 	//fprintf( fs, "%s\n", cmdline );
@@ -438,6 +453,12 @@ void ParseArgs( char* cmdline )
 			
 		}
 	}
+	
+	//fs = fopen("u:\\ram\\log.txt", "a");
+	//fprintf( fs, "d&d/va cmdline:\n" );
+	//fprintf( fs, "%s\n", all );
+	//fclose( fs );
+	//return;
 }
 
 /*
@@ -490,7 +511,7 @@ void CombinePath( char* fullpath, char* path, char* name )
 
 void GetHomePath( void )
 {
-	char	temp[PATH_MAX+1];
+	char	temp[MXP_PATH_MAX+1];
 	char*	path = NULL;
 	
 	shel_envrn( &path, "HOME=" );
@@ -518,7 +539,7 @@ void GetHomePath( void )
 
 void ReadConfigFile( void )
 {
-	char	temp[FILENAME_MAX+1];
+	char	temp[MXP_FILENAME_MAX+1];
 	FILE*	fs;
 	
 	strcpy( g_rscName, DEFAULT_RSC_FILE );	/* as default */
@@ -534,7 +555,7 @@ void ReadConfigFile( void )
 			if( strcmp( temp, "rsc" ) == 0 )
 			{
 				fgetc( fs );	/* TAB */
-				fgets( g_rscName, FILENAME_MAX+1, fs );
+				fgets( g_rscName, MXP_FILENAME_MAX+1, fs );
 				g_rscName[strlen( g_rscName ) - 1] = '\0';	/* ignore newline char */
 			}
 			else if( strcmp( temp, "panelX" ) == 0 )
@@ -556,7 +577,7 @@ void ReadConfigFile( void )
 			else if( strcmp( temp, "playlistFile" ) == 0 )
 			{
 				fgetc( fs );	/* TAB */
-				fgets( g_playlistFile, PATH_MAX+1, fs );
+				fgets( g_playlistFile, MXP_PATH_MAX+1, fs );
 				g_playlistFile[strlen( g_playlistFile ) - 1] = '\0';	/* ignore newline char */
 			}
 			else if( strcmp( temp, "randomSeed" ) == 0 )
@@ -591,7 +612,7 @@ void ReadConfigFile( void )
 
 void WriteConfigFile( void )
 {
-	char	temp[PATH_MAX+1];
+	char	temp[MXP_PATH_MAX+1];
 	FILE*	fs;
 	
 	CombinePath( temp, g_homePath, CNF_FILE );

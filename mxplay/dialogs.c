@@ -39,15 +39,15 @@
 #include "vbl_timer.h"
 #include "module_info.h"
 
-WDIALOG**	g_winDialogs;
+WDIALOG*	g_winDialogs[WD_LIST_SIZE];
 
 BOOL		g_withShift = FALSE;
 int			g_mouseClicks = 0;
 char		g_panelInfoLine[1023+1] = "";	/* hope it's enough */
 
 static short	winDialogList[] = { ABOUT, PANEL, PLAYLIST, PLUGIN, MODULE };	/* numbers from rsc */
+static OBJECT*	winIcons[WD_LIST_SIZE];
 static OBJECT*	licenseDialog;
-static OBJECT*	winIcon;
 static OBJECT*	splashImage;
 static short	splashImageHandle;
 
@@ -61,7 +61,7 @@ static BOOL	CB_ExitObject( WDIALOG* wd, short obj );
 void InitRsc( void )
 {
 	OBJECT*	tempDialog;
-	char	tempPath[PATH_MAX+1];
+	char	tempPath[MXP_PATH_MAX+1];
 	BOOL	rscLoaded = FALSE;
 	int		i;
 	
@@ -91,7 +91,7 @@ void InitRsc( void )
 	}
 	
 	/* find & init non-windialogs objects */
-	if( rsrc_gaddr( R_TREE, WICON, &winIcon ) == FALSE
+	if( rsrc_gaddr( R_TREE, WICON, &tempDialog ) == FALSE
 		|| rsrc_gaddr( R_TREE, GPL, &licenseDialog ) == FALSE
 		|| rsrc_gaddr( R_TREE, SPLASH, &splashImage ) == FALSE )
 	{
@@ -107,7 +107,13 @@ void InitRsc( void )
 		
 		fix_dial( splashImage );
 	}
-
+	
+	/* make new instances of win-icons */
+	for( i = 0; i < WD_LIST_SIZE; i++ )
+	{
+		memcpy( winIcons[i], tempDialog, 2 * sizeof( OBJECT ) );	/* ROOT + WICON */
+	}
+	
 	/* find & init windialogs */
 	for( i = 0; i < WD_LIST_SIZE; i++ )
 	{
@@ -121,14 +127,14 @@ void InitRsc( void )
 			fix_dial( tempDialog );
 			if( i == WD_MODULE || i == WD_PLAYLIST )
 			{
-				g_winDialogs[i] = create_custom_wdial( tempDialog, winIcon, 0, CB_OpenWDialog, CB_ExitObject,
+				g_winDialogs[i] = create_custom_wdial( tempDialog, winIcons[i], 0, CB_OpenWDialog, CB_ExitObject,
 													   NAME | MOVER | CLOSER | SMALLER |
 													   SIZER | UPARROW | DNARROW | VSLIDE );
 			}
 			else
 			{
 				/* if edit_obj == 0 and there's some one, it will be found & set */
-				g_winDialogs[i] = create_wdial( tempDialog, winIcon, 0, CB_OpenWDialog, CB_ExitObject );
+				g_winDialogs[i] = create_wdial( tempDialog, winIcons[i], 0, CB_OpenWDialog, CB_ExitObject );
 			}
 		}
 	}
@@ -157,16 +163,19 @@ void InitDialogs( void )
 	GetHomePath();
 	ReadConfigFile();
 	
-	g_winDialogs = (WDIALOG**)malloc( WD_LIST_SIZE * sizeof( WDIALOG* ) );	/* array of pointers */
-	if( VerifyAlloc( g_winDialogs ) == FALSE )
-	{
-		ExitPlayer( 1 );
-	}
-	
 	for( i = 0; i < WD_LIST_SIZE; i++ )
 	{
 		g_winDialogs[i] = (WDIALOG*)malloc( sizeof( WDIALOG ) );
 		if( VerifyAlloc( g_winDialogs[i] ) == FALSE )
+		{
+			ExitPlayer( 1 );
+		}
+	}
+	
+	for( i = 0; i < WD_LIST_SIZE; i++ )
+	{
+		winIcons[i] = (OBJECT*)malloc( 2 * sizeof( OBJECT ) );	/* ROOT + WICON */
+		if( VerifyAlloc( winIcons[i] ) == FALSE )
 		{
 			ExitPlayer( 1 );
 		}
@@ -284,7 +293,7 @@ int ShowNoReplayFoundDialog( void )
 
 int ShowLoadErrorDialog( char* filename )
 {
-	char tempString[FILENAME_MAX+1];
+	char tempString[MXP_FILENAME_MAX+1];
 	sprintf( tempString, "[3][Failed to load file|%s|File is probably in use.][WTF?!]", filename );
 	return do_walert( 1, TRUE, tempString, "Error" );
 }
@@ -313,7 +322,7 @@ int ShowPluginErrorDialog( int error )
 
 int ShowAudioInitErrorDialog( char* filename )
 {
-	char tempString[FILENAME_MAX+1];
+	char tempString[MXP_FILENAME_MAX+1];
 	sprintf( tempString, "[1][Failed to initialize plugin %s.][Skip]", filename );
 	return do_walert( 1, TRUE, tempString, "Error" );
 }
@@ -325,7 +334,7 @@ int ShowBadHeaderDialog( void )
 
 int ShowBadPluginDialog( char* filename )
 {
-	char tempString[FILENAME_MAX+1];
+	char tempString[MXP_FILENAME_MAX+1];
 	sprintf( tempString, "[3][Bad file header!|\"%s\"|doesn't seem as mxPlay plugin.][Skip]", filename );
 	return do_walert( 1, TRUE, tempString, "Error" );
 }

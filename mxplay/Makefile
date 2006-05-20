@@ -1,6 +1,6 @@
 # makefile for mxPlay, support for both native- and cross-compiling
 
-CROSS=yes
+#CROSS=yes
 
 ifeq ($(CROSS),yes)
  prefix			= m68k-atari-mint-
@@ -55,12 +55,11 @@ endif
 
 all: mint
 
-# no idea why CFLAGS is ignored in final linking (LDFLAGS += $(CPU_FLAGS) didn't help, too)
 $(PROGRAM): $(OBJS)
-	$(CC) $(CPU_FLAGS) -o $@ $(OBJS) $(LIBS)
+	$(CC) -o $@ $(OBJS) $(LIBS) $(CPU_FLAGS)
 	
 $(PROGRAM_NO_MINT): $(OBJS)
-	$(CC) $(CPU_FLAGS) -o $@ $(OBJS) $(LIBS)
+	$(CC) -o $@ $(OBJS) $(LIBS) $(CPU_FLAGS)
 
 mint:
 	$(MAKE) $(PROGRAM) CONFIG="Debug" TARGET="MiNT"

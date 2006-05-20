@@ -54,8 +54,8 @@ extern void						FileListSaveToHistory( void );
 extern long						FileListGetFileNumber( struct SFileListFile* pSFile );
 
 extern BOOL	g_currFileUpdated;
-extern char	g_lastUsedName[FILENAME_MAX+1];
-extern char	g_lastUsedPath[PATH_MAX+1];
+extern char	g_lastUsedName[MXP_FILENAME_MAX+1];
+extern char	g_lastUsedPath[MXP_PATH_MAX+1];
 extern long	g_filesCount;
 
 #endif

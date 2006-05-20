@@ -313,7 +313,7 @@ int main( int argc, char* argv[] )
 	getcookie( "_CPU", &g_cpu );
 	getcookie( "_FPU", &g_fpu );
 	getcookie( "_SND", &temp );
-	if( ( temp & SND_DMAREC ) != 0 )	/* DMA presence */
+	if( ( temp & SND_8BIT ) != 0 )	/* DMA presence */
 	{
 		g_hasDma = TRUE;
 	}

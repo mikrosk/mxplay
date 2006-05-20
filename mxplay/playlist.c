@@ -842,9 +842,9 @@ BOOL PlayListLoadFromFile( char* filename )
 {
 	FILE*					pFileStream = NULL;
 	struct SFileListFile*	pSFile;
-	char					tempPath[PATH_MAX+1];
-	char					path[PATH_MAX+1];
-	char					name[FILENAME_MAX+1];
+	char					tempPath[MXP_PATH_MAX+1];
+	char					path[MXP_PATH_MAX+1];
+	char					name[MXP_FILENAME_MAX+1];
 	
 	pFileStream = fopen( filename, "r" );
 	if( pFileStream == NULL )
@@ -864,7 +864,7 @@ BOOL PlayListLoadFromFile( char* filename )
 		g_playAfterAdd = FALSE;
 		g_currFileUpdated = FALSE;	/* reset flag */
 		
-		while( fgets( tempPath, PATH_MAX+1, pFileStream ) != NULL )
+		while( fgets( tempPath, MXP_PATH_MAX+1, pFileStream ) != NULL )
 		{
 			tempPath[strlen( tempPath ) - 1] = '\0';	/* ignore newline char */
 			split_filename( tempPath, path, name );
@@ -888,7 +888,7 @@ BOOL PlayListSaveToFile( char* filename )
 {
 	FILE*					pFileStream;
 	struct SFileListFile*	pSFile;
-	char					tempPath[PATH_MAX+1];
+	char					tempPath[MXP_PATH_MAX+1];
 
 	pFileStream = fopen( filename, "w" );
 	if( pFileStream == NULL )
@@ -945,8 +945,8 @@ void PlayListSlider( short deltaY )
 
 void PlayListLoad( void )
 {
-	char path[PATH_MAX+1] = "";
-	char name[FILENAME_MAX+1] = "";
+	char path[MXP_PATH_MAX+1] = "";
+	char name[MXP_FILENAME_MAX+1] = "";
 	
 	SelectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_LOAD );
 	
@@ -969,8 +969,8 @@ void PlayListLoad( void )
 
 void PlayListSave( void )
 {
-	char path[PATH_MAX+1] = "";
-	char name[FILENAME_MAX+1] = "";
+	char path[MXP_PATH_MAX+1] = "";
+	char name[MXP_FILENAME_MAX+1] = "";
 
 	SelectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_SAVE );
 	

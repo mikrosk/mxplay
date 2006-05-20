@@ -91,7 +91,7 @@ struct SAudioPlugin
 extern struct SAudioPlugin*	g_pCurrAudioPlugin;
 extern BOOL					g_modulePlaying;
 extern BOOL					g_modulePaused;
-extern char					g_currModuleName[PATH_MAX+1];
+extern char					g_currModuleName[MXP_PATH_MAX+1];
 
 extern void					LoadAudioPlugins( void );
 extern struct SAudioPlugin*	LookForAudioPlugin( char* extension );

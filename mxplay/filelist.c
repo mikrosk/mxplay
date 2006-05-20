@@ -40,8 +40,8 @@
 #include "playlist.h"
 #include "panel.h"
 
-char	g_lastUsedName[FILENAME_MAX+1] = "";
-char	g_lastUsedPath[PATH_MAX+1] = "";
+char	g_lastUsedName[MXP_FILENAME_MAX+1] = "";
+char	g_lastUsedPath[MXP_PATH_MAX+1] = "";
 BOOL	g_currFileUpdated = FALSE;
 long	g_filesCount = 0;
 
@@ -130,7 +130,7 @@ struct SFileListFile* FileListGetEntry( int fileNumber )
 
 void FileListSetCurrFile( struct SFileListFile* pSFile )
 {
-	char tempString[PATH_MAX+1];
+	char tempString[MXP_PATH_MAX+1];
 	
 	pCurrFileListFile = pSFile;
 	
@@ -245,7 +245,7 @@ BOOL FileListAddFile( char* path, char* name )
 	struct SFileListFile*	pSListFile;
 	struct SFileListFile*	pSListPrevFile;
 	struct SAudioPlugin*	pSPlugin;
-	char					ext[FILENAME_MAX+1];	/* extension can be name.even_this */
+	char					ext[MXP_FILENAME_MAX+1];	/* extension can be name.even_this */
 
 	split_extension( name, NULL, ext );
 	pSPlugin = LookForAudioPlugin( ext );
@@ -334,8 +334,8 @@ BOOL FileListAddDirectory( char* path, char* name )
 		return TRUE;
 	}
 	
-	tempPath = (char*)malloc( FILENAME_MAX + PATH_MAX + 1 );
-	tempName = (char*)malloc( FILENAME_MAX + 1 );
+	tempPath = (char*)malloc( MXP_FILENAME_MAX + MXP_PATH_MAX + 1 );
+	tempName = (char*)malloc( MXP_FILENAME_MAX + 1 );
 	if( VerifyAlloc( tempPath ) == FALSE )
 	{
 		return FALSE;

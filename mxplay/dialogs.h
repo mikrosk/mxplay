@@ -78,7 +78,7 @@ extern void	PanelDialogRefresh( void );
 #define WD_MODULE			4
 #define WD_LIST_SIZE		(WD_MODULE - WD_ABOUT + 1)
 
-extern WDIALOG**	g_winDialogs;
+extern WDIALOG*		g_winDialogs[WD_LIST_SIZE];
 extern BOOL			g_withShift;
 extern int			g_mouseClicks;
 extern unsigned int	g_playTime;

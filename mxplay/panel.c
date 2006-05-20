@@ -658,8 +658,8 @@ void PanelVolumeSliderBox( short mx )
 
 void PanelChangeSkin( void )
 {
-	char				path[PATH_MAX+1] = "skins";
-	char				name[FILENAME_MAX+1] = "";
+	char				path[MXP_PATH_MAX+1] = "skins";
+	char				name[MXP_FILENAME_MAX+1] = "";
 	struct SWinDialog	SDialog[WD_LIST_SIZE];
 	short				obj;
 	short				parent;
@@ -762,7 +762,7 @@ void PanelChangeSkin( void )
  */
 void LoadAndPlay( void )
 {
-	char ext[FILENAME_MAX+1];
+	char ext[MXP_FILENAME_MAX+1];
 	FILE* fs;
 
 	if( g_currPath != NULL && g_currName != NULL )	/* only if some file in playlist */

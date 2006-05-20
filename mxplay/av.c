@@ -49,7 +49,7 @@ void AVInit( void )
 	short	appId;
 	
 	/* alloc global memory for AV protocol */
-	sharedString = (char*)malloc_global( FILENAME_MAX+1 );
+	sharedString = (char*)malloc_global( MXP_FILENAME_MAX+1 );
 	if( VerifyAlloc( sharedString ) == FALSE )
 	{
 		ExitPlayer( 1 );

@@ -36,6 +36,11 @@ create_custom_wdial (OBJECT *tree, OBJECT *icon, short edit_obj,
 {
 	WDIALOG *new;
 	short d;
+	
+	if( icon == NULL )
+	{
+		win_kind &= SMALLER;	/* remove smaller element if no icon */
+	}
 
 	new = cf_malloc (sizeof (WDIALOG), "create_wdial", FALSE);
 	if (new != NULL)

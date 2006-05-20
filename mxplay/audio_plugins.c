@@ -47,7 +47,7 @@
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
 BOOL						g_modulePlaying = FALSE;
 BOOL						g_modulePaused = FALSE;
-char						g_currModuleName[PATH_MAX+1] = "-";
+char						g_currModuleName[MXP_PATH_MAX+1] = "-";
 
 static struct SAudioPlugin*	pSAudioPlugin[MAX_AUDIO_PLUGINS];
 static int					audioPluginsCount;
@@ -145,7 +145,7 @@ void AudioPluginGetInfoLine( struct SParameter* param )
  */
 BOOL LoadAudioModule( char* path, char* name )
 {
-	char			tempString[PATH_MAX+FILENAME_MAX+1];
+	char			tempString[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
 	int				handle;
 	unsigned long	length;
 	char*			pTempModule = NULL;
@@ -311,7 +311,7 @@ struct SAudioPlugin* LookForAudioPlugin( char* extension )
 {
 	int 				i, j;
 	struct SExtension*	ext;
-	char				tempString[FILENAME_MAX+1];
+	char				tempString[MXP_FILENAME_MAX+1];
 	
 	strcpy( tempString, extension );
 	str_toupper( tempString );
@@ -345,8 +345,8 @@ void LoadAudioPlugins( void )
 {
 	DIR*			pDirStream;
 	struct dirent*	pDirEntry;
-	char			tempString[PATH_MAX+1];
-	char			ext[FILENAME_MAX+1];
+	char			tempString[MXP_PATH_MAX+1];
+	char			ext[MXP_FILENAME_MAX+1];
 	
 	/* Global ST/TT RAM */
 	pInputArray = (char**)malloc_global( 2 * sizeof( char* ) );

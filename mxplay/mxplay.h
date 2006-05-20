@@ -36,14 +36,13 @@
 #ifndef E_OK
 #define E_OK				0
 #endif
-#ifndef PATH_MAX
-#define PATH_MAX			1023
-#endif
-/*
-#ifndef FILENAME_MAX
-#define FILENAME_MAX		255
-#endif
-*/
+
+/* (re)define this to match mxPlay's needs and not some strange constants
+ * in system headers (FILENAME_MAX = 128 there)
+ */
+#define MXP_PATH_MAX		1023
+#define MXP_FILENAME_MAX	255
+
 
 #define VERSION				"1.1.0-alpha"
 #define WELCOME_MESSAGE		"--- Welcome to mxPlay version %s made by MiKRO / Mystic Bytes and -XI- / Satantronic "
