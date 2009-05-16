@@ -7,7 +7,4 @@ object #1 - it's useless in my eyes and it complicates custom dialog
 resizing A LOT. And at last, I implemented new function - 
 create_custom_wdial with definable flags for wind_create.
 
-Finally, there are some updated headers for MiNTLib with some 
-#defines which I missed (taken from PureC and Compendium).
-
-mikro@hysteria.sk
+miro.kropacek@gmail.com

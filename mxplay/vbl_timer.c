@@ -1,7 +1,7 @@
 /*
  * vbl_timer.c -- VBL counter for one-second-exact time measure
  *
- * Copyright (c) 2005 Miro Kropacek; mikro@hysteria.sk
+ * Copyright (c) 2005 Miro Kropacek; miro.kropacek@gmail.com
  * 
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.

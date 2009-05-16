@@ -1,7 +1,7 @@
 /*
  * misc.h -- shared code, various topics (definitions and external declarations)
  *
- * Copyright (c) 2005 Miro Kropacek; mikro@hysteria.sk
+ * Copyright (c) 2005 Miro Kropacek; miro.kropacek@gmail.com
  * 
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
