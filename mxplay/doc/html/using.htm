@@ -20,40 +20,40 @@
 
 <h3><p><a name = "1">1. Introduction</a></p></h3>
 <p align = "justify">
-Phew... so it really happend... if you're reading this text it means 
+Phew... so it really happend... if you're reading this text it means
 our little child called mxPlay is finally released.
 </p>
 <p align = "justify">
-Everything started with the one post on our local Atari list for 
-Czech and Slovak Atari fans, where one guy has complained he isn't 
-able to use great MegaPlayer under CT60 and that is bad there's no 
-decent player for so many formats... Some guy on dhs.nu came with the 
-idea to make plugins to FalcAMP, but it seems FalcAMP development is 
-quite slow (I asked Frost about release date but he's hunting bugs so 
+Everything started with the one post on our local Atari list for
+Czech and Slovak Atari fans, where one guy has complained he isn't
+able to use great MegaPlayer under CT60 and that is bad there's no
+decent player for so many formats... Some guy on dhs.nu came with the
+idea to make plugins to FalcAMP, but it seems FalcAMP development is
+quite slow (I asked Frost about release date but he's hunting bugs so
 no release date is know yet :( ) and even no plugin API is known...
 </p>
 <p align = "justify">
-Final 'ass-kick' was Xi's reply to my comment "Did you see the new 
-GemAce and GemMod? They looks pretty nice!" in style "Yeah, that's 
-nice, but hell, I don't want to have nice player for mods, nice 
-player for ace songs and another nice one for mp3s.. I want one, good 
+Final 'ass-kick' was Xi's reply to my comment "Did you see the new
+GemAce and GemMod? They looks pretty nice!" in style "Yeah, that's
+nice, but hell, I don't want to have nice player for mods, nice
+player for ace songs and another nice one for mp3s.. I want one, good
 looking player with the playlist!". Oh yes, here it really started.
 </p>
 <p align = "justify">
-After some discussion we came to the point "That's damn easy to make 
-it! We have many free replay routines for various formats, we'll make 
-some lame gem interface to it, hmm, maybe playlist will be a little 
-bit tricky, but this could be done in 1-2 weeks!". So, 3 months 
-passed very fast and here you are, mxPlay player with playlist, 
-skins, plugins, open code and the coolest user features from the 
+After some discussion we came to the point "That's damn easy to make
+it! We have many free replay routines for various formats, we'll make
+some lame gem interface to it, hmm, maybe playlist will be a little
+bit tricky, but this could be done in 1-2 weeks!". So, 3 months
+passed very fast and here you are, mxPlay player with playlist,
+skins, plugins, open code and the coolest user features from the
 plenty of other players ;)
 </p>
 <p align = "justify">
-Maybe you're wondering what the hell we did make on this for about 3 
-months. Firstly, I'm democoder. I didn't know nearly anything about 
-GEM. So getting touch with this kind of programming was a new 
-experience for me. Secondly, every day we come with new ideas what 
-should we add, my TODO list was (and still is) full of things to 
+Maybe you're wondering what the hell we did make on this for about 3
+months. Firstly, I'm democoder. I didn't know nearly anything about
+GEM. So getting touch with this kind of programming was a new
+experience for me. Secondly, every day we come with new ideas what
+should we add, my TODO list was (and still is) full of things to
 implement...
 </p>
 
@@ -65,11 +65,11 @@ implement...
 	<li><p align = "justify">best d&d / va-start / long name support you've ever seen</p></li>
 	<li><p align = "justify">memory protection friendly</p></li>
 	<li><p align = "justify">multitasking support, windowed dialogs</p></li>
-	<li><p align = "justify">universal plugin API which allows you to take any kind of replay 
+	<li><p align = "justify">universal plugin API which allows you to take any kind of replay
   routine and to adapt it to mxPlay</p></li>
 	<li><p align = "justify">it's free!</p></li>
 	<li><p align = "justify">open development, anyone can contribute / bugfix</p></li>
-	<li><p align = "justify">recursive directory/file adding with autodetection for supported 
+	<li><p align = "justify">recursive directory/file adding with autodetection for supported
   formats</p></li>
 	<li><p align = "justify">and a lot of more ...</p></li>
 </ul>
@@ -81,14 +81,14 @@ Here you'll find brief description of each mxPlay's window.
 
 <h4><p>3.1 Panel</p></h4>
 <p align = "justify">
-The heart of mxPlay. You don't need to top the panel, button will be 
+The heart of mxPlay. You don't need to top the panel, button will be
 activated even on untopped panel.
 </p>
 
 <h5><p>3.1.1 Play</p></h5>
 <p align = "justify">
-Play the current song. If no song was selected it will be played 
-either the first file in playlist or the random song (in the case 
+Play the current song. If no song was selected it will be played
+either the first file in playlist or the random song (in the case
 'Random' button was activated, see bellow)
 </p>
 
@@ -99,7 +99,7 @@ Self-explaining.
 
 <h5><p>3.1.3 Pause</p></h5>
 <p align = "justify">
-Pause playing. Please note not every plugin supports this function. 
+Pause playing. Please note not every plugin supports this function.
 Click on this button again to continue playing.
 </p>
 
@@ -119,7 +119,7 @@ Play the next song in the playlist.
 </p>
 
 <p align = "justify">
-If you're at the end of playlist and the 'Repeat' button was 
+If you're at the end of playlist and the 'Repeat' button was
 activated (see bellow) as next file will be taken the first one.
 </p>
 <p align = "justify">
@@ -128,20 +128,20 @@ If 'Random' button was activated, next song will be choosen randomly.
 
 <h5><p>3.1.7 Previous Song</p></h5>
 <p align = "justify">
-Play the previous song in the playlist. Please note previous song 
-will be played even in random mode, no random selection as done in 
+Play the previous song in the playlist. Please note previous song
+will be played even in random mode, no random selection as done in
 Aniplayer!
 </p>
 
 <h5><p>3.1.8 Playtime</p></h5>
 <p align = "justify">
-By clicking on the playtime you change time addition/substraction a 
+By clicking on the playtime you change time addition/substraction a
 la Winamp or XMMS.
 </p>
 
 <h5><p>3.1.9 Repeat</p></h5>
 <p align = "justify">
-Wrap to the begin of playlist when requested for the next song and 
+Wrap to the begin of playlist when requested for the next song and
 we're on the last entry in the playlist.
 </p>
 
@@ -152,14 +152,14 @@ Activate random song selection. 'Repeat' button has no sense then.
 
 <h5><p>3.1.11 Mute</p></h5>
 <p align = "justify">
-Mute the playing. Please note this function is not working very well 
+Mute the playing. Please note this function is not working very well
 :)
 </p>
 
 <h5><p>3.1.12 Volume Slider</p></h5>
 <p align = "justify">
-Increase or decrease volume level. It even watches for current sound 
-system status so you can try to play with volume in some CPX and you 
+Increase or decrease volume level. It even watches for current sound
+system status so you can try to play with volume in some CPX and you
 will see the effect :)
 </p>
 
@@ -190,23 +190,23 @@ The best playlist for our little Atari :)
 
 <h5><p>3.2.1 Add file</p></h5>
 <p align = "justify">
-Add file(s) to the playlist. Please note your fileselector has to 
-support Selectric and/or MagiC fileselector protocol to select more 
-than one file. Except the Selectric and MagiC it does Hugo for 
+Add file(s) to the playlist. Please note your fileselector has to
+support Selectric and/or MagiC fileselector protocol to select more
+than one file. Except the Selectric and MagiC it does Hugo for
 example.
 </p>
 
 <h5><p>3.2.2 Add Directory</p></h5>
 <p align = "justify">
-Add director(y|ies) to the playlist. It's fully recursive operation 
-so, yes, you can take your music partition and open it in mxPlay! If 
-your fileselector doesn't allow you to select exact directory, open 
+Add director(y|ies) to the playlist. It's fully recursive operation
+so, yes, you can take your music partition and open it in mxPlay! If
+your fileselector doesn't allow you to select exact directory, open
 such directory, clear "filename" field and press RETURN.
 </p>
 
 <h5><p>3.2.3 Select All</p></h5>
 <p align = "justify">
-Select all entries in the playlist. If you press SHIFT key, it will 
+Select all entries in the playlist. If you press SHIFT key, it will
 do inverse operation - i.e. deselecting selected files and vice versa.
 </p>
 
@@ -227,23 +227,23 @@ Save .m3u file.
 
 <h4><p>3.3 Module Info</p></h4>
 <p align = "justify">
-Here you can find some information about currently played module as 
-provided by plugin. Enabled (not shaded) arrows mean you can scroll 
-left and/or right to see the full text (better is to resize window I 
+Here you can find some information about currently played module as
+provided by plugin. Enabled (not shaded) arrows mean you can scroll
+left and/or right to see the full text (better is to resize window I
 think ;)
 </p>
 
 <h4><p>3.4 Plugin Info</p></h4>
 <p align = "justify">
-Similar to Module Info but you're allowed even enter some values. It 
-could be simple on/off flag or numerical/text parameter. If there are 
-up and down arrows you can scroll with them (sorry no resize at this 
+Similar to Module Info but you're allowed even enter some values. It
+could be simple on/off flag or numerical/text parameter. If there are
+up and down arrows you can scroll with them (sorry no resize at this
 time...)
 </p>
 
 <h4><p>3.5 About</p></h4>
 <p align = "justify">
-Simple about dialog. Here you can read the license under which is 
+Simple about dialog. Here you can read the license under which is
 mxPlay released and the current version.
 </p>
 
@@ -286,7 +286,7 @@ If in playlist, move down (1 entry or whole page with SHIFT)
 
 <h4><p>4.8 (SHIFT) CTRL + A</p></h4>
 <p align = "justify">
-Select all entries in the playlist or (with SHIFT) make opaque to the 
+Select all entries in the playlist or (with SHIFT) make opaque to the
 current state.
 </p>
 
@@ -344,54 +344,54 @@ Open/close playlist.
 
 <h4><p>5.1 ARGV</p></h4>
 <p align = "justify">
-You can assign some file type, e.g. *.mp2 to mxPlay and then just 
-click on the mp2 files and mxPlay will open & play such file. The 
-filename could be even with spaces, bigger than 8+3 characters etc. 
+You can assign some file type, e.g. *.mp2 to mxPlay and then just
+click on the mp2 files and mxPlay will open & play such file. The
+filename could be even with spaces, bigger than 8+3 characters etc.
 Please note, not all desktops support this, see file BUGS for details.
 </p>
 
 <h4><p>5.2 VA-START</p></h4>
 <p align = "justify">
-If you go in the way described in 5.1 you can double-click on the 
-file during song playing and mxPlay will update its playlist and 
+If you go in the way described in 5.1 you can double-click on the
+file during song playing and mxPlay will update its playlist and
 begin to play this file.
 </p>
 
 <h4><p>5.3 Drag &amp Drop</p></h4>
 <p align = "justify">
-You can take files, directories and even hard disk icons and place it 
-onto mxPlay, everything will go as you expect! Full support for long 
+You can take files, directories and even hard disk icons and place it
+onto mxPlay, everything will go as you expect! Full support for long
 names.
 </p>
 
 <h3><p><a name = "6">6. Thanks</a></p></h3>
 <p align = "justify">
-At first I would like to thank to all people who decided to publish 
-their source codes. Without them there's no mxPlay. So for 
-others - please, support free software, release your source code - it 
+At first I would like to thank to all people who decided to publish
+their source codes. Without them there's no mxPlay. So for
+others - please, support free software, release your source code - it
 helps all of us. Very good example is zView, really good work, Zorro!
 </p>
 <p align = "justify">
-Next I have to thank Xi, my never-tired-for-another-bugreport friend 
-;), without your usefull hints about application architecture and 
-without your massive support I doubt I finish mxPlay in this look and 
+Next I have to thank Xi, my never-tired-for-another-bugreport friend
+;), without your usefull hints about application architecture and
+without your massive support I doubt I finish mxPlay in this look and
 functionality.
 </p>
 <p align = "justify">
-Also thanks to people on MiNT list, they helped me sometimes when I 
+Also thanks to people on MiNT list, they helped me sometimes when I
 was in total dark :)
 </p>
 <p align = "justify">
-And at last but not least I have to thank YOU, Atari fan, you're 
+And at last but not least I have to thank YOU, Atari fan, you're
 still using Atari computers!
 </p>
 
 <h3><p><a name = "7">7. Contact</a></p></h3>
 
-<p align = "justify">Don't forget mxPlay is FREE SOFTWARE that means everyone can 
-contribute to and/or bugfix the current version. If you can't code 
-you can make skins. If you can't make GEM dialogs, you can test 
-mxPlay, spell-check documentation, think about new features, ... help 
+<p align = "justify">Don't forget mxPlay is FREE SOFTWARE that means everyone can
+contribute to and/or bugfix the current version. If you can't code
+you can make skins. If you can't make GEM dialogs, you can test
+mxPlay, spell-check documentation, think about new features, ... help
 is always welcomed.</p>
 
 <p align = "justify">
@@ -399,10 +399,10 @@ You can reach me 7 days of week at:</p>
 
 <p>miro dot kropacek at gmail dot com</p>
 
-<p align = "justify">Xi is the author of skins, the most of plugins and he is the very 
+<p align = "justify">Xi is the author of skins, the most of plugins and he is the very
 good beta-tester, you can reach him at:</p>
 
-</p>xi at napri dot sk</p>
+<p>xi at napri dot sk</p>
 <br>
 <p>... happy playing!</p>
 	</body>

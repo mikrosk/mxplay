@@ -18,31 +18,31 @@
 
 <h3><p><a name = "1">1. Introduction</a></p></h3>
 <p align = "justify">
-Writing any plugin-based application is always very tricky. You have 
-to provide some universal, in the future expandable, easy to 
-understand and, at last but not least, working interface between 
+Writing any plugin-based application is always very tricky. You have
+to provide some universal, in the future expandable, easy to
+understand and, at last but not least, working interface between
 'server' application and 'client' plugin.
 </p>
 <p align = "justify">
-My goal was to remove as much work from programmer as possible. I 
-think this approach is not only good for programmer but it increases 
+My goal was to remove as much work from programmer as possible. I
+think this approach is not only good for programmer but it increases
 overall stability since application has control over more things.
 </p>
 <p align = "justify">
-All mentioned constants and structures are defined in the file 
+All mentioned constants and structures are defined in the file
 MXP_INC.S.
 </p>
 
 <h3><p><a name = "2">2. Structures</a></p></h3>
 <p align = "justify">
-Each plugin should be compiled as normal .PRG binary, for example 
+Each plugin should be compiled as normal .PRG binary, for example
 from Devpac.
 </p>
 
 <h4><p>2.1 Header</p></h4>
 <p align = "justify">
-Offsets are relative to the begin of text segment. So it's very 
-useful to create some label at the begin of your code and to use 
+Offsets are relative to the begin of text segment. So it's very
+useful to create some label at the begin of your code and to use
 predefined offets.
 </p>
 
@@ -77,15 +77,15 @@ Characters 'MXP1', i.e. ASCII identifier.
 
 <h5><p>2.1.2 MXP_PLUGIN_PARAMETER</p></h5>
 <p align = "justify">
-Storage place for both application and plugin. This is the only place 
-where they are allowed to write. For more about this, see chapter 4.2 
-'Communication Issues'. The content can be either constant or 
-pointer, depending on the passed data, see discussion about 
+Storage place for both application and plugin. This is the only place
+where they are allowed to write. For more about this, see chapter 4.2
+'Communication Issues'. The content can be either constant or
+pointer, depending on the passed data, see discussion about
 structures bellow.
 </p>
 <p align = "justify">
-I didn't want to use register-based communication since every C 
-compiler passes parameters on stack differently and I wanted to do 
+I didn't want to use register-based communication since every C
+compiler passes parameters on stack differently and I wanted to do
 portable code.
 </p>
 
@@ -151,8 +151,8 @@ Pointer to the list of 'Settings' structures.
 
 <h4><p>2.2 Info Structure</p></h4>
 <p align = "justify">
-Defined as 'mxp_struct_info'. Each entry is 4 bytes long. The 
-number of structures is limited to one. Best approach is to use it 
+Defined as 'mxp_struct_info'. Each entry is 4 bytes long. The
+number of structures is limited to one. Best approach is to use it
 for example as:
 </p>
 
@@ -191,7 +191,7 @@ Pointer to NULL terminated string with replay routine's version.
 
 <h5><p>2.2.6 mxp_struct_info_flags</p></h5>
 <p align = "justify">
-This bitfield tells plugin which resources wish to use. Currently 
+This bitfield tells plugin which resources wish to use. Currently
 defined are:
 </p>
 <ul>
@@ -208,18 +208,18 @@ dc.l &nbsp MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_USE_020<br>
 
 <h4><p>2.3 Settings Structure</p></h4>
 <p align = "justify">
-Defined as 'mxp_struct_settings'. Each entry is 4 bytes long. The 
+Defined as 'mxp_struct_settings'. Each entry is 4 bytes long. The
 number of structures is unlimited. The length of parameter name and parameter (in case it's a string) is limited to
 255 characters plus terminator ('\0', zero byte) !!!
 </p>
 
 <h5><p>2.3.1 mxp_struct_settings_name</p></h5>
 <p align = "justify">
-Pointer to NULL terminated string with parameter's name. If NULL, no 
-more parameters are read. This name is used as unique identifier so 
+Pointer to NULL terminated string with parameter's name. If NULL, no
+more parameters are read. This name is used as unique identifier so
 you can't use two parameters with the same name.
 </p>
- 
+
 <h5><p>2.3.2 mxp_struct_settings_type</p></h5>
 <p align = "justify">
 Type of parameter. Currently defined are:
@@ -231,36 +231,36 @@ Type of parameter. Currently defined are:
 </ul>
 
 <p align = "justify">
-These types tell player what value will get after calling 'get' 
-function or to what type should convert value which is on input of 
+These types tell player what value will get after calling 'get'
+function or to what type should convert value which is on input of
 'set' function.
 </p>
 <p align = "justify">
-Please, don't use very long names for these parametes, you wont break 
-anything, but you can get to the situation when you will have 
-'very_long_parameter_name1' and 'very_long_parameter_name2' and 
+Please, don't use very long names for these parametes, you wont break
+anything, but you can get to the situation when you will have
+'very_long_parameter_name1' and 'very_long_parameter_name2' and
 application will see one 'very_long_parame' parameter).
 </p>
 <p align = "justify">
-There's a little different behaviour by interpreting values of these 
+There's a little different behaviour by interpreting values of these
 parameters according to the group they belong to.
 </p>
 <p align = "justify">
-For plugin parametes applies one general rule: output size is limited 
-by the size of Plugin Info dialog. It's simply because there's a very 
-small chance you will ever need more than a few charactes (in fact I 
-can't imagine what kind of parameter you could pass to the plugin as 
-CHAR type). Except this, there's a different interpretation of the 
-BOOL parameter (comparing to module parameters): it's shown as 
-checkable custom defined colour icon. So state '1' means icon checked 
+For plugin parametes applies one general rule: output size is limited
+by the size of Plugin Info dialog. It's simply because there's a very
+small chance you will ever need more than a few charactes (in fact I
+can't imagine what kind of parameter you could pass to the plugin as
+CHAR type). Except this, there's a different interpretation of the
+BOOL parameter (comparing to module parameters): it's shown as
+checkable custom defined colour icon. So state '1' means icon checked
 and vice versa.
 </p>
 <p align = "justify">
-However, module parameters give the user possibility to scroll these 
-values. So your parameter value (e.g. songname) can contain unlimited 
-number of characters. Around this value will be shown left/right 
-arrows which allow user to view te rest of text. Please note EVERY 
-parameter will be converted to the string - both BOOL type (as 'Yes' 
+However, module parameters give the user possibility to scroll these
+values. So your parameter value (e.g. songname) can contain unlimited
+number of characters. Around this value will be shown left/right
+arrows which allow user to view te rest of text. Please note EVERY
+parameter will be converted to the string - both BOOL type (as 'Yes'
 / 'No') and integer.
 </p>
 <p align = "justify">
@@ -287,48 +287,48 @@ Each parameter type could/should be ORed with one or more flags:
 </code>
 
 <p align = "justify">
-and when 'get' will return 0, in the Module Info window you will see 
+and when 'get' will return 0, in the Module Info window you will see
 'Original: No'.
 </p>
 
 <h5><p>2.3.3 mxp_struct_settings_routine_set</p></h5>
 <p align = "justify">
-Pointer to the 'Set' function. As was mentioned, if NULL, parameter 
-will be marked as 'read only' (will be shaded in info window). Of 
+Pointer to the 'Set' function. As was mentioned, if NULL, parameter
+will be marked as 'read only' (will be shaded in info window). Of
 course, this has some sense only in plugin parameters.
 </p>
 <p align = "justify">
-Please, don't mess up this function with the one discussed in chapter 
+Please, don't mess up this function with the one discussed in chapter
 3.
 </p>
 <p align = "justify">
-Typical use of this function is to switch on/off some parameter 
-(interpolation, surround, ...) or to pass some integer value (e.g. 
-playtime if plugin doesn't provide accurate playtime determination). 
+Typical use of this function is to switch on/off some parameter
+(interpolation, surround, ...) or to pass some integer value (e.g.
+playtime if plugin doesn't provide accurate playtime determination).
 However, there's also text parameter for some special use.
 </p>
 <p align = "justify">
-After calling this function from application, plugin should expect 
-value at MXP_PLUGIN_PARAMETER place. Application doesn't check any 
+After calling this function from application, plugin should expect
+value at MXP_PLUGIN_PARAMETER place. Application doesn't check any
 return code.
 </p>
 
 <h5><p>2.3.4 mxp_struct_settings_routine_get</p></h5>
 <p align = "justify">
-Pointer to 'Get' function. This pointer can never be NULL! Plugin 
-should return wanted value at MXP_PLUGIN_PARAMETER place. Application 
+Pointer to 'Get' function. This pointer can never be NULL! Plugin
+should return wanted value at MXP_PLUGIN_PARAMETER place. Application
 doesn't check any return code.
 </p>
 
 <h4><p>2.4 Extensions Structure</p></h4>
 <p align = "justify">
-Defined as 'mxp_struct_extensions'. Each entry is 4 bytes long. The 
+Defined as 'mxp_struct_extensions'. Each entry is 4 bytes long. The
 number of structures is unlimited.
 </p>
 
 <h5><p>2.4.1 mxp_struct_extensions_string</p></h5>
 <p align = "justify">
-Pointer to NULL terminated string with supported module file 
+Pointer to NULL terminated string with supported module file
 extension. If NULL, no more parameters are read.
 </p>
 
@@ -352,14 +352,14 @@ am_extension_name:<br>
 
 <h3><p><a name = "3">3. Functions</a></p></h3>
 <p align = "justify">
-This is the base interface between application and plugin. All 
-functions except Playtime() should return result status in d0 
+This is the base interface between application and plugin. All
+functions except Playtime() should return result status in d0
 register - MXP_OK or MXP_ERROR.
 </p>
 
 <h4><p>3.1 Register()</p></h4>
 <p align = "justify">
-Register module. On the input (in the input buffer) plugin should 
+Register module. On the input (in the input buffer) plugin should
 expect pointer to two another pointers:
 </p>
 <ul>
@@ -378,24 +378,24 @@ Correct handling of this input is as follows:
 </code>
 
 <p align = "justify">
-Please note you have to fill all things in Settings structure *NOW* ! 
+Please note you have to fill all things in Settings structure *NOW* !
 </p>
 <p align = "justify">
-Return MXP_OK if plugin is able to replay given module. Return 
-MXP_ERROR if not. This could occur when you compare file header to 
+Return MXP_OK if plugin is able to replay given module. Return
+MXP_ERROR if not. This could occur when you compare file header to
 some expected value and the values don't match.
 </p>
 
 <h4><p>3.2 Playtime()</p></h4>
 <p align = "justify">
-Return playtime for given module - some plugins are able to calculate 
-it. If your plugin isn't able to do it, return let's say 2 minutes 
+Return playtime for given module - some plugins are able to calculate
+it. If your plugin isn't able to do it, return let's say 2 minutes
 and allow user to change this value.
 </p>
 
 <h4><p>3.3 Init()</p></h4>
 <p align = "justify">
-Initialize plugin. Allocate space, precalc tables etc. Don't do 
+Initialize plugin. Allocate space, precalc tables etc. Don't do
 anything with HW registers!
 </p>
 
@@ -421,8 +421,8 @@ Move back some time. Currently unimplemented.
 
 <h4><p>3.8 Pause()</p></h4>
 <p align = "justify">
-Pause playing. You have to care about on/off state, application will 
-just call this function. Don't forget to deactivate pause status when 
+Pause playing. You have to care about on/off state, application will
+just call this function. Don't forget to deactivate pause status when
 Unset() is called.
 </p>
 
@@ -434,79 +434,79 @@ Some important remarks about plugin making.
 <h4><p>4.1 Startup Process</p></h4>
 <ol>
 	<li><p align = "justify">Load plugin, call Init().</p></li>
-	<li><p align = "justify">When user loads module, call Register(). [after this step infoline 
+	<li><p align = "justify">When user loads module, call Register(). [after this step infoline
    will be filled via Get() functions in Settings structure]</p></li>
-	<li><p align = "justify">If Register() was OK, call Set(); if not, release module from 
+	<li><p align = "justify">If Register() was OK, call Set(); if not, release module from
    memory (!)</p></li>
 	<li><p align = "justify">When user stops playing, call Unset() and [if DSP is used] reset DSP.</p></li>
 	<li><p align = "justify">When user presses pause key, call Pause().</p></li>
-	<li><p align = "justify">[Currently unimplemented] When user request to remove plugin, call 
+	<li><p align = "justify">[Currently unimplemented] When user request to remove plugin, call
    Deinit().</p></li>
 </ol>
 
 <h4><p>4.2 Communication Issues</p></h4>
 <p align = "justify">
-The application and plugin behave as classical client/server model. 
-Each plugin is handled as new process (using Pexec() call). That 
-means they are independent processes which theoretically can't share 
-any memory. There are some solutions how to do it, I chose probably 
-the simplest one - they share some global memory. This applies to two 
+The application and plugin behave as classical client/server model.
+Each plugin is handled as new process (using Pexec() call). That
+means they are independent processes which theoretically can't share
+any memory. There are some solutions how to do it, I chose probably
+the simplest one - they share some global memory. This applies to two
 buffers:
 </p>
 <ul>
-	<li><p align = "justify">module buffer, which has to be accessible by both plugin and 
+	<li><p align = "justify">module buffer, which has to be accessible by both plugin and
   application</p></li>
 
 	<li><p align = "justify">communication buffer, where plugin and application exchange data</p></li>
 </ul>
 
 <p align = "justify">
-Since plugin has no reason to access any of application's data, 
-there's no problem to set memory model as 'Private' for the 
-application. However, application needs some access to plugin's 
-structures (parameters) so *YOU HAVE TO SET AT LEAST READABLE ACCESS 
-TO THE PLUGIN*. This can by done by many tools, from CPX to Jinnee's 
+Since plugin has no reason to access any of application's data,
+there's no problem to set memory model as 'Private' for the
+application. However, application needs some access to plugin's
+structures (parameters) so *YOU HAVE TO SET AT LEAST READABLE ACCESS
+TO THE PLUGIN*. This can by done by many tools, from CPX to Jinnee's
 info dialog.
 </p>
 
 <h4><p>4.3 Stability</p></h4>
 <p align = "justify">
-In the ideal case when application is free of bugs there's still very 
-important thing which applies to overall application stability: 
+In the ideal case when application is free of bugs there's still very
+important thing which applies to overall application stability:
 stability of plugins.
 </p>
 <p align = "justify">
-Typical example, how to hang FreeMiNT kernel and/or XaAES is to use 
-some custom exception vector, e.g. Timer A/B/C/D. If there is no way 
+Typical example, how to hang FreeMiNT kernel and/or XaAES is to use
+some custom exception vector, e.g. Timer A/B/C/D. If there is no way
 how to avoid using it, please (PLEASE!) use following approach:
 </p>
 
 <ul>
 	<li><p align = "justify">always save/restore everything you use</p></li>
-	
+
 	<li><p align = "justify">take care about memory - don't overwrite the memory area you didn't allocated,
-	never go behind the size of your BSS segment, ... best way how to check the memory correctness is to 
-	test the plugin behaviour under FreeMiNT with memory protection (try to test plugin for some hours with tens of 
+	never go behind the size of your BSS segment, ... best way how to check the memory correctness is to
+	test the plugin behaviour under FreeMiNT with memory protection (try to test plugin for some hours with tens of
 	files in playlist)</p></li>
 
-	<li><p align = "justify">try to call original exception vector after you finished your stuff 
-  (yes, there are some potential problems with the situation if some 
-  other application uses similar approach and then such application 
-  restore original exception pointer... this is trying to solve XBRA 
+	<li><p align = "justify">try to call original exception vector after you finished your stuff
+  (yes, there are some potential problems with the situation if some
+  other application uses similar approach and then such application
+  restore original exception pointer... this is trying to solve XBRA
   protocol but... you know ;)</p></li>
 
-	<li><p align = "justify">set memory model to 'Readable' (any application can read from your application space i.e. mxPlay) or 'Super' (you 
-  provide full access to your application space also for all applications 
-  in Supervisor mode i.e. FreeMiNT kernel; this fix well know FATAL 
-  ERRORs in FreeMiNT with memory protection). You can do it by hand (in Jinnee for example) or by some directive - 
-  in Devpac write "COMMENT HEAD=%100111" in the beginning of source file ("Super" protection model (%10xxxx), no MinimalHeap (%xx0xxx), 
+	<li><p align = "justify">set memory model to 'Readable' (any application can read from your application space i.e. mxPlay) or 'Super' (you
+  provide full access to your application space also for all applications
+  in Supervisor mode i.e. FreeMiNT kernel; this fix well know FATAL
+  ERRORs in FreeMiNT with memory protection). You can do it by hand (in Jinnee for example) or by some directive -
+  in Devpac write "COMMENT HEAD=%100111" in the beginning of source file ("Super" protection model (%10xxxx), no MinimalHeap (%xx0xxx),
   MallocInTT-RAM (%xxx1xx), LoadInTT-RAM (%xxxx1x), FastLoad (%xxxxx1) ) or "COMMENT HEAD=%110111" (same as previous except the "Readable"
   protection model - %11xxxx).</p></li>
 </ul>
 
 <p align = "justify">
-I have to say, it's not ideal solution but there's no other way. MiNT 
-guys are very upset when comes a talk to similar practices but do we 
+I have to say, it's not ideal solution but there's no other way. MiNT
+guys are very upset when comes a talk to similar practices but do we
 want some good player or not?
 </p>
 
@@ -516,29 +516,29 @@ Application try to do some work for you, concretly:
 </p>
 
 <ul>
-	<li><p align = "justify">lock/unlock resources you've specified in the info structure. So 
+	<li><p align = "justify">lock/unlock resources you've specified in the info structure. So
   you don't need to do it by hand. Or... you MUST NOT to do it ;)</p></li>
 
-	<li><p align = "justify">convert bools and ints to strings and vice versa. So if you want to 
-  show your plugin replays 8 channel module you don't need to convert 
+	<li><p align = "justify">convert bools and ints to strings and vice versa. So if you want to
+  show your plugin replays 8 channel module you don't need to convert
   the number '8' to the string.</p></li>
 
-	<li><p align = "justify">Mshrink(). Avoid using of this call, this is called on the startup 
+	<li><p align = "justify">Mshrink(). Avoid using of this call, this is called on the startup
   time.</p></li>
 
-	<li><p align = "justify">Super() calls. You don't need to call this call anytime. Every 
-  function as called via Supexec(). Yeah yeah, I know, not very safe 
-  but I have the control over super/user stack which I found as the 
+	<li><p align = "justify">Super() calls. You don't need to call this call anytime. Every
+  function as called via Supexec(). Yeah yeah, I know, not very safe
+  but I have the control over super/user stack which I found as the
   most important factor.</p></li>
 </ul>
 
 <h3><p><a name = "5">5. Contact</a></p></h3>
 <p align = "justify">
-Since I'm the author of this API it comes to me as very easy and 
-understable. However, don't hesistate to contact me with ANY your 
-question, I'm open to answer even the most primitive one you can 
-imagine ;) The main goal is to motivate people to code as much 
-plugins as possible. So don't wait, take your favorite replay routine 
+Since I'm the author of this API it comes to me as very easy and
+understable. However, don't hesistate to contact me with ANY your
+question, I'm open to answer even the most primitive one you can
+imagine ;) The main goal is to motivate people to code as much
+plugins as possible. So don't wait, take your favorite replay routine
 and make new MXP plugin!
 </p>
 
@@ -547,10 +547,10 @@ You can reach me 7 days of week at:</p>
 
 <p>miro dot kropacek at gmail dot com</p>
 <p align = "justify">
-In case of some unexpected things (server crash etc) you can contact 
+In case of some unexpected things (server crash etc) you can contact
 Xi, the author of the most of plugins in this release:</p>
 
-</p>xi at napri dot sk</p>
+<p>xi at napri dot sk</p>
 <br>
 <p>... happy plugging!</p>
 	</body>
