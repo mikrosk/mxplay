@@ -515,7 +515,7 @@ void GetHomePath( void )
 	char*	path = NULL;
 	
 	shel_envrn( &path, "HOME=" );
-	if( path != NULL && path != "" )
+	if( path != NULL && strlen( path ) > 0 )
 	{
 		strcpy( temp, path );
 		strcat( temp, "\\defaults" );
