@@ -1,6 +1,6 @@
 # makefile for mxPlay, support for both native- and cross-compiling
 
-#CROSS=yes
+CROSS=yes
 
 ifeq ($(CROSS),yes)
  prefix			= m68k-atari-mint-
@@ -20,7 +20,7 @@ DEBUG_FLAGS		= -g
 OPT_FLAGS		= -O2 -fomit-frame-pointer
 CFLAGS			= -Wall -Wshadow $(CPU_FLAGS)
 
-SOBJS			= dsp_fix.s vbl_timer_asm.s
+SOBJS			= dsp_fix.S vbl_timer_asm.S
 COBJS			= main.c audio_plugins.c dialogs.c panel.c filelist.c misc.c av.c \
 			  dd.c playlist.c file_select.c plugin_info.c vbl_timer.c module_info.c \
 			  info_dialogs.c
@@ -30,13 +30,8 @@ OBJS			= $(COBJS:.c=.o) $(SOBJS:.s=.o)
 PROGRAM			= mxPlay-mint.app
 PROGRAM_NO_MINT		= mxPlay.app
 
-ifneq ($(FPU),no)
- CPU_FLAGS		= -m68020-60		# use 020+ and FPU code
- LIBS			= -lcflib020 -lgem020	# for libc / mxPlay / gem libs
-else
- CPU_FLAGS		= -m68030		# use 030 code for mxPlay
- LIBS			= -lcflib -lgem		# libc and gem libs are "normal"
-endif
+LIBS			= -lcflib -lgem
+CPU_FLAGS		= -m68020-60		# use 020+ and FPU code
 
 ifneq ($(TARGET),MiNT)
  CFLAGS += -DNO_MINT
@@ -88,18 +83,11 @@ dist-nomint:
 # real lameness
 dist-all:
 	make clean
-	make dist-mint FPU=no
+	make dist-mint
 	mv $(PROGRAM) ../mxPlayM.app
 	make clean
-	make dist-mint
-	mv $(PROGRAM) ../mxPlayMF.app
-	make clean
-	make dist-nomint FPU=no
-	mv $(PROGRAM_NO_MINT) ../mxPlay.app
-	make clean
 	make dist-nomint
-	mv $(PROGRAM_NO_MINT) ../mxPlayF.app
-	make clean
+	mv $(PROGRAM_NO_MINT) ../mxPlay.app
 	
 strip-mint:
 	$(STRIP) $(PROGRAM)

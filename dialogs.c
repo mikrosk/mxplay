@@ -127,7 +127,7 @@ void InitRsc( void )
 			fix_dial( tempDialog );
 			if( i == WD_MODULE || i == WD_PLAYLIST )
 			{
-				g_winDialogs[i] = create_custom_wdial( tempDialog, winIcons[i], 0, CB_OpenWDialog, CB_ExitObject,
+				g_winDialogs[i] = create_wdial_kind( tempDialog, winIcons[i], 0, CB_OpenWDialog, CB_ExitObject,
 													   NAME | MOVER | CLOSER | SMALLER |
 													   SIZER | UPARROW | DNARROW | VSLIDE );
 			}

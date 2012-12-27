@@ -1,7 +1,4 @@
-Patched files I made for GEMLib and CFLib. The basic function is to 
-provide 020+ version of complete mxPlay, not just binary itself.
-
-I also made some (significant) changes to CFLib, i.e. there's no more 
+I made some (significant) changes to CFLib, i.e. there's no more 
 option to set window dialog title using underscored string as aes 
 object #1 - it's useless in my eyes and it complicates custom dialog 
 resizing A LOT. And at last, I implemented new function - 
