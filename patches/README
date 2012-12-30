@@ -1,7 +1,0 @@
-I made some (significant) changes to CFLib, i.e. there's no more 
-option to set window dialog title using underscored string as aes 
-object #1 - it's useless in my eyes and it complicates custom dialog 
-resizing A LOT. And at last, I implemented new function - 
-create_custom_wdial with definable flags for wind_create.
-
-miro.kropacek@gmail.com
