@@ -240,8 +240,9 @@ struct SAudioPlugin* LookForAudioPlugin( char* extension )
 			{
 				break;
 			}
-			/* nope, continue with finding supported extension */
-			else if( strcmp( ext[j].ext, tempString ) == 0 )
+			/* nope, continue searching for the supported extension */
+			else if( strcmp( ext[j].ext, "*" ) == 0
+					 || strcmp( ext[j].ext, tempString ) == 0 )
 			{
 				return pSAudioPlugin[i];
 			}
