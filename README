@@ -1,21 +1,20 @@
-This is mxPlay 1.0.0, an audio media player for Atari 
-TT030/Falcon030/Falcon060 computers.
+This is mxPlay 2.0.0, an audio media player for Atari 
+TT030/Falcon030/Falcon060 range of computers.
 
-Read about spreading conditions in the file doc/COPYING.
+Read about spreading conditions in doc/COPYING.
 
-Read about different versions in the file doc/VERSIONS.
+Read about plugins included in doc/PLUGINS.
 
-Read about plugins included in the file doc/PLUGINS.
+Read about application's functions in doc/html/using.htm.
 
-Read about application's funcions in the file doc/html/using.htm.
+For programmers / designers:
 
-Read about plugin API in the file doc/html/plg-api.htm.
+Read about the plugin API in doc/html/plg-api.htm.
 
-Read about GEM API in the file doc/html/gem-api.htm.
+Read about the GEM API in doc/html/gem-api.htm.
 
 
-
-Any questions, ideas, bugreports, ... welcomed.
+Any questions, ideas, bugreports, ... welcome.
 
 
 Your mxPlay team.
