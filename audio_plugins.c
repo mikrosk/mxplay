@@ -42,8 +42,6 @@
 #include "misc.h"
 #include "info_dialogs.h"
 
-//#define xxx	/* see panel.c */
-
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
 BOOL						g_modulePlaying = FALSE;
 BOOL						g_modulePaused = FALSE;
@@ -149,51 +147,18 @@ BOOL LoadAudioModule( char* path, char* name )
 	int				handle;
 	unsigned long	length;
 	char*			pTempModule = NULL;
-	FILE* fs;
-	
-	#ifdef xxx
-	fs = fopen("d:\\log.txt", "a");
-	fprintf( fs, "start load\n" );
-	fclose( fs );
-	#endif
 	
 	/* no more available */
 	if( pCurrModule != NULL )
 	{
-
-		#ifdef xxx
-		fs = fopen("d:\\log.txt", "a");
-		fprintf( fs, "free\n" );
-		fclose( fs );
-		#endif
-		
 		Mfree( pCurrModule );
-		
-		#ifdef xxx
-		fs = fopen("d:\\log.txt", "a");
-		fprintf( fs, "za free\n" );
-		fclose( fs );
-		#endif
-		
 		pCurrModule = NULL;
 	}
 	
 	CombinePath( tempString, path, name );
 	
-	#ifdef xxx
-	fs = fopen("d:\\log.txt", "a");
-	fprintf( fs, "za combine\n" );
-	fclose( fs );
-	#endif	
-	
 	handle = open( tempString, O_RDONLY );
 
-	#ifdef xxx
-	fs = fopen("d:\\log.txt", "a");
-	fprintf( fs, "open\n" );
-	fclose( fs );
-	#endif
-	
 	if( handle < 0 )
 	{
 		ShowLoadErrorDialog( name );
@@ -201,20 +166,7 @@ BOOL LoadAudioModule( char* path, char* name )
 	}
 	else
 	{
-		#ifdef xxx
-		fs = fopen("d:\\log.txt", "a");
-		fprintf( fs, "pre fn size\n" );
-		fclose( fs );
-		#endif
-		
 		length = GetFileNameSize( tempString );
-		
-		#ifdef xxx
-		fs = fopen("d:\\log.txt", "a");
-		fprintf( fs, "za fn size\n" );
-		fclose( fs );
-		#endif
-		
 		if( length == 0 )
 		{
 			return FALSE;
@@ -223,36 +175,16 @@ BOOL LoadAudioModule( char* path, char* name )
 		/* Global ST RAM */
 		if( getcookie( "MiNT", NULL ) == TRUE )
 		{
-			
-			#ifdef xxx
-			fs = fopen("d:\\log.txt", "a");
-			fprintf( fs, "nasiel mint\n" );
-			fclose( fs );
-			#endif
-			
 			pTempModule = (char*)Mxalloc( length, MX_STRAM | 0x0008 | MX_GLOBAL );
 		}
 		else
 		{
-			
-			#ifdef xxx
-			fs = fopen("d:\\log.txt", "a");
-			fprintf( fs, "nenasiel mint\n" );
-			fclose( fs );
-			#endif
-			
 			pTempModule = (char*)Mxalloc( length, MX_STRAM );
 		}
 		if( VerifyAlloc( pTempModule ) == FALSE )
 		{
 			return FALSE;
 		}
-		
-		#ifdef xxx
-		fs = fopen("d:\\log.txt", "a");
-		fprintf( fs, "zacina citat\n" );
-		fclose( fs );
-		#endif
 
 		if( read( (short)handle, pTempModule, length ) < 0 )
 		{
@@ -264,19 +196,7 @@ BOOL LoadAudioModule( char* path, char* name )
 		}
 		else
 		{
-			#ifdef xxx
-			fs = fopen("d:\\log.txt", "a");
-			fprintf( fs, "zatvara handle\n" );
-			fclose( fs );
-			#endif
-			
 			close( handle );
-			
-			#ifdef xxx
-			fs = fopen("d:\\log.txt", "a");
-			fprintf( fs, "pred register, g_currfile: %s\n", tempString );
-			fclose( fs );
-			#endif
 			
 			if( AudioPluginRegisterModule( g_pCurrAudioPlugin, pTempModule, length ) != MXP_OK )
 			{
@@ -289,12 +209,6 @@ BOOL LoadAudioModule( char* path, char* name )
 			}
 			else
 			{
-				#ifdef xxx
-				fs = fopen("d:\\log.txt", "a");
-				fprintf( fs, "za register, g_currfile: %s\n", tempString );
-				fclose( fs );
-				#endif
-				
 				strcpy( g_currModuleName, tempString );
 				pCurrModule = pTempModule;
 			}

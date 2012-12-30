@@ -52,7 +52,7 @@ static OBJECT*	splashImage;
 static short	splashImageHandle;
 
 static char		welcomeString[sizeof( VERSION ) + sizeof( WELCOME_MESSAGE )] = "";
-static const char copyrightString[] = "Copyright (C) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com";
+static char		copyrightString[] = "Copyright (C) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com";
 static int		stringIndex = 0;
 static BOOL		canRefresh = FALSE;
 

@@ -41,8 +41,6 @@
 #include "vbl_timer.h"
 #include "module_info.h"
 
-//#define xxx	/* fast hack for debug outputs */
-
 int				g_timeMode = TIME_MODE_ADD;
 BOOL			g_repeat = FALSE;
 BOOL			g_random = FALSE;
@@ -183,7 +181,6 @@ static void PanelVolumeDownCommon( int count )
 static void PanelVolumeSliderSet( void )
 {
 	short boxWidth;
-	short sliderX;
 	short sliderWidth;
 	float delta;
 	short vol;
@@ -191,7 +188,6 @@ static void PanelVolumeSliderSet( void )
 	vol = PanelVolumeGet( LTATTEN );	/* we care about left channel only */
 	
 	boxWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER_BOX].ob_width;
-	sliderX = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x;
 	sliderWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_width;
 	
 	delta = (float)( boxWidth - sliderWidth ) / (float)VOLUME_MAX;
@@ -407,24 +403,11 @@ void PanelPrev( void )
 
 void PanelNext( void )
 {
-	FILE* fs;
 	PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_NEXT );
 	
 	if( FileListSetNext() == TRUE )
 	{
-		#ifdef xxx
-		fs = fopen("d:\\log.txt", "a");
-		fprintf( fs, "pred load and play, g_currfile: %s\n", g_currName );
-		fclose( fs );
-		#endif
-		
 		LoadAndPlay();
-		
-		#ifdef xxx
-		fs = fopen("d:\\log.txt", "a");
-		fprintf( fs, "za load and play, g_currfile: %s\n", g_currName );
-		fclose( fs );
-		#endif
 	}
 	else if( g_modulePlaying == TRUE )
 	{
@@ -763,42 +746,17 @@ void PanelChangeSkin( void )
 void LoadAndPlay( void )
 {
 	char ext[MXP_FILENAME_MAX+1];
-	FILE* fs;
 
 	if( g_currPath != NULL && g_currName != NULL )	/* only if some file in playlist */
 	{
 		if( g_modulePlaying == TRUE )
 		{
-			#ifdef xxx
-			fs = fopen("d:\\log.txt", "a");
-			fprintf( fs, "pred panel stop, g_currfile: %s\n", g_currName );
-			fclose( fs );
-			#endif
-		
 			PanelStop();
-		
-			#ifdef xxx
-			fs = fopen("d:\\log.txt", "a");
-			fprintf( fs, "za stop, g_currfile: %s\n", g_currName );
-			fclose( fs );
-			#endif
 		}
 		
 		split_extension( g_currName, NULL, ext );
 		
-		#ifdef xxx
-		fs = fopen("d:\\log.txt", "a");
-		fprintf( fs, "hladam plugin, g_currfile: %s\n", g_currName );
-		fclose( fs );
-		#endif
-		
 		g_pCurrAudioPlugin = LookForAudioPlugin( ext );
-		
-		#ifdef xxx
-		fs = fopen("d:\\log.txt", "a");
-		fprintf( fs, "nasiel plugin, g_currfile: %s\n", g_currName );
-		fclose( fs );
-		#endif
 		
 		if( g_pCurrAudioPlugin == NULL )	/* this should be impossible */
 		{
@@ -806,61 +764,18 @@ void LoadAndPlay( void )
 		}
 		else
 		{
-			#ifdef xxx
-			fs = fopen("d:\\log.txt", "a");
-			fprintf( fs, "ide nahrat module, g_currfile: %s\n", g_currName );
-			fclose( fs );
-			#endif
-			
 			if( LoadAudioModule( g_currPath, g_currName ) == TRUE )
 			{
-				#ifdef xxx
-				fs = fopen("d:\\log.txt", "a");
-				fprintf( fs, "nahral module, g_currfile: %s\n", g_currName );
-				fclose( fs );
-				#endif
-				
 				AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
-				
-				#ifdef xxx
-				fs = fopen("d:\\log.txt", "a");
-				fprintf( fs, "za infoline, g_currfile: %s\n", g_currName );
-				fclose( fs );
-				#endif
 				
 				PluginInfoUpdate();
 				
-				#ifdef xxx
-				fs = fopen("d:\\log.txt", "a");
-				fprintf( fs, "za infoupdate, g_currfile: %s\n", g_currName );
-				fclose( fs );
-				#endif
-				
 				PanelPlay();
-				
-				#ifdef xxx
-				fs = fopen("d:\\log.txt", "a");
-				fprintf( fs, "za play, g_currfile: %s\n", g_currName );
-				fclose( fs );
-				#endif
 				
 				ModuleInfoUpdate();
 				
-				#ifdef xxx
-				fs = fopen("d:\\log.txt", "a");
-				fprintf( fs, "za infoupdate 2, g_currfile: %s\n", g_currName );
-				fclose( fs );
-				#endif
 				
 				PlayListDisplayTrackNumber();
-			}
-			else
-			{
-				#ifdef xxx
-				fs = fopen("d:\\log.txt", "a");
-				fprintf( fs, "load module hodil error!, g_currfile: %s\n", g_currName );
-				fclose( fs );
-				#endif
 			}
 		}
 	}
