@@ -1,7 +1,7 @@
 /*
  * info_dialogs.c -- shared code between module and plugin info
  *
- * Copyright (c) 2005 Miro Kropacek; miro.kropacek@gmail.com
+ * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
  * 
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.

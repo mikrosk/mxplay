@@ -1,7 +1,7 @@
 /*
  * dsp_fix.s -- custom Dsp_ExecProg
  *
- * Copyright (c) 2005 Miro Kropacek; miro.kropacek@gmail.com
+ * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
  * Copyright (c) 1998 NoCrew Laboratories.
  * 
  * This file is part of the mxPlay project, multiformat audio player for

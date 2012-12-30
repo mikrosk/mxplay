@@ -1,8 +1,8 @@
 /*
  * vaproto.h -- AV/VA protocoll (definitions)
  *
- * Copyright (c) 2005 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -30,7 +30,7 @@
  * Protokolls
  *
  * 07.12.: AV_PATH_UPDATE, AV_WHAT_IZIT, AV_DRAG_ON_WINDOW eingebaut.
- * 21.10.94: AV_STARTED 
+ * 21.10.94: AV_STARTED
  * 31.10.94: AV_XWIND und VA_FONTCHANGED eingefÅhrt.
  *           Siehe auch die neue Bitbelegung in PROTOSTATUS
  * 12.11.94  Neues Bit im PROTOSTATUS des Accessories zum "Quoten"
@@ -53,7 +53,7 @@
  * verschiedenen Accesories.
  * Sollten in Nachrichten Pfade oder Dateinamen vorkommen, so
  * muû immer der absolute Pfad angegeben werden (also mit Laufwerk)
- * und die Laufwerksbuchstaben mÅssen Groûbuchstaben sein. Pfade 
+ * und die Laufwerksbuchstaben mÅssen Groûbuchstaben sein. Pfade
  * sollten immer mit einem Backslash enden!
  * Neu seit dem 12.11.94 ist, daû optional Namen auch mit einfachen
  * AnfÅhrungszeichen versehen werden kînnen. Siehe AV_PROTOKOLL.
@@ -62,7 +62,7 @@
  * Nachrichten an Venus beginnen mit AV (Accessory -> Venus).
  *
  * Mit AV_PROTOKOLL kann jedes Acc nachfragen, welche Nachrichten
- * verstanden werden (Dies ist ja bei VENUS und GEMINI 
+ * verstanden werden (Dies ist ja bei VENUS und GEMINI
  * unterschiedlich! Es wÑre schîn, wenn auch andere Programme auf
  * dieses Protokoll reagieren wÅrden. Zumindest AV_SENDKEY ist
  * sicher leicht zu implementieren und ist die einzige Methode, wie
@@ -85,7 +85,7 @@
  * erhÑltlich) verfahren fast genauso.
  */
 
-/* AV_PROTOKOLL: Mit dieser Nachrichtennummer sollte man bei 
+/* AV_PROTOKOLL: Mit dieser Nachrichtennummer sollte man bei
  * anderen Applikationen und auch GEMINI nachfragen, ob
  * und welche Nachrichten sie versteht.
  */
@@ -108,7 +108,7 @@
  * Bits in den Worten 4 und 5.
  * (Mehr zum Quoting siehe unten)
  */
- 
+
 /* Macros zum Testen des Protkollstatus auf Quoting
  */
 #define VA_ACC_QUOTING(a)		((a) & 0x10)
@@ -118,7 +118,7 @@
  * der EmpfÑnger etwas von diesem Protokoll weiû. Die Worte 3-7 des
  * Nachrichtenpuffers enthalten die Information, welche Nachrichten
  * verstanden werden. Gesetzte Bits stehen dafÅr, daû eine Nachricht
- * (Nachrichtengruppe) verstanden werden. 
+ * (Nachrichtengruppe) verstanden werden.
  */
 #define VA_PROTOSTATUS		0x4701
 /*
@@ -154,7 +154,7 @@
  * von TreeView sicher eine einfache Art, Dateien aus anderen Ordnern
  * oder Laufwerken zu laden.
  *
- * Zu Bit 14 (im Server, z.B. Gemini), bzw. Bit 4 im Client 
+ * Zu Bit 14 (im Server, z.B. Gemini), bzw. Bit 4 im Client
  * (Accessory):
  * Mit "Quoting" ist im VA-Protkoll gemeint, daû Dateinamen optional
  * mit einfachen AnfÅhrungszeichen 'name' versehen werden kînnen.
@@ -192,7 +192,7 @@
 #define AV_STATUS			0x4704
 
 /* VA_SETSTATUS: Venus teilt dem Accessory den abgespeicherten
- * Status bei Nachfrage durch AV_GETSTATUS mit. Dieser kann dann 
+ * Status bei Nachfrage durch AV_GETSTATUS mit. Dieser kann dann
  * von einem Accessory gesetzt werden.
  * Word 3+4: Pointer auf einen String, der keine Steuerzeichen
  *           enthÑlt.
@@ -225,7 +225,7 @@
  */
 #define VA_FILEFONT			0x4713
 
-/* (Nur Gemini) AV_ASKCONFONT: Frage nach dem eingestellten 
+/* (Nur Gemini) AV_ASKCONFONT: Frage nach dem eingestellten
  * Zeichensatz fÅr das Console-Fenster.
  */
 #define AV_ASKCONFONT		0x4714
@@ -253,7 +253,7 @@
  * Ist es schon offen, so wird es nach vorne gebracht. Diese Aktion
  * ist vor allen Dingen sinnvoll, wenn ein Accessory ein TOS-Programm
  * mittels der system()-Funktion starten will (Warnung: Auf keinen
- * Fall darf ein GEM-Programm von einem Accessory via system() 
+ * Fall darf ein GEM-Programm von einem Accessory via system()
  * gestartet werden! (siehe auch AV_STARTPROG)
  * Auch sollte diese Nachricht nur auf ausdrÅcklichen Wunsch des
  * Benutzers gebraucht werden, da es ihn sonst nur verwirren kann.
@@ -284,7 +284,7 @@
 /* Word 7 in AV_STARTPROG und Word 4 und 7 in VA_PROGSTART sind
  * neu seit dem 29. MÑrz 1992.
  */
- 
+
 /* AV_STARTPROG: Venus soll ein Programm starten. Hierbei
  * werden die angemeldeten Applikationen der Venus mit
  * berÅcksichtigt. Man kann also auch eine Datei angeben, fÅr
@@ -338,19 +338,19 @@
 
 /* Neu seit dem 11.04.1991!!!
  */
- 
+
 /* AV_COPY_DRAGGED: Accessorie teilt Venus mit, daû die Objekte,
  * die auf sein Fenster gezogen wurden, zu kopieren sind.
  * Dies kann z.B. nach dem Ziehen von Objekten auf das TreeView-
  * Fenster erwÅnscht sein. Diese Nachricht ist nur als Antwort
  * auf VA_DRAGACCWIND gedacht.
  * Word 3	Tastaturstatus (Alternate, Control, Shift)
- * Word 4+5	Pointer auf einen String, der den Namen des Zielobjektes 
+ * Word 4+5	Pointer auf einen String, der den Namen des Zielobjektes
  *			enthÑlt. Dies *muû* ein Pfad sein!
  */
 #define AV_COPY_DRAGGED		0x4728
 
-/* VA_COPY_COMPLETE: Antwort auf AV_COPY. 
+/* VA_COPY_COMPLETE: Antwort auf AV_COPY.
  * Word 3	Status des Kopierens. (!= 0 heiût, daû wirklich etwas
  *			kopiert oder verschoben wurde. Dies kann das Acc evtl.
  *          zum Neuaufbau seines Fensters nutzen.)
@@ -370,7 +370,7 @@
 #define AV_PATH_UPDATE		0x4730
 
 
-/* AV_WHAT_IZIT: Programm/Accessory fragt Gemini, was sich an 
+/* AV_WHAT_IZIT: Programm/Accessory fragt Gemini, was sich an
  * Position X/Y auf dem Bildschirm befindet. Die Koordinaten sind
  * normale Pixelkoordinaten mit Ursprung in der linken oberen
  * Bildschirmecke. Antwort ist VA_THAT_IZIT.
@@ -382,12 +382,12 @@
 /* VA_THAT_IZIT:
  * Word 3   ID der zustÑndigen Applikation
  * Word 4   Typ des Objektes
- * word 5+6 Zeiger auf den Namen des Objektes (oder NULL, falls nicht 
+ * word 5+6 Zeiger auf den Namen des Objektes (oder NULL, falls nicht
  *          vorhanden)
  *
  * Typ ist wie folgt: (alle anderen fÅr Erweiterungen reserviert.)
  */
-#define	VA_OB_UNKNOWN	0		
+#define	VA_OB_UNKNOWN	0
 #define VA_OB_TRASHCAN  1
 #define VA_OB_SHREDDER  2
 #define VA_OB_CLIPBOARD 3
@@ -398,8 +398,8 @@
 
 #define VA_THAT_IZIT		0x4733
 
-/* AV_DRAG_ON_WINDOW: Programm/Accessory teilt Gemini mit, daû 
- * Objekte auf eines seiner mittels AV_WHATIZIT erfragten Fenster 
+/* AV_DRAG_ON_WINDOW: Programm/Accessory teilt Gemini mit, daû
+ * Objekte auf eines seiner mittels AV_WHATIZIT erfragten Fenster
  * gezogen worden sind. Die Namen sind Namen von Dateien, Ordnern
  * oder Laufwerken, jeweils durch ein Leerzeichen getrennt. Namen
  * von Ordnern oder Laufwerken enden mit einem Backslash.
@@ -410,7 +410,7 @@
  * Word 6+7 Pointer auf einen String, der die Namen der Objekte enthÑlt.
  *
  * (nun implementiert, beachte daû sich die Belegung der Nachricht
- *  leicht geÑndert hat. Das Fenster handle ist verschwunden und 
+ *  leicht geÑndert hat. Das Fenster handle ist verschwunden und
  *  dafÅr wurde der aktuelle Tastaturstatus eingefÅgt.)
  *
  */
