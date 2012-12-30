@@ -52,6 +52,7 @@ static OBJECT*	splashImage;
 static short	splashImageHandle;
 
 static char		welcomeString[sizeof( VERSION ) + sizeof( WELCOME_MESSAGE )] = "";
+static const char copyrightString[] = "Copyright (C) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com";
 static int		stringIndex = 0;
 static BOOL		canRefresh = FALSE;
 
@@ -148,7 +149,8 @@ void InitRsc( void )
 	strcpy( g_winDialogs[WD_MODULE]->win_name, "Module" );
 	
 	sprintf( welcomeString, WELCOME_MESSAGE, VERSION );
-	set_string( g_winDialogs[WD_PANEL]->tree, PANEL_SONGNAME, welcomeString );
+
+	set_string( licenseDialog, GPL_COPYRIGHT, copyrightString );
 	
 	canRefresh = TRUE;	/* for timer */
 }

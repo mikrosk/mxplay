@@ -1,9 +1,9 @@
 ResourceMaster v3.65   
 #C 8@0@0@0@
 #N 99@32@AZAaza___  _@AZAaza090___  _@@_@
-#FoC-Header@rsm2out@C-Header@h@@@[C-Header@0@
+#FoC-Header@rsm2out@C-Header@rsh@@@[C-Header@0@
 #R 0@0@2@1@2@1@
-#M 20010100@0@7728@680@
+#M 20010100@0@7728@682@
 #T 0@2@WICON@@2@@
 #T 1@2@PANEL@@22@@
 #O 1@33@BACKGROUND@@
@@ -56,6 +56,7 @@ ResourceMaster v3.65
 #O 37@33@OPT_BOOL@@
 #O 38@21@OPT_STRING@@
 #T 4@2@GPL@@16@@
+#O 15@21@COPYRIGHT@@
 #T 5@2@SPLASH@@2@@
 #T 6@2@MODULE@@11@@
 #O 1@26@OK@@
@@ -85,4 +86,4 @@ ResourceMaster v3.65
 #O 24@20@BOX_DOWN@@
 #O 27@33@ICON_DOWN_LEFT@@
 #O 28@20@BOX_LEFT@@
-#c 8857@
+#c 8873@

@@ -1,4 +1,4 @@
- /*  Resource C-Header-file v1.95 for ResourceMaster v2.06&up by ARDISOFT  */
+ /*  Resource C-Header-File v1.97 fÅr ResourceMaster ab v2.06 by ARDISOFT  */
 
 #define WICON 0  /* form/dial */
 
@@ -56,6 +56,7 @@
 #define PLUGIN_OPT_STRING 38  /* TEXT in tree PLUGIN */
 
 #define GPL 4  /* form/dial */
+#define GPL_COPYRIGHT 15  /* TEXT in tree GPL */
 
 #define SPLASH 5  /* form/dial */
 

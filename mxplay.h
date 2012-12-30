@@ -44,7 +44,7 @@
 #define MXP_FILENAME_MAX	255
 
 
-#define VERSION				"1.1.0-alpha"
+#define VERSION				"2.0.0"
 #define WELCOME_MESSAGE		"--- Welcome to mxPlay version %s made by MiKRO / Mystic Bytes and -XI- / Satantronic "
 
 typedef struct
