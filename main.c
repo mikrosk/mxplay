@@ -2,7 +2,7 @@
  * main.c -- event mainloop, global init, deinit, exit
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -62,7 +62,7 @@ static BOOL		isVblInstalled = FALSE;
 void HandleMessage( short msg[8] )
 {
 	short obj;
-	
+
 	if( !message_wdial( msg ) )
 	{
 		switch( msg[0] )
@@ -92,11 +92,11 @@ void HandleMessage( short msg[8] )
 			case VA_PROTOSTATUS :
 				AVSetStatus( msg );
 			break;
-			
+
 			/*
 			 * Events for custom window dialogs.
 			 */
-			
+
 			/* SIZER */
 			case WM_SIZED:
 				if( msg[3] == g_winDialogs[WD_PLAYLIST]->win_handle )
@@ -108,7 +108,7 @@ void HandleMessage( short msg[8] )
 					ModuleInfoResize( (GRECT*)&msg[4] );
 				}
 			break;
-			
+
 			/* xxARROW */
 			case WM_ARROWED:
 				if( msg[3] == g_winDialogs[WD_PLAYLIST]->win_handle )
@@ -120,7 +120,7 @@ void HandleMessage( short msg[8] )
 					ModuleInfoScroll( msg[4] );
 				}
 			break;
-			
+
 			/* VSLIDER */
 			case WM_VSLID:
 				if( msg[3] == g_winDialogs[WD_PLAYLIST]->win_handle )
@@ -154,68 +154,68 @@ void HandleMessage( short msg[8] )
 							PanelFileOpen();
 						}
 					break;
-					
+
 					/* objects on the panel are accessible even on untopped window */
 					case PANEL_PLAY:
 						PanelPlay();
 					break;
-					
+
 					case PANEL_STOP:
 						PanelStop();
 					break;
-					
+
 					case PANEL_PAUSE:
 						PanelPause();
 					break;
-					
+
 					case PANEL_FWD:
 						PanelFwd();
 					break;
-					
+
 					case PANEL_RWD:
 						PanelRwd();
 					break;
-					
+
 					case PANEL_NEXT:
 						PanelNext();
 					break;
-					
+
 					case PANEL_PREV:
 						PanelPrev();
 					break;
-					
+
 					case PANEL_REPEAT:
 						PanelRepeat();
 					break;
-					
+
 					case PANEL_RANDOM:
 						PanelRandom();
 					break;
-					
+
 					case PANEL_PLAYLIST:
 						PanelPlayList();
 					break;
-					
+
 					case PANEL_INFO_MOD:
 						PanelInfoModule();
 					break;
-					
+
 					case PANEL_INFO_PLG:
 						PanelInfoPlugin();
 					break;
-									
+
 					case PANEL_INFO_APP:
 						PanelInfoApp();
 					break;
-					
+
 					case PANEL_MUTE:
 						PanelMute();
 					break;
-					
+
 					case PANEL_PLAYTIME:
 						PanelPlayTime();
 					break;
-					
+
 					case PANEL_VOLUME_SLIDER_BOX:
 						PanelVolumeSliderBox( currMouseX );
 					break;
@@ -249,7 +249,7 @@ void ExitPlayer( int code )
 		}
 		isTimerInstalled = FALSE;
 	}
-	
+
 	if( isVblInstalled == TRUE )
 	{
 		if( Supexec( timer_uninstall ) == FALSE )
@@ -274,7 +274,7 @@ int main( int argc, char* argv[] )
 	short	obj;
 	long	temp;
 	BOOL	inVolume = FALSE;
-	
+
 #ifdef NO_MINT
 	isTimerInstalled = TRUE;
 	if( Supexec( timer_start_measure ) == FALSE )
@@ -283,7 +283,7 @@ int main( int argc, char* argv[] )
 		ExitPlayer( 1 );
 	}
 #endif
-	
+
 	/* register MiNT domain */
 	if( Pdomain( 1 ) != 1 )	/* MiNT domain */
 	{
@@ -292,17 +292,12 @@ int main( int argc, char* argv[] )
 	/* get global variables etc */
 	init_app( NULL );
 
-	// TODO: remove!!!
-	if( strcmp( gl_appdir, "\\" ) == 0 )
-	{
-		strcpy( gl_appdir, "I:\\root\\projects\\mxPlay\\src" );
-	}
 	/* alloc & create all dialogs */
 	InitDialogs();
-	
+
 	/* show splash */
 	ShowSplashImage();
-	
+
 	/* for N.AES, XaAES & MagiC install nice name */
 	if( gl_gem >= 0x400 )
 	{
@@ -321,27 +316,27 @@ int main( int argc, char* argv[] )
 	{
 		g_hasDsp = TRUE;
 	}
-	
+
 	/* find AV server etc */
 	AVInit();
-	
+
 	/* set random seed */
 	InitRandom();
-	
+
 	/* load & init all audio plugins */
 	LoadAudioPlugins();
-	
+
 #ifdef NO_MINT
 	/* check if we reached the end of time measuring */
 	while( timer_is_finished() == FALSE );
-	
+
 	if( Supexec( timer_stop_measure ) == FALSE )
 	{
 		ShowMeasureDeinitFailedDialog();
 		ExitPlayer( 1 );
 	}
 	isTimerInstalled = FALSE;
-	
+
 	/* install vbl-timer for correct time show */
 	isVblInstalled = TRUE;
 	if( Supexec( timer_install ) == FALSE )
@@ -350,13 +345,13 @@ int main( int argc, char* argv[] )
 		ExitPlayer( 1 );
 	}
 #endif
-	
+
 	/* close splash */
 	CloseSplashImage();
-	
+
 	/* open & init dialogs to open on startup */
 	ShowDefaultDialogs();
-	
+
 	/* if there's some playlist in .inf file, load it */
 	if( strcmp( g_playlistFile, "" ) != 0 )
 	{
@@ -367,7 +362,7 @@ int main( int argc, char* argv[] )
 			strcpy( g_playlistFile, "" );
 		}
 	}
-	
+
 	/* if there's some module/playlist dragged on startup, play it */
 	g_playAfterAdd = TRUE;	/* playlist is empty for sure */
 	g_currFileUpdated = FALSE;	/* reset flag */
@@ -376,7 +371,7 @@ int main( int argc, char* argv[] )
 	{
 		LoadAndPlay();
 	}
-	
+
 	/* Application mainloop */
 	while( g_quitApp == FALSE )
 	{
@@ -389,7 +384,7 @@ int main( int argc, char* argv[] )
 							&mx, &my, &mb,		/* mouse x, mouse y, mouse button */
 							&kstate, &key,		/* shift state, key pressed */
 							&mc );				/* how many mouse clicks occured */
-		
+
 		/* here we check if user pressed some shift key along with mouse/key */
 		if( ( kstate & K_RSHIFT ) || ( kstate & K_LSHIFT ) )
 		{
@@ -399,13 +394,13 @@ int main( int argc, char* argv[] )
 		{
 			g_withShift = FALSE;
 		}
-		
+
 		/* if this event doesn't occur mc could be anything! */
 		if( ( event & MU_BUTTON ) == 0 )
 		{
 			mc = 0;
 		}
-		
+
 		if( inVolume == TRUE )
 		{
 			if( mc == 1 )
@@ -420,13 +415,13 @@ int main( int argc, char* argv[] )
 			else
 			{
 				DeselectObject( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );
-			
+
 				/* reset the mouse cursor */
 				graf_mouse( ARROW, NULL );
 				inVolume = FALSE;
 			}
 		}
-		
+
 		/*
 		 * Watch for some realtime moveable objects.
 		 */
@@ -446,7 +441,7 @@ int main( int argc, char* argv[] )
 							continue;
 						}
 					break;
-					
+
 					case PANEL_VOLUME_SLIDER_BOX:
 						if( mc == 1 )
 						{
@@ -456,39 +451,39 @@ int main( int argc, char* argv[] )
 				}
 			}
 		}
-		
+
 		currMouseX = mx;
 		currMouseY = my;
-		
+
 		g_mouseClicks = mc;
-		
+
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );	/* yes, it has some sense :) */
-		
+
 		/* if we reached playtime */
 		if( g_modulePlaying == TRUE && g_modulePaused == FALSE && TimerGetSubTime() <= 0 )
 		{
 			PanelNext();
 		}
-		
+
 		/* update volume slider */
 		PanelVolumeSliderUpdate();
-		
+
 		/*
 		 * Event handlers
 		 */
-		 
+
 		if( event & MU_MESAG )
 		{
 			HandleMessage( g_msgBuffer );
 		}
-				
+
 		if( event & MU_BUTTON )
 		{
 			if( !click_wdial( mc, mx, my, kstate, mb ) )
 			{
 			}
 		}
-		
+
 		if( event & MU_TIMER )
 		{
 			PanelDialogRefresh();
@@ -660,7 +655,7 @@ int main( int argc, char* argv[] )
 			}
 		}
 	}
-	
+
 	if( g_playlistNotActual == TRUE )
 	{
 		#if 0
@@ -684,7 +679,7 @@ int main( int argc, char* argv[] )
 	}
 
 	PanelStop();
-	
+
 #ifdef NO_MINT
 	if( Supexec( timer_uninstall ) == FALSE )
 	{
@@ -693,7 +688,7 @@ int main( int argc, char* argv[] )
 	}
 	isVblInstalled = FALSE;
 #endif
-	
+
 	AVExit();
 
 	WriteConfigFile();

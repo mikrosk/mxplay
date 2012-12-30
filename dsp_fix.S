@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
  * Copyright (c) 1998 NoCrew Laboratories.
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -24,13 +24,13 @@
 
 /*
  * Implements:
- * 
+ *
  *     extern Int dsp_load_program(Byte *program, Int length);
- * 
+ *
  * Where length is the number of DSP words (e.i. 3 byte tuples).
  * A return value of 1 means that the loading was sucessful. 0
  * means something went wrong.
- * 
+ *
  * This module will always load the DSP program. It is compatible
  * with the Dsp_ExecProg loader. However, as it reloads the DSP
  * bootstrap code every time -- which the TOS version does not --
@@ -39,7 +39,7 @@
 		.globl	_dsp_load_program
 
 		.text
-		
+
 _dsp_load_program:
 		move.l	a0,dsp_program
 		move.l	d0,dsp_length
@@ -47,7 +47,7 @@ _dsp_load_program:
 		move	sr,d0				|Test for supervisor mode.
 		btst	#13,d0
 		bne.b	.dsp_load
-	
+
 		move.l	#.dsp_load,-(sp)
 		move.w	#0x26,-(sp)
 		trap	#14
@@ -67,7 +67,7 @@ _dsp_load_program:
 		move.b	d0,0xffff8802.w
 		or.b	#0x10,d0
 		move.b	d0,0xffff8802.w
-		
+
 		move.w	#10000-1,d0			|Wait for DSP to power down.
 .wait:		nop
 		dbra	d0,.wait
@@ -101,7 +101,7 @@ _dsp_load_program:
 .go:		btst.b	#1,0xffffa202.w			|Launch DSP binary.
 		beq.s	.go
 		move.l	#3,0xffffa204.w
-		
+
 		moveq	#1,d0
 		rts
 .no_way:	moveq	#0,d0
@@ -109,7 +109,7 @@ _dsp_load_program:
 
 
 		.data
-		
+
 dsp_bootstrap_code:
 		dc.b	0x0c,0x00,0x40,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 		dc.b	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
@@ -265,9 +265,9 @@ dsp_bootstrap_code:
 		dc.b	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 		dc.b	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 		dc.b	0x00,0x00,0x00,0x00,0x00,0x00
-		
+
 		.bss
-		
+
 dsp_program:	ds.l	1
 dsp_length:	ds.l	1
 dsp_status:	ds.l	1

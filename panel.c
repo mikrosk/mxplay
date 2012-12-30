@@ -2,7 +2,7 @@
  * panel.c -- button handling for Panel dialog
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -62,7 +62,7 @@ static void PanelActivateObject( WDIALOG* wd, short selectedObj )
 	short obj;
 
 	obj = wd->tree[PANEL_BACKGROUND].ob_head;
-	
+
 	/* go trought all panel objects */
 	while( obj != PANEL_BACKGROUND && obj != -1 )
 	{
@@ -83,7 +83,7 @@ static void PanelActivateObject( WDIALOG* wd, short selectedObj )
 		{
 			SelectObject( wd, obj );
 		}
-		
+
 		obj = wd->tree[obj].ob_next;
 	}
 }
@@ -95,7 +95,7 @@ static void PanelVolumeSet( short mode, short volume )
 {
 	volume &= ( VOLUME_STAGES - 1 );
 	volume = VOLUME_MAX - volume;
-	
+
 	Soundcmd( mode, volume << 4 );
 	oldVolumeData = volume << 4;
 }
@@ -106,12 +106,12 @@ static void PanelVolumeSet( short mode, short volume )
 static short PanelVolumeGet( short mode )
 {
 	short att;
-	
+
 	att = (short)Soundcmd( mode, -1 );	/* SND_INQUIRE */
-	
+
 	att >>= 4;
 	att &= ( VOLUME_STAGES - 1 );
-	
+
 	return VOLUME_MAX - att;
 }
 
@@ -121,7 +121,7 @@ static short PanelVolumeGet( short mode )
 static void PanelVolumeUpCommon( int count )
 {
 	short vol;
-	
+
 	vol = PanelVolumeGet( LTATTEN );
 	if( vol + count > VOLUME_MAX )
 	{
@@ -132,7 +132,7 @@ static void PanelVolumeUpCommon( int count )
 		vol += count;
 	}
 	PanelVolumeSet( LTATTEN, vol );
-	
+
 	vol = PanelVolumeGet( RTATTEN );
 	if( vol + count > VOLUME_MAX )
 	{
@@ -151,7 +151,7 @@ static void PanelVolumeUpCommon( int count )
 static void PanelVolumeDownCommon( int count )
 {
 	short vol;
-	
+
 	vol = PanelVolumeGet( LTATTEN );
 	if( vol - count < VOLUME_MIN )
 	{
@@ -162,7 +162,7 @@ static void PanelVolumeDownCommon( int count )
 		vol -= count;
 	}
 	PanelVolumeSet( LTATTEN, vol );
-	
+
 	vol = PanelVolumeGet( RTATTEN );
 	if( vol - count < VOLUME_MIN )
 	{
@@ -184,12 +184,12 @@ static void PanelVolumeSliderSet( void )
 	short sliderWidth;
 	float delta;
 	short vol;
-	
+
 	vol = PanelVolumeGet( LTATTEN );	/* we care about left channel only */
-	
+
 	boxWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER_BOX].ob_width;
 	sliderWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_width;
-	
+
 	delta = (float)( boxWidth - sliderWidth ) / (float)VOLUME_MAX;
 
 	g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x = (short)( vol * delta );
@@ -207,9 +207,9 @@ void PanelVolumeInit( void )
 	data = (short)Soundcmd( LTATTEN, -1 );	/* SND_INQUIRE */
 	Soundcmd( RTATTEN, data );	/* right channel must have the same value */
 	oldVolumeData = data;
-	
+
 	PanelVolumeSliderSet();
-	
+
 	volumeSliderX = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x;
 }
 
@@ -221,12 +221,12 @@ void PanelVolumeSliderUpdate( void )
 	short data;
 
 	data = (short)Soundcmd( LTATTEN, -1 );	/* SND_INQUIRE */
-	
+
 	if( data != oldVolumeData )
 	{
 		PanelVolumeSliderSet();
 		volumeSliderX = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x;
-		
+
 		oldVolumeData = data;
 	}
 }
@@ -260,9 +260,9 @@ void PanelDirOpen( void )
 void PanelPlay( void )
 {
 	int ret;
-	
+
 	PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
-	
+
 	/* no file loaded yet */
 	if( strcmp( g_currModuleName, "-" ) == 0 )
 	{
@@ -304,9 +304,9 @@ void PanelPlay( void )
 void PanelStop( void )
 {
 	int ret;
-	
+
 	PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_STOP );
-	
+
 	if( g_modulePlaying == TRUE )
 	{
 		if( ( ret = AudioPluginModuleStop() ) != MXP_OK )
@@ -315,14 +315,14 @@ void PanelStop( void )
 		}
 		AudioPluginFreeResources();
 	}
-	
+
 	DeselectObject( g_winDialogs[WD_PANEL], PANEL_STOP );
 }
 
 void PanelPause( void )
 {
 	int ret;
-	
+
 	if( g_modulePlaying == TRUE )
 	{
 		if( g_modulePaused == FALSE )
@@ -333,7 +333,7 @@ void PanelPause( void )
 		{
 			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 		}
-		
+
 		if( ( ret = AudioPluginModulePause() ) != MXP_OK )
 		{
 			ShowPluginErrorDialog( ret );
@@ -350,21 +350,21 @@ void PanelPause( void )
 void PanelFwd( void )
 {
 	int ret;
-	
+
 	if( g_modulePlaying == TRUE )
 	{
-	
+
 		PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_FWD );
-	
+
 		if( ( ret = AudioPluginModuleFwd( g_withShift ) ) != MXP_OK )
 		{
 			ShowPluginErrorDialog( ret );
 			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 		}
-		
+
 		/* was big forward-step */
 		g_withShift = FALSE;
-		
+
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_FWD );
 	}
 }
@@ -372,21 +372,21 @@ void PanelFwd( void )
 void PanelRwd( void )
 {
 	int ret;
-	
+
 	if( g_modulePlaying == TRUE )
 	{
-	
+
 		PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_RWD );
-	
+
 		if( ( ret = AudioPluginModuleRwd( g_withShift ) ) != MXP_OK )
 		{
 			ShowPluginErrorDialog( ret );
 			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 		}
-		
+
 		/* was big rewind-step */
 		g_withShift = FALSE;
-		
+
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_RWD );
 	}
 }
@@ -394,7 +394,7 @@ void PanelRwd( void )
 void PanelPrev( void )
 {
 	PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PREV );
-	
+
 	FileListSetPrev();
 	LoadAndPlay();
 
@@ -404,7 +404,7 @@ void PanelPrev( void )
 void PanelNext( void )
 {
 	PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_NEXT );
-	
+
 	if( FileListSetNext() == TRUE )
 	{
 		LoadAndPlay();
@@ -413,7 +413,7 @@ void PanelNext( void )
 	{
 		PanelStop();
 	}
-	
+
 	DeselectObject( g_winDialogs[WD_PANEL], PANEL_NEXT );
 }
 
@@ -478,7 +478,7 @@ void PanelPlayList( void )
 	else
 	{
 		SelectObject( g_winDialogs[WD_PANEL], PANEL_PLAYLIST );
-		
+
 		if( g_playlistX == -1 || g_playlistY == -1 )
 		{
 			open_wdial( g_winDialogs[WD_PLAYLIST], -1, -1 );
@@ -488,11 +488,11 @@ void PanelPlayList( void )
 			open_wdial( g_winDialogs[WD_PLAYLIST], g_playlistX, g_playlistY );
 			g_playlistX = -1;
 			g_playlistY = -1;
-			
+
 		}
-		
+
 		PlayListRefresh( TRUE );
-		
+
 		playlistOpened = TRUE;
 	}
 }
@@ -511,7 +511,7 @@ void PanelMute( void )
 			Devconnect( ADC, DAC, CLK25M, CLKOLD, NO_SHAKE );
 		}
 		Soundcmd( SETPRESCALE, 0 );	/* CCLK_6K */
-		
+
 		g_mute = TRUE;
 		SelectObject( g_winDialogs[WD_PANEL], PANEL_MUTE );
 	}
@@ -549,7 +549,7 @@ void PanelRepeat( void )
 		g_repeat = FALSE;
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_REPEAT );
 	}
-	
+
 }
 
 void PanelVolumeUp( void )
@@ -586,11 +586,11 @@ void PanelVolumeSlider( short deltaX )
 	short sliderWidth;
 	short boxWidth;
 	short delta;
-	
+
 	sliderX = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x;
 	sliderWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_width;
 	boxWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER_BOX].ob_width;
-	
+
 	volumeSliderX += deltaX;
 	if( volumeSliderX < 0.0 )
 	{
@@ -600,9 +600,9 @@ void PanelVolumeSlider( short deltaX )
 	{
 		volumeSliderX = boxWidth - sliderWidth;
 	}
-	
+
 	delta = Round( (float)( volumeSliderX - sliderX ) / ( (float)( boxWidth - sliderWidth ) / (float)VOLUME_MAX ) );
-	
+
 	if( delta > 0 )
 	{
 		PanelVolumeUpCommon( delta );
@@ -611,7 +611,7 @@ void PanelVolumeSlider( short deltaX )
 	{
 		PanelVolumeDownCommon( -delta );
 	}
-	
+
 	if( delta != 0 )
 	{
 		PanelVolumeSliderSet();
@@ -622,11 +622,11 @@ void PanelVolumeSliderBox( short mx )
 {
 	short sliderWidth;
 	short ox, oy;
-	
+
 	sliderWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_width;
-	
+
 	objc_offset( g_winDialogs[WD_PANEL]->tree, PANEL_VOLUME_SLIDER, &ox, &oy );
-	
+
 	if( mx < ox )
 	{
 		PanelVolumeSlider( mx - sliderWidth / 2 - ox );
@@ -635,7 +635,7 @@ void PanelVolumeSliderBox( short mx )
 	{
 		PanelVolumeSlider( mx + sliderWidth / 2 - ( ox + sliderWidth ) );
 	}
-	
+
 	DeselectObject( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );
 }
 
@@ -648,12 +648,12 @@ void PanelChangeSkin( void )
 	short				parent;
 	int					i, j;
 	BOOL				rscInMemory = FALSE;
-	
+
 	if( strcmp( g_rscName, "" ) != 0 )
 	{
 		rscInMemory = TRUE;
 	}
-	
+
 	strcpy( name, g_rscName );	/* as default last (current) rsc file */
 
 	if( select_file( path, name, "*.rsc", "Select skin resource", CB_RscFileSelect ) == TRUE )
@@ -663,7 +663,7 @@ void PanelChangeSkin( void )
 		{
 			strcpy( g_rscName, name );
 		}
-		
+
 		if( rscInMemory == TRUE )
 		{
 			for( i = 0; i < WD_LIST_SIZE; i++ )
@@ -671,22 +671,22 @@ void PanelChangeSkin( void )
 				SDialog[i].mode = g_winDialogs[i]->mode;
 				SDialog[i].x = g_winDialogs[i]->work.g_x;
 				SDialog[i].y = g_winDialogs[i]->work.g_y;
-				
+
 				for( j = 0; j < 32; j++ )
 				{
 					SDialog[i].selectedObj[j] = -1;
 				}
-				
+
 				parent = ROOT;
 				obj = g_winDialogs[i]->tree[parent].ob_head;
-				
+
 				if( g_winDialogs[i]->tree[obj].ob_head != -1 )
 				{
 					/* there's some child as background (cicon) */
 					parent = obj;
 					obj = g_winDialogs[i]->tree[parent].ob_head;
 				}
-								
+
 				/*
 				 * go trought all panel objects (other objects have no chance
 				 * to be selected or selectable at all
@@ -699,22 +699,22 @@ void PanelChangeSkin( void )
 					{
 						SDialog[i].selectedObj[j++] = obj;
 					}
-					
+
 					obj = g_winDialogs[i]->tree[obj].ob_next;
 				}
 			}
-			
+
 			DeleteDialogs();
 			rsrc_free();
 		}
-		
+
 		InitRsc();
-		
+
 		if( rscInMemory == TRUE )
 		{
 			PluginInfoInit();
 			ModuleInfoInit();
-			
+
 			for( i = 0; i < WD_LIST_SIZE; i++ )
 			{
 				j = 0;
@@ -724,13 +724,13 @@ void PanelChangeSkin( void )
 					redraw_wdobj( g_winDialogs[i], SDialog[i].selectedObj[j] );
 					j++;
 				}
-				
+
 				if( ( SDialog[i].mode & WD_OPEN ) != 0 )
 				{
 					open_wdial( g_winDialogs[i], SDialog[i].x, SDialog[i].y );
 				}
 			}
-			
+
 			PanelVolumeInit();
 			PlayListReinit();
 			PluginInfoReinit();
@@ -753,11 +753,11 @@ void LoadAndPlay( void )
 		{
 			PanelStop();
 		}
-		
+
 		split_extension( g_currName, NULL, ext );
-		
+
 		g_pCurrAudioPlugin = LookForAudioPlugin( ext );
-		
+
 		if( g_pCurrAudioPlugin == NULL )	/* this should be impossible */
 		{
 			ShowNoReplayFoundDialog();
@@ -767,14 +767,14 @@ void LoadAndPlay( void )
 			if( LoadAudioModule( g_currPath, g_currName ) == TRUE )
 			{
 				AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
-				
+
 				PluginInfoUpdate();
-				
+
 				PanelPlay();
-				
+
 				ModuleInfoUpdate();
-				
-				
+
+
 				PlayListDisplayTrackNumber();
 			}
 		}

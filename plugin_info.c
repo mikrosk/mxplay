@@ -2,7 +2,7 @@
  * plugin_info.c -- Plugin Info dialog and all around it
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -52,7 +52,7 @@ static GRECT	slotx;		/* end, not usable */
 static struct SInfoParam* PluginInfoGetParam( short obj )
 {
 	int i;
-	
+
 	for( i = 0; i < pluginParamCount; i++ )
 	{
 		if( pluginParam[i].valueObj == obj )
@@ -60,7 +60,7 @@ static struct SInfoParam* PluginInfoGetParam( short obj )
 			return &pluginParam[i];
 		}
 	}
-	
+
 	return NULL;
 }
 
@@ -73,7 +73,7 @@ static BOOL PluginInfoGetParamType( OBJECT* tree, short obj, short* type, struct
 	struct SParameter*		pluginAudioParam;
 	struct SInfoParam*	pluginInfoParam;
 	char text[256];
-	
+
 	if( g_pCurrAudioPlugin != NULL )
 	{
 		pluginInfoParam = PluginInfoGetParam( obj );
@@ -85,7 +85,7 @@ static BOOL PluginInfoGetParamType( OBJECT* tree, short obj, short* type, struct
 				/* if there was a space for colon, remove it */
 				text[strlen( text ) - 1] = '\0';
 			}
-			
+
 			pluginAudioParam = AudioPluginGetParam( g_pCurrAudioPlugin, text );
 			if( pluginAudioParam != NULL )
 			{
@@ -101,7 +101,7 @@ static BOOL PluginInfoGetParamType( OBJECT* tree, short obj, short* type, struct
 			}
 		}
 	}
-	
+
 	return FALSE;
 }
 
@@ -112,7 +112,7 @@ static short PluginInfoGetParamsCount( struct SAudioPlugin* plugin )
 {
 	struct SParameter*	param = plugin->pSParameter;
 	short				count = 0;
-	
+
 	while( param->pName != NULL )
 	{
 		if( ( param->type & MXP_FLG_PLG_PARAM ) != 0 )
@@ -133,17 +133,17 @@ static BOOL PluginInfoCloneObject( OBJECT* tree, short dst, short src )
 {
 	char*	string;
 	int		length;
-	
+
 	/* common for all objects */
 	memcpy( &tree[dst], &tree[src], sizeof( OBJECT ) );
-	
+
 	tree[dst].ob_head = -1;
 	tree[dst].ob_next = 0;
 	tree[dst].ob_tail = -1;
-	
+
 	set_flag( tree, dst, OF_HIDETREE, FALSE );
 	objc_add( tree, ROOT, dst );
-	
+
 	if( get_obtype( tree, dst, NULL ) == G_TEXT )
 	{
 		/* new tedinfo */
@@ -153,7 +153,7 @@ static BOOL PluginInfoCloneObject( OBJECT* tree, short dst, short src )
 			return FALSE;
 		}
 		memcpy( tree[dst].ob_spec.tedinfo, tree[src].ob_spec.tedinfo, sizeof( TEDINFO ) );
-		
+
 		/* descriptive string */
 		length = tree[src].ob_spec.tedinfo->te_txtlen;
 		string = (char*)malloc( length );
@@ -173,7 +173,7 @@ static BOOL PluginInfoCloneObject( OBJECT* tree, short dst, short src )
 			return FALSE;
 		}
 		memcpy( tree[dst].ob_spec.tedinfo, tree[src].ob_spec.tedinfo, sizeof( TEDINFO ) );
-		
+
 		/* text */
 		length = tree[src].ob_spec.tedinfo->te_txtlen;
 
@@ -184,7 +184,7 @@ static BOOL PluginInfoCloneObject( OBJECT* tree, short dst, short src )
 		}
 		strcpy( string, "" );
 		tree[dst].ob_spec.tedinfo->te_ptext = string;
-				
+
 		/* template */
 		string = (char*)malloc( length );
 		if( VerifyAlloc( string ) == FALSE )
@@ -194,7 +194,7 @@ static BOOL PluginInfoCloneObject( OBJECT* tree, short dst, short src )
 		memset( string, '_', length - 1 );
 		string[length - 1] = '\0';
 		tree[dst].ob_spec.tedinfo->te_ptmplt = string;
-		
+
 		/* validation */
 		string = (char*)malloc( length );
 		if( VerifyAlloc( string ) == FALSE )
@@ -212,7 +212,7 @@ static BOOL PluginInfoCloneObject( OBJECT* tree, short dst, short src )
 		string[length - 1] = '\0';
 		tree[dst].ob_spec.tedinfo->te_pvalid = string;
 	}
-	
+
 	return TRUE;
 }
 
@@ -226,9 +226,9 @@ static void PluginInfoAddParam( OBJECT* tree, short obj, short type )
 	{
 		return;
 	}
-	
+
 	obj++;
-	
+
 	switch( type )
 	{
 		case MXP_PAR_TYPE_BOOL:
@@ -236,13 +236,13 @@ static void PluginInfoAddParam( OBJECT* tree, short obj, short type )
 			tree[PLUGIN_OPT_BOOL].ob_y = tree[obj-1].ob_y;
 			PluginInfoCloneObject( tree, obj, PLUGIN_OPT_BOOL );
 		break;
-		
+
 		case MXP_PAR_TYPE_INT:
 			tree[PLUGIN_OPT_INT].ob_x = tree[obj-1].ob_x + tree[obj-1].ob_width;
 			tree[PLUGIN_OPT_INT].ob_y = tree[obj-1].ob_y;
 			PluginInfoCloneObject( tree, obj, PLUGIN_OPT_INT );
 		break;
-		
+
 		case MXP_PAR_TYPE_CHAR:
 			tree[PLUGIN_OPT_CHAR].ob_x = tree[obj-1].ob_x + tree[obj-1].ob_width;
 			tree[PLUGIN_OPT_CHAR].ob_y = tree[obj-1].ob_y;
@@ -267,10 +267,10 @@ static void PluginInfoAddParams( OBJECT* tree, short freeObj, GRECT* pos, short 
 	int		len;
 	int		skip;
 	short	editObj = 0;
-	
+
 	currSlot = *pos;
 	skip = pluginParamCurrent;
-	
+
 	/* add checkboxes */
 	param = g_pCurrAudioPlugin->pSParameter;
 	while( param->pName != NULL && freeObj < freeObjs )
@@ -291,10 +291,10 @@ static void PluginInfoAddParams( OBJECT* tree, short freeObj, GRECT* pos, short 
 				set_string( tree, PLUGIN_OPT_DESC, text );
 				tree[PLUGIN_OPT_DESC].ob_x = currSlot.g_x;
 				tree[PLUGIN_OPT_DESC].ob_y = currSlot.g_y;
-	
+
 				/* description + parameter */
 				PluginInfoAddParam( tree, freeObj, MXP_PAR_TYPE_BOOL );
-	
+
 				currSlot.g_y += slotHeight;
 				freeObj += 2;
 			}
@@ -305,7 +305,7 @@ static void PluginInfoAddParams( OBJECT* tree, short freeObj, GRECT* pos, short 
 		}
 		param++;
 	}
-	
+
 	/* add integer fields */
 	param = g_pCurrAudioPlugin->pSParameter;
 	while( param->pName != NULL && freeObj < freeObjs )
@@ -326,14 +326,14 @@ static void PluginInfoAddParams( OBJECT* tree, short freeObj, GRECT* pos, short 
 				set_string( tree, PLUGIN_OPT_DESC, text );
 				tree[PLUGIN_OPT_DESC].ob_x = currSlot.g_x;
 				tree[PLUGIN_OPT_DESC].ob_y = currSlot.g_y;
-	
+
 				/* description + parameter */
 				PluginInfoAddParam( tree, freeObj, MXP_PAR_TYPE_INT );
 				if( editObj == 0 )
 				{
 					editObj = freeObj;
 				}
-	
+
 				currSlot.g_y += slotHeight;
 				freeObj += 2;
 			}
@@ -344,7 +344,7 @@ static void PluginInfoAddParams( OBJECT* tree, short freeObj, GRECT* pos, short 
 		}
 		param++;
 	}
-	
+
 	/* add string fields */
 	param = g_pCurrAudioPlugin->pSParameter;
 	while( param->pName != NULL && freeObj < freeObjs )
@@ -365,14 +365,14 @@ static void PluginInfoAddParams( OBJECT* tree, short freeObj, GRECT* pos, short 
 				set_string( tree, PLUGIN_OPT_DESC, text );
 				tree[PLUGIN_OPT_DESC].ob_x = currSlot.g_x;
 				tree[PLUGIN_OPT_DESC].ob_y = currSlot.g_y;
-	
+
 				/* description + parameter */
 				PluginInfoAddParam( tree, freeObj, MXP_PAR_TYPE_CHAR );
 				if( editObj == 0 )
 				{
 					editObj = freeObj;
 				}
-	
+
 				currSlot.g_y += slotHeight;
 				freeObj += 2;
 			}
@@ -383,7 +383,7 @@ static void PluginInfoAddParams( OBJECT* tree, short freeObj, GRECT* pos, short 
 		}
 		param++;
 	}
-	
+
 	g_winDialogs[WD_PLUGIN]->edit_obj = editObj;
 	g_winDialogs[WD_PLUGIN]->next_obj = 0;
 	g_winDialogs[WD_PLUGIN]->edit_idx = 0;
@@ -399,11 +399,11 @@ static void PluginInfoCheckParams( void )
 	long	value;
 	int		i;
 	short	obj;
-	
+
 	for( i = 0; i < pluginParamCount; i++ )
 	{
 		obj = pluginParam[i].valueObj;
-		
+
 		if( PluginInfoGetParamType( g_winDialogs[WD_PLUGIN]->tree, obj, NULL, &param ) == TRUE )
 		{
 			/* this should always happen */
@@ -412,7 +412,7 @@ static void PluginInfoCheckParams( void )
 			{
 				set_state( g_winDialogs[WD_PLUGIN]->tree, obj, OS_DISABLED, TRUE );
 			}
-			
+
 			switch( pluginParam[i].valueType )
 			{
 				case MXP_PAR_TYPE_BOOL:
@@ -425,20 +425,20 @@ static void PluginInfoCheckParams( void )
 						DeselectObject( g_winDialogs[WD_PLUGIN], obj );
 					}
 				break;
-				
+
 				case MXP_PAR_TYPE_INT:
 					set_long( g_winDialogs[WD_PLUGIN]->tree, obj, value );
 					/* last editable object will be selected */
 					//change_wdedit( g_winDialogs[WD_PLUGIN], obj );
 				break;
-				
+
 				case MXP_PAR_TYPE_CHAR:
 					set_string( g_winDialogs[WD_PLUGIN]->tree, obj, (char*)value );
 					//change_wdedit( g_winDialogs[WD_PLUGIN], obj );
 				break;
 			}
 		}
-		
+
 		/* redraw them */
 		redraw_wdobj( g_winDialogs[WD_PLUGIN], pluginParam[i].stringObj );
 		redraw_wdobj( g_winDialogs[WD_PLUGIN], pluginParam[i].valueObj );
@@ -456,7 +456,7 @@ static void PluginInfoSetParams( void )
 	long	value;
 	int		i;
 	short	obj;
-	
+
 	for( i = 0; i < pluginParamCount; i++ )
 	{
 		obj = pluginParam[i].valueObj;
@@ -471,12 +471,12 @@ static void PluginInfoSetParams( void )
 						value = (long)get_state( g_winDialogs[WD_PLUGIN]->tree, obj, OS_SELECTED );
 						AudioPluginSet( g_pCurrAudioPlugin, param, value );
 					break;
-					
+
 					case MXP_PAR_TYPE_INT:
 						value = get_long( g_winDialogs[WD_PLUGIN]->tree, obj );
 						AudioPluginSet( g_pCurrAudioPlugin, param, value );
 					break;
-					
+
 					case MXP_PAR_TYPE_CHAR:
 						get_string( g_winDialogs[WD_PLUGIN]->tree, obj, tempString );
 						value = (long)tempString;
@@ -500,7 +500,7 @@ static void PluginInfoCheckBaseInfo( void )
 	char*	replayVersion;
 	long	flags = 0;
 	OBJECT*	tree;
-	
+
 	tree = g_winDialogs[WD_PLUGIN]->tree;
 
 	if( g_pCurrAudioPlugin != NULL )
@@ -520,7 +520,7 @@ static void PluginInfoCheckBaseInfo( void )
 		set_string( tree, PLUGIN_REP_AUTHOR, "n/a" );
 		set_string( tree, PLUGIN_REP_VERSION, "n/a" );
 	}
-	
+
 	if( ( flags & MXP_FLG_USE_020 ) != 0 )
 	{
 		set_string( tree, PLUGIN_CPU020, "Yes" );
@@ -529,7 +529,7 @@ static void PluginInfoCheckBaseInfo( void )
 	{
 		set_string( tree, PLUGIN_CPU020, "No" );
 	}
-	
+
 	if( ( flags & MXP_FLG_USE_DSP ) != 0 )
 	{
 		set_string( tree, PLUGIN_DSP, "Yes" );
@@ -538,7 +538,7 @@ static void PluginInfoCheckBaseInfo( void )
 	{
 		set_string( tree, PLUGIN_DSP, "No" );
 	}
-	
+
 	if( ( flags & MXP_FLG_USE_DMA ) != 0 )
 	{
 		set_string( tree, PLUGIN_DMA, "Yes" );
@@ -547,7 +547,7 @@ static void PluginInfoCheckBaseInfo( void )
 	{
 		set_string( tree, PLUGIN_DMA, "No" );
 	}
-	
+
 	if( ( flags & MXP_FLG_USE_FPU ) != 0 )
 	{
 		set_string( tree, PLUGIN_FPU, "Yes" );
@@ -565,13 +565,13 @@ static void PluginInfoDestroyTree( OBJECT* tree )
 {
 	short obj;
 	short objects;
-	
+
 	origPluginTree[ROOT].ob_x = tree[ROOT].ob_x;
 	origPluginTree[ROOT].ob_y = tree[ROOT].ob_y;
-	
+
 	obj = GetObjectCount( origPluginTree );	/* number of old objects */
 	objects = GetObjectCount( tree );	/* number of old+new objects */
-	
+
 	for( ; obj < objects; obj++ )
 	{
 		if( get_obtype( tree, obj, NULL ) == G_TEXT )
@@ -593,7 +593,7 @@ static void PluginInfoDestroyTree( OBJECT* tree )
 			tree[obj].ob_spec.tedinfo = NULL;
 		}
 	}
-	
+
 	free( tree );
 }
 
@@ -609,26 +609,26 @@ static void PluginInfoCreateDialog( void )
 	OBJECT*	tree;
 	short	objects;
 	GRECT	r;
-	
+
 	/* reset the tree */
 	if( tempPluginTree != NULL )
 	{
 		g_winDialogs[WD_PLUGIN]->tree = origPluginTree;
-		
+
 		PluginInfoDestroyTree( tempPluginTree );
 		tempPluginTree = NULL;
-		
+
 		free( pluginParam );
 		pluginParam = NULL;
 		pluginParamCount = 0;
-		
+
 		g_winDialogs[WD_PLUGIN]->edit_obj = 0;
 		g_winDialogs[WD_PLUGIN]->next_obj = 0;
 		g_winDialogs[WD_PLUGIN]->edit_idx = 0;
 	}
-	
+
 	tree = g_winDialogs[WD_PLUGIN]->tree;
-	
+
 	if( g_pCurrAudioPlugin != NULL )
 	{
 		params = PluginInfoGetParamsCount( g_pCurrAudioPlugin );
@@ -640,14 +640,14 @@ static void PluginInfoCreateDialog( void )
 				return;
 			}
 			pluginParamCount = 0;
-			
+
 			/* allocate space for the new dialog - for each slot two objects - desc and value */
 			freeObj = CloneDialog( origPluginTree, &tempPluginTree, MIN( params, slots ) * 2 );
 			if( freeObj == -1 )
 			{
 				return;
 			}
-	
+
 			tree = tempPluginTree;
 			offset = MIN( params, slots ) * slotHeight;
 
@@ -661,7 +661,7 @@ static void PluginInfoCreateDialog( void )
 					tree[obj].ob_y += offset;
 				}
 			}
-			
+
 			if( params <= slots )
 			{
 				PluginInfoAddParams( tree, freeObj, &slotUp, freeObj + slots * 2 );
@@ -673,11 +673,11 @@ static void PluginInfoCreateDialog( void )
 				tree[PLUGIN_OPT_UP].ob_y = slotUp.g_y;
 				set_flag( tree, PLUGIN_OPT_UP, OF_HIDETREE, FALSE );
 				freeObj++;
-				
+
 				/* params */
 				PluginInfoAddParams( tree, freeObj, &slotGen, freeObj + ( slots - 2 ) * 2 );
 				freeObj += ( slots - 2 ) * 2;
-				
+
 				/* down button */
 				tree[PLUGIN_OPT_DOWN].ob_x = slotDown.g_x + slotDown.g_w / 2 - tree[PLUGIN_OPT_DOWN].ob_width / 2;
 				tree[PLUGIN_OPT_DOWN].ob_y = slotDown.g_y;
@@ -685,15 +685,15 @@ static void PluginInfoCreateDialog( void )
 				freeObj++;
 			}
 		}
-		
+
 		g_winDialogs[WD_PLUGIN]->tree = tree;
-		
+
 		/* dialog box */
 		tree[ROOT].ob_height = origPluginTree[ROOT].ob_height + offset;
-		
+
 		/* internal cflib value */
 		memcpy( &g_winDialogs[WD_PLUGIN]->work, &tree[ROOT].ob_x, 4 * sizeof( short ) );
-		
+
 		wind_calc_grect( WC_BORDER, g_winDialogs[WD_PLUGIN]->win_kind, &g_winDialogs[WD_PLUGIN]->work, &r );
 		wind_set_grect( g_winDialogs[WD_PLUGIN]->win_handle, WF_CURRXYWH, &r );
 	}
@@ -708,14 +708,14 @@ void PluginInfoInit( void )
 	short	cut;
 	OBJECT*	tree;
 	short	objects;
-	
+
 	origPluginTree = g_winDialogs[WD_PLUGIN]->tree;
 	tree = origPluginTree;
-	
+
 	slots = 0;
-	
+
 	objects = GetObjectCount( tree );
-	
+
 	for( obj = 1; obj < objects; obj++ )
 	{
 		if( get_state( tree, obj, OS_DISABLED ) == TRUE )
@@ -723,15 +723,15 @@ void PluginInfoInit( void )
 			slots++;
 		}
 	}
-	
+
 	objects = GetObjectCount( tree );
-	
+
 	/* bounding slots */
 	set_flag( tree, PLUGIN_POS_START, OF_HIDETREE, TRUE );
 	set_flag( tree, PLUGIN_POS_END, OF_HIDETREE, TRUE );
 	memcpy( &slot0.g_x, &tree[PLUGIN_POS_START].ob_x, 4 * sizeof( short ) );
 	memcpy( &slotx.g_x, &tree[PLUGIN_POS_END].ob_x, 4 * sizeof( short ) );
-	
+
 	for( obj = 1; obj < objects; obj++ )
 	{
 		/* move up & hide everything between bounding slots */
@@ -741,7 +741,7 @@ void PluginInfoInit( void )
 			set_flag( tree, obj, OF_HIDETREE, TRUE );
 		}
 	}
-	
+
 	/* slots for plugin parameters */
 	memcpy( &slotUp.g_x, &tree[PLUGIN_POS_FIRST].ob_x, 4 * sizeof( short ) );
 	memcpy( &slotGen.g_x, &tree[PLUGIN_POS_GEN].ob_x, 4 * sizeof( short ) );
@@ -758,11 +758,11 @@ void PluginInfoInit( void )
 			tree[obj].ob_y -= cut;
 		}
 	}
-	
+
 	/* correct dialog's height */
 	tree[ROOT].ob_height -= cut;
 	g_winDialogs[WD_PLUGIN]->work.g_h -= cut;
-	
+
 	slotHeight = slotGen.g_h + ( slotGen.g_y - ( slotUp.g_y + slotUp.g_h ) );	/* with "border" */
 }
 
@@ -783,7 +783,7 @@ void PluginInfoReinit( void )
  */
 void PluginInfoUpdate( void )
 {
-	if( ( g_winDialogs[WD_PLUGIN]->mode & WD_OPEN ) == 0 ) 
+	if( ( g_winDialogs[WD_PLUGIN]->mode & WD_OPEN ) == 0 )
 	{
 		return;
 	}
@@ -819,16 +819,16 @@ void PluginInfoButton( short obj )
 	short	type;
 	long	value;
 	short	params;
-	
+
 	if( g_pCurrAudioPlugin != NULL )
 	{
 		params = PluginInfoGetParamsCount( g_pCurrAudioPlugin );
-		
+
 		switch( obj )
 		{
 			case PLUGIN_OPT_UP:
 				DeselectObject( g_winDialogs[WD_PLUGIN], obj );
-				
+
 				if( pluginParamCurrent > 0 )
 				{
 					pluginParamCurrent--;
@@ -837,10 +837,10 @@ void PluginInfoButton( short obj )
 					redraw_wdobj( g_winDialogs[WD_PLUGIN], ROOT );	// TODO: solution?
 				}
 			break;
-			
+
 			case PLUGIN_OPT_DOWN:
 				DeselectObject( g_winDialogs[WD_PLUGIN], obj );
-				
+
 				if( pluginParamCurrent < params - 1 )
 				{
 					pluginParamCurrent++;
@@ -849,11 +849,11 @@ void PluginInfoButton( short obj )
 					redraw_wdobj( g_winDialogs[WD_PLUGIN], ROOT );
 				}
 			break;
-			
+
 			case PLUGIN_OK:
 				PluginInfoSetParams();
 			break;
-			
+
 			default:
 				if( PluginInfoGetParamType( g_winDialogs[WD_PLUGIN]->tree, obj, &type, &param ) == TRUE )
 				{
@@ -874,11 +874,11 @@ void PluginInfoButton( short obj )
 									AudioPluginSet( g_pCurrAudioPlugin, param, TRUE );
 								}
 							break;
-							
+
 							case MXP_PAR_TYPE_INT:
 								change_wdedit( g_winDialogs[WD_PLUGIN], obj );
 							break;
-							
+
 							case MXP_PAR_TYPE_CHAR:
 								change_wdedit( g_winDialogs[WD_PLUGIN], obj );
 							break;

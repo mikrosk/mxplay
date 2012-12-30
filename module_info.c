@@ -2,7 +2,7 @@
  * module_info.c -- code for Module Info dialog
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -130,9 +130,9 @@ static void ModuleInfoLeft( struct SInfoParam* param )
 	struct SParameter* audioParam;
 	char	text[255+1];
 	OBJECT*	tree;
-	
+
 	tree = g_winDialogs[WD_MODULE]->tree;
-	
+
 	if( ModuleInfoGetModuleParam( g_pCurrAudioPlugin, tree, param->valueObj, NULL, &audioParam ) == TRUE )
 	{
 		if( param->scrollable == TRUE && param->scrolled > 0 )
@@ -142,7 +142,7 @@ static void ModuleInfoLeft( struct SInfoParam* param )
 			set_string( tree, param->valueObj, &text[--param->scrolled] );
 			redraw_wdobj( g_winDialogs[WD_MODULE], param->valueObj );
 		}
-		
+
 		if( param->scrolled > 0 )
 		{
 			EnableObject( g_winDialogs[WD_MODULE], param->leftObj );
@@ -165,15 +165,15 @@ static void ModuleInfoRight( struct SInfoParam* param )
 	char	text[255+1];
 	OBJECT*	tree;
 	int		delta;
-	
+
 	tree = g_winDialogs[WD_MODULE]->tree;
-	
+
 	if( ModuleInfoGetModuleParam( g_pCurrAudioPlugin, tree, param->valueObj, NULL, &audioParam ) == TRUE )
 	{
 		if( param->scrollable == TRUE )
 		{
 			ConvertMxpParamTypes( g_pCurrAudioPlugin, audioParam, text );
-	
+
 			delta = strlen( text ) + 1 - tree[param->valueObj].ob_spec.tedinfo->te_txtlen;
 
 			if( param->scrolled < delta )
@@ -181,7 +181,7 @@ static void ModuleInfoRight( struct SInfoParam* param )
 				set_string( tree, param->valueObj, &text[++param->scrolled] );
 				redraw_wdobj( g_winDialogs[WD_MODULE], param->valueObj );
 			}
-			
+
 			if( param->scrolled < delta )
 			{
 				EnableObject( g_winDialogs[WD_MODULE], param->rightObj );
@@ -234,7 +234,7 @@ static BOOL ModuleInfoCloneObject( OBJECT* tree, short dst, short src, int textL
 
 	set_flag( tree, dst, OF_HIDETREE, FALSE );
 	objc_add( tree, MODULE_BACKGROUND, dst );
-	
+
 	if( get_obtype( tree, dst, NULL ) == G_TEXT )
 	{
 		/* new tedinfo */
@@ -244,7 +244,7 @@ static BOOL ModuleInfoCloneObject( OBJECT* tree, short dst, short src, int textL
 			return FALSE;
 		}
 		memcpy( tree[dst].ob_spec.tedinfo, tree[src].ob_spec.tedinfo, sizeof( TEDINFO ) );
-	
+
 		/* text */
 		if( src == MODULE_OPT_VALUE )	/* special case of text object */
 		{
@@ -263,7 +263,7 @@ static BOOL ModuleInfoCloneObject( OBJECT* tree, short dst, short src, int textL
 		tree[dst].ob_spec.tedinfo->te_txtlen = length;
 		set_string( tree, dst, tree[src].ob_spec.tedinfo->te_ptext );
 	}
-	
+
 	return TRUE;
 }
 
@@ -285,7 +285,7 @@ static void ModuleInfoAddParams( OBJECT* tree, short freeObj, short freeObjs )
 	/* uses y and height only */
 	currSlot.g_y = tree[MODULE_OPT_DESC].ob_y;
 	currSlot.g_h = tree[MODULE_OPT_DESC].ob_height;
-	
+
 	/* calculate new text size */
 	pTed = tree[MODULE_OPT_VALUE].ob_spec.tedinfo;	/* every text field must have the same size */
 	switch( pTed->te_font )
@@ -294,19 +294,19 @@ static void ModuleInfoAddParams( OBJECT* tree, short freeObj, short freeObjs )
 			/* system font */
 			fontSize = 8;
 		break;
-		
+
 		case 5:
 			/* small system font */
 			fontSize = 6;
 		break;
-		
+
 		default:
 			/* GDOS font */
 			fontSize = pTed->te_fontsize;
 		break;
 	}
 	newTextSize = tree[MODULE_OPT_VALUE].ob_width / fontSize + 1;	/* incl. '\0' */
-	
+
 	skip = moduleInfoParamCurrent;
 
 	param = g_pCurrAudioPlugin->pSParameter;
@@ -317,7 +317,7 @@ static void ModuleInfoAddParams( OBJECT* tree, short freeObj, short freeObjs )
 			if( skip == 0 )
 			{
 				currSlot.g_x = tree[MODULE_OPT_DESC].ob_x;	/* description as first */
-				
+
 				/* description */
 				len = MIN( 255, strlen( param->pName ) );
 				strncpy( text, param->pName, len );
@@ -337,7 +337,7 @@ static void ModuleInfoAddParams( OBJECT* tree, short freeObj, short freeObjs )
 				currSlot.g_x += tree[MODULE_OPT_DESC].ob_width;	/* length of string in rsc(!) */
 				currSlot.g_x += slotHzDelta1;
 				freeObj++;
-				
+
 				/* left arrow */
 				tree[MODULE_OPT_LEFT].ob_x = currSlot.g_x;
 				tree[MODULE_OPT_LEFT].ob_y = currSlot.g_y;
@@ -345,11 +345,11 @@ static void ModuleInfoAddParams( OBJECT* tree, short freeObj, short freeObjs )
 				{
 					return;
 				}
-				
+
 				currSlot.g_x += tree[MODULE_OPT_LEFT].ob_width;
 				currSlot.g_x += slotHzDelta2;
 				freeObj++;
-				
+
 				/* value will be added in CheckParams() */
 				tree[MODULE_OPT_VALUE].ob_x = currSlot.g_x;
 				tree[MODULE_OPT_VALUE].ob_y = currSlot.g_y;
@@ -357,11 +357,11 @@ static void ModuleInfoAddParams( OBJECT* tree, short freeObj, short freeObjs )
 				{
 					return;
 				}
-				
+
 				currSlot.g_x += tree[MODULE_OPT_VALUE].ob_width;
 				currSlot.g_x += slotHzDelta3;
 				freeObj++;
-				
+
 				/* right arrow */
 				tree[MODULE_OPT_RIGHT].ob_x = currSlot.g_x;
 				tree[MODULE_OPT_RIGHT].ob_y = currSlot.g_y;
@@ -369,7 +369,7 @@ static void ModuleInfoAddParams( OBJECT* tree, short freeObj, short freeObjs )
 				{
 					return;
 				}
-				
+
 				currSlot.g_x += tree[MODULE_OPT_RIGHT].ob_width;	/* not really neccessary */
 				freeObj++;
 
@@ -379,10 +379,10 @@ static void ModuleInfoAddParams( OBJECT* tree, short freeObj, short freeObjs )
 				moduleInfoParam[moduleInfoParamCount].rightObj = freeObj - 1;	/* right arrow */
 				moduleInfoParam[moduleInfoParamCount].scrolled = -1;
 				moduleInfoParam[moduleInfoParamCount].scrollable = FALSE;
-				
+
 				set_state( tree, moduleInfoParam[moduleInfoParamCount].leftObj, OS_DISABLED, TRUE );
 				set_state( tree, moduleInfoParam[moduleInfoParamCount].rightObj, OS_DISABLED, TRUE );
-				
+
 				moduleInfoParamCount++;
 
 				currSlot.g_y += currSlot.g_h;
@@ -394,10 +394,10 @@ static void ModuleInfoAddParams( OBJECT* tree, short freeObj, short freeObjs )
 		}
 		param++;
 	}
-	
+
 	/* special object */
 	newTextSize = tree[MODULE_FILENAME].ob_width / fontSize + 1;	/* incl. '\0' */
-	
+
 	tree[MODULE_FILENAME].ob_spec.tedinfo->te_ptext = (char*)malloc( newTextSize );
 	if( VerifyAlloc( tree[MODULE_FILENAME].ob_spec.tedinfo->te_ptext ) == FALSE )
 	{
@@ -420,12 +420,12 @@ static void ModuleInfoCheckParams( void )
 	char	text[255+1];
 	short	objStringLength;
 	int		modStringLength;
-	
+
 	tree = g_winDialogs[WD_MODULE]->tree;
-	
+
 	objStringLength = tree[MODULE_FILENAME].ob_spec.tedinfo->te_txtlen - 1;
 	modStringLength = strlen( g_currModuleName );
-	
+
 	if( objStringLength >= modStringLength )
 	{
 		set_string( tree, MODULE_FILENAME, g_currModuleName );
@@ -440,7 +440,7 @@ static void ModuleInfoCheckParams( void )
 		strcat( text, &g_currModuleName[modStringLength - ( ( objStringLength / 2 ) - 1 )] );
 		set_string( tree, MODULE_FILENAME, text );
 	}
-	
+
 	redraw_wdobj( g_winDialogs[WD_MODULE], MODULE_FILENAME );
 
 	for( i = 0; i < moduleInfoParamCount; i++ )
@@ -450,7 +450,7 @@ static void ModuleInfoCheckParams( void )
 		if( ModuleInfoGetModuleParam( g_pCurrAudioPlugin, tree, obj, NULL, &param ) == TRUE )
 		{
 			ConvertMxpParamTypes( g_pCurrAudioPlugin, param, text );
-			
+
 			set_string( tree, obj, text );
 			if( tree[obj].ob_spec.tedinfo->te_txtlen < strlen( text ) + 1 )
 			{
@@ -471,7 +471,7 @@ static void ModuleInfoCheckParams( void )
 			redraw_wdobj( g_winDialogs[WD_MODULE], moduleInfoParam[i].stringObj );
 			redraw_wdobj( g_winDialogs[WD_MODULE], moduleInfoParam[i].leftObj );
 			redraw_wdobj( g_winDialogs[WD_MODULE], moduleInfoParam[i].rightObj );
-			
+
 		}
 	}
 }
@@ -487,13 +487,13 @@ static void ModuleInfoResetDialog( void )
 	if( tempModuleTree != NULL )
 	{
 		g_winDialogs[WD_MODULE]->tree = origModuleTree;
-		
+
 		origModuleTree[ROOT].ob_x = tempModuleTree[ROOT].ob_x;
 		origModuleTree[ROOT].ob_y = tempModuleTree[ROOT].ob_y;
-	
+
 		obj = GetObjectCount( origModuleTree );	/* number of old objects */
 		objects = GetObjectCount( tempModuleTree );	/* number of old+new objects */
-	
+
 		for( ; obj < objects; obj++ )
 		{
 			if( get_obtype( tempModuleTree, obj, NULL ) == G_TEXT )
@@ -504,18 +504,18 @@ static void ModuleInfoResetDialog( void )
 				tempModuleTree[obj].ob_spec.tedinfo = NULL;
 			}
 		}
-		
+
 		/* this objects isn't created from scratch */
 		free( tempModuleTree[MODULE_FILENAME].ob_spec.tedinfo->te_ptext );
 		tempModuleTree[MODULE_FILENAME].ob_spec.tedinfo->te_ptext = pOrigModuleText;
-	
+
 		free( tempModuleTree );
 		tempModuleTree = NULL;
 
 		free( moduleInfoParam );
 		moduleInfoParam = NULL;
 		moduleInfoParamCount = 0;
-		
+
 		moduleParamCount = 0;
 	}
 }
@@ -535,34 +535,34 @@ static void ModuleInfoCreateDialog( void )
 	{
 		tree = g_winDialogs[WD_MODULE]->tree;
 		oldObjects = GetObjectCount( tree );
-		
+
 		params = ModuleInfoGetParamsCount( g_pCurrAudioPlugin );
 		if( params > 0 )
 		{
 			moduleParamCount = params;
-			
+
 			moduleInfoParam = (struct SInfoParam*)malloc( params * sizeof( struct SInfoParam ) );
 			if( VerifyAlloc( moduleInfoParam ) == FALSE )
 			{
 				return;
 			}
 			moduleInfoParamCount = 0;
-			
+
 			currSlots = tree[MODULE_BACKGROUND].ob_height / tree[MODULE_OPT_DESC].ob_height;
-			
+
 			/* allocate space for the new dialog - for each slot four objects - desc, value and arrows */
 			freeObj = CloneDialog( origModuleTree, &tempModuleTree, currSlots * 4 );
 			if( freeObj == -1 )
 			{
 				return;
 			}
-			
+
 			tree = tempModuleTree;
-			
+
 			ModuleInfoAddParams( tree, freeObj, freeObj + MIN( currSlots, params ) * 4 );
-			
+
 			newObjects = GetObjectCount( tree );	/* must be after add params */
-			
+
 			set_flag( tree, oldObjects - 1, OF_LASTOB, FALSE );	/* kill flag from the last object */
 			set_flag( tree, newObjects - 1, OF_LASTOB, TRUE );	/* set flag on the last object */
 		}
@@ -581,7 +581,7 @@ static void ModuleInfoSliderSet( void )
 	short pos;
 	short old;
 	short dummy;
-	
+
 	if( moduleParamCount != 0 )
 	{
 		size = MIN( 1000, Round( 1000.0 * (float)currSlots / (float)moduleParamCount ) );
@@ -589,7 +589,7 @@ static void ModuleInfoSliderSet( void )
 		{
 			size = 1;
 		}
-		
+
 		pos = Round( (float)( 1000 * moduleInfoParamCurrent ) / (float)( moduleParamCount - currSlots ) );
 		if( pos < 0 )
 		{
@@ -601,13 +601,13 @@ static void ModuleInfoSliderSet( void )
 		pos = 0;
 		size = 1000;
 	}
-	
+
 	wind_get( g_winDialogs[WD_MODULE]->win_handle, WF_VSLSIZE, &old, &dummy, &dummy, &dummy );
 	if( old != size )
 	{
 		wind_set( g_winDialogs[WD_MODULE]->win_handle, WF_VSLSIZE, size, 0, 0, 0 );
 	}
-	
+
 	wind_get( g_winDialogs[WD_MODULE]->win_handle, WF_VSLIDE, &old, &dummy, &dummy, &dummy );
 	if( old != pos )
 	{
@@ -627,7 +627,7 @@ static void ModuleInfoUpCommon( int count )
 		{
 			moduleInfoParamCurrent = 0;
 		}
-		
+
 		ModuleInfoResetDialog();
 		ModuleInfoCreateDialog();
 		ModuleInfoCheckParams();
@@ -647,7 +647,7 @@ static void ModuleInfoDownCommon( int count )
 		{
 			moduleInfoParamCurrent = moduleParamCount - currSlots;
 		}
-		
+
 		ModuleInfoResetDialog();
 		ModuleInfoCreateDialog();
 		ModuleInfoCheckParams();
@@ -662,17 +662,17 @@ static void ModuleInfoResizeObjects( deltaX, deltaY )
 	short	obj;
 	short	rightBound;
 	short	bottomBound;
-	
+
 	tree = g_winDialogs[WD_MODULE]->tree;
-	
+
 	objects = GetObjectCount( tree );
-	
+
 	if( deltaX != 0 )
 	{
 		tree[ROOT].ob_width += deltaX;
-	
+
 		rightBound = tree[MODULE_BACKGROUND].ob_x + tree[MODULE_BACKGROUND].ob_width;
-		
+
 		for( obj = 1; obj < objects; obj++ )
 		{
 			if( tree[obj].ob_x > rightBound )
@@ -680,22 +680,22 @@ static void ModuleInfoResizeObjects( deltaX, deltaY )
 				tree[obj].ob_x += deltaX;
 			}
 		}
-		
+
 		tree[MODULE_OPT_VALUE].ob_width += deltaX;
 		tree[MODULE_BACKGROUND].ob_width += deltaX;
 		tree[MODULE_FILENAME].ob_width += deltaX;
-		
+
 		/* center */
 		tree[MODULE_TITLE].ob_x = tree[ROOT].ob_width / 2 - tree[MODULE_TITLE].ob_width / 2;
 		tree[MODULE_OK].ob_x = tree[ROOT].ob_width / 2 - tree[MODULE_OK].ob_width / 2;
 	}
-	
+
 	if( deltaY != 0 )
 	{
 		tree[ROOT].ob_height += deltaY;
-		
+
 		bottomBound = tree[MODULE_BACKGROUND].ob_y + tree[MODULE_BACKGROUND].ob_height;
-		
+
 		for( obj = 1; obj < objects; obj++ )
 		{
 			if( tree[obj].ob_y > bottomBound )
@@ -703,7 +703,7 @@ static void ModuleInfoResizeObjects( deltaX, deltaY )
 				tree[obj].ob_y += deltaY;
 			}
 		}
-		
+
 		tree[MODULE_BACKGROUND].ob_height += deltaY;
 	}
 }
@@ -715,7 +715,7 @@ static void ModuleInfoResizeObjects( deltaX, deltaY )
 void ModuleInfoInit( void )
 {
 	OBJECT* tree;
-	
+
 	origModuleTree = g_winDialogs[WD_MODULE]->tree;
 	tree = origModuleTree;
 
@@ -727,14 +727,14 @@ void ModuleInfoInit( void )
 	/* for ModuleInfoResize() */
 	origWidth = tree[ROOT].ob_width;	/* equivalent to work.g_w (which is still empty) */
 	origHeight = tree[ROOT].ob_height;	/* equivalent to work.g_h */
-	
+
 	set_string( tree, MODULE_FILENAME, "-" );	/* point to some reasonable value */
 	pOrigModuleText = tree[MODULE_FILENAME].ob_spec.tedinfo->te_ptext;
-	
+
 	/* center */
 	tree[MODULE_TITLE].ob_x = tree[ROOT].ob_width / 2 - tree[MODULE_TITLE].ob_width / 2;
 	tree[MODULE_OK].ob_x = tree[ROOT].ob_width / 2 - tree[MODULE_OK].ob_width / 2;
-	
+
 	set_flag( origModuleTree, MODULE_OPT_DESC, OF_HIDETREE, TRUE );
 	set_flag( origModuleTree, MODULE_OPT_VALUE, OF_HIDETREE, TRUE );
 	set_flag( origModuleTree, MODULE_OPT_LEFT, OF_HIDETREE, TRUE );
@@ -768,44 +768,44 @@ void ModuleInfoResize( GRECT* pNewR )
 	int		oldSlots;
 	GRECT	oldR;
 	GRECT	tempR;
-	
+
 	/* get area of old window */
 	wind_get_grect( g_winDialogs[WD_MODULE]->win_handle, WF_CURRXYWH, &oldR );
-	
+
 	objWidth = g_winDialogs[WD_MODULE]->tree[ROOT].ob_width;
 	objHeight = g_winDialogs[WD_MODULE]->tree[ROOT].ob_height;
-	
+
 	tempR = *pNewR;
-	
+
 	deltaX = tempR.g_w - oldR.g_w;
 	deltaY = tempR.g_h - oldR.g_h;
-	
+
 	if( objWidth + deltaX < origWidth )
 	{
 		tempR.g_w += ( origWidth - ( objWidth + deltaX ) );
 		deltaX += ( origWidth - ( objWidth + deltaX ) );
 	}
-	
+
 	if( objHeight + deltaY < origHeight )
 	{
 		tempR.g_h += ( origHeight - ( objHeight + deltaY ) );
 		deltaY += ( origHeight - ( objHeight + deltaY ) );
 	}
-	
+
 	if( tempR.g_w == oldR.g_w && tempR.g_h == oldR.g_h )
 	{
 		return;
 	}
-	
+
 	ModuleInfoResetDialog();
 
 	ModuleInfoResizeObjects( deltaX, deltaY );
-	
+
 	oldSlots = currSlots;
 	currSlots = g_winDialogs[WD_MODULE]->tree[MODULE_BACKGROUND].ob_height / g_winDialogs[WD_MODULE]->tree[MODULE_OPT_DESC].ob_height;
-	
+
 	count = currSlots - oldSlots;
-	
+
 	/* dialog grows up */
 	if( count > 0 && moduleInfoParamCurrent + oldSlots >= moduleParamCount - 1 )
 	{
@@ -824,13 +824,13 @@ void ModuleInfoResize( GRECT* pNewR )
 	}
 
 	ModuleInfoCreateDialog();
-	
+
 	ModuleInfoCheckParams();
-	
+
 	ModuleInfoSliderSet();
-	
+
 	redraw_wdobj( g_winDialogs[WD_MODULE], ROOT );
-	
+
 	wind_set_grect( g_winDialogs[WD_MODULE]->win_handle, WF_CURRXYWH, &tempR );
 	wind_calc_grect( WC_WORK, g_winDialogs[WD_MODULE]->win_kind, &tempR, &g_winDialogs[WD_MODULE]->work );
 }
@@ -861,9 +861,9 @@ void ModuleInfoUpdate( void )
 void ModuleInfoButton( short obj )
 {
 	short paramIndex;
-	
+
 	SelectObject( g_winDialogs[WD_MODULE], obj );
-	
+
 	paramIndex = ModuleInfoGetInfoParamIndex( obj );
 	if( paramIndex != -1 && get_state( g_winDialogs[WD_MODULE]->tree, obj, OS_DISABLED ) == FALSE )
 	{
@@ -876,7 +876,7 @@ void ModuleInfoButton( short obj )
 			ModuleInfoRight( &moduleInfoParam[paramIndex] );
 		}
 	}
-	
+
 	DeselectObject( g_winDialogs[WD_MODULE], obj );
 }
 
@@ -889,15 +889,15 @@ void ModuleInfoScroll( short direction )
 			case WA_UPPAGE:
 				ModuleInfoUpCommon( currSlots );
 			break;
-			
+
 			case WA_UPLINE:
 				ModuleInfoUpCommon( 1 );
 			break;
-			
+
 			case WA_DNPAGE:
 				ModuleInfoDownCommon( currSlots );
 			break;
-			
+
 			case WA_DNLINE:
 				ModuleInfoDownCommon( 1 );
 			break;
@@ -911,14 +911,14 @@ void ModuleInfoSlider( short deltaY )
 	float delta;
 	short value;
 	short dummy;
-	
+
 	if( g_pCurrAudioPlugin != NULL )
 	{
 		wind_get( g_winDialogs[WD_MODULE]->win_handle, WF_VSLIDE, &oldDeltaY, &dummy, &dummy, &dummy );
-		
+
 		delta = ( deltaY - oldDeltaY ) * ( (float)( moduleParamCount - currSlots ) / 1000.0 );
 		value = Round( delta );
-		
+
 		if( value > 0 )
 		{
 			ModuleInfoDownCommon( value );

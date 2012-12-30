@@ -2,7 +2,7 @@
  * av.c -- AV/VA communication
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -47,14 +47,14 @@ void AVInit( void )
 	short	dummy;
 	short	temp;
 	short	appId;
-	
+
 	/* alloc global memory for AV protocol */
 	sharedString = (char*)malloc_global( MXP_FILENAME_MAX+1 );
 	if( VerifyAlloc( sharedString ) == FALSE )
 	{
 		ExitPlayer( 1 );
 	}
-	
+
 	shel_envrn( &avServer, "AVSERVER=" );
 	if( avServer != NULL )
 	{
@@ -68,7 +68,7 @@ void AVInit( void )
 			memset( g_msgBuffer, 0, sizeof( g_msgBuffer ) );
 			g_msgBuffer[0] = AV_PROTOKOLL;
 			g_msgBuffer[3] = 0x0002 | 0x0010;	/* VA_START and file name quoting */
-			
+
 			/* get application's name */
 			if( appl_xgetinfo( AES_PROCESS, &dummy, &dummy, &temp, &dummy ) != FALSE
 				&& temp == TRUE )	/* appl_search exists? */
@@ -85,7 +85,7 @@ void AVInit( void )
 						temp = appl_search( APP_NEXT, tempString, &dummy, &appId );
 					}
 				}
-			
+
 				if( temp == TRUE )	/* application was found */
 				{
 					strncpy( sharedString, tempString, 8 );
@@ -93,7 +93,7 @@ void AVInit( void )
 					PadString( sharedString, 8 );
 					ol2ts( (long)sharedString, &g_msgBuffer[6], &g_msgBuffer[7] );
 				}
-			
+
 				if( SendMessage( avServerId ) <= 0 )
 				{
 					ShowCommErrorDialog();
@@ -117,7 +117,7 @@ void AVExit( void )
 			return;
 		}
 	}
-	
+
 	Mfree( sharedString );
 }
 

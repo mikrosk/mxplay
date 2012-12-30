@@ -2,7 +2,7 @@
  * dd.c -- Drag&Drop communication
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -41,7 +41,7 @@ BOOL DDParseArgs( short msg[8] )
 	char	returnedName[DD_NAMEMAX];
 	long	returnedSize;
 	char*	pReturnedCmdline;
-	
+
 	memset( supportedExts, 0, DD_EXTSIZE );
 	strcpy( supportedExts, "ARGS" );
 
@@ -67,18 +67,18 @@ BOOL DDParseArgs( short msg[8] )
 					dd_reply( fd, DD_LEN );	/* reply: not enough memory for data */
 					continue;
 				}
-	
+
 				dd_reply( fd, DD_OK );
 				Fread( fd, returnedSize, pReturnedCmdline );
 				dd_close( fd );
-				
+
 				pReturnedCmdline[returnedSize] = '\0';
 				ParseArgs( pReturnedCmdline );
 				free( pReturnedCmdline );
 			}
 		}
 		while( dd_reply( fd, DD_EXT ) == TRUE );
-		
+
 		return TRUE;
 	}
 }

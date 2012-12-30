@@ -2,7 +2,7 @@
  * audio_plugins.c -- the low-level communication with audio plugin
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -70,7 +70,7 @@ static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module,
 {
 	pInputArray[0] = (char*)module;
 	pInputArray[1] = (char*)length;
-	
+
 	plugin->inBuffer = (long)pInputArray;
 	if( plugin->RegisterModule != NULL )
 	{
@@ -89,7 +89,7 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 
 	cmdline[0] = 0;	/* 0 bytes long */
 	cmdline[1] = '\0';	/* terminate it */
-	
+
 	bp = (BASEPAGE*)Pexec( PE_LOAD, filename, cmdline, NULL );
 	if( (long)bp <= 0 )
 	{
@@ -103,9 +103,9 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 		bp->p_dlen +				/* length of data segment */
 		bp->p_blen +				/* length of BSS segment */
 		4096 );						/* length of stack */
-		
+
 		memset( bp->p_bbase, bp->p_blen, 0 );
-		
+
 		return (struct SAudioPlugin*)bp->p_tbase;	/* text segment address */
 	}
 }
@@ -118,23 +118,23 @@ void AudioPluginGetInfoLine( struct SParameter* param )
 	char	infoLine[1023+1];
 	int		i;
 	char	tempString[255+1];
-	
+
 	strcpy( infoLine, "" );
-	
+
 	for( i = 0; param[i].pName != NULL; i++ )
 	{
 		if( ( param[i].type & MXP_FLG_INFOLINE ) != 0 )
 		{
 			strcat( infoLine, param[i].pName );	/* i.e. "Songname" */
 			strcat( infoLine, ": " );
-			
+
 			ConvertMxpParamTypes( g_pCurrAudioPlugin, &param[i], tempString );
 			strcat( infoLine, tempString );
-					
+
 			strcat( infoLine, "  " );	/* delimiter */
 		}
 	}
-	
+
 	strcpy( g_panelInfoLine, infoLine );	/* update the real one */
 }
 
@@ -147,16 +147,16 @@ BOOL LoadAudioModule( char* path, char* name )
 	int				handle;
 	unsigned long	length;
 	char*			pTempModule = NULL;
-	
+
 	/* no more available */
 	if( pCurrModule != NULL )
 	{
 		Mfree( pCurrModule );
 		pCurrModule = NULL;
 	}
-	
+
 	CombinePath( tempString, path, name );
-	
+
 	handle = open( tempString, O_RDONLY );
 
 	if( handle < 0 )
@@ -171,7 +171,7 @@ BOOL LoadAudioModule( char* path, char* name )
 		{
 			return FALSE;
 		}
-		
+
 		/* Global ST RAM */
 		if( getcookie( "MiNT", NULL ) == TRUE )
 		{
@@ -197,7 +197,7 @@ BOOL LoadAudioModule( char* path, char* name )
 		else
 		{
 			close( handle );
-			
+
 			if( AudioPluginRegisterModule( g_pCurrAudioPlugin, pTempModule, length ) != MXP_OK )
 			{
 				ShowBadHeaderDialog();
@@ -226,10 +226,10 @@ struct SAudioPlugin* LookForAudioPlugin( char* extension )
 	int 				i, j;
 	struct SExtension*	ext;
 	char				tempString[MXP_FILENAME_MAX+1];
-	
+
 	strcpy( tempString, extension );
 	str_toupper( tempString );
-	
+
 	for( i = 0; i < audioPluginsCount; i++ )
 	{
 		ext = pSAudioPlugin[i]->pSExtension;
@@ -261,15 +261,15 @@ void LoadAudioPlugins( void )
 	struct dirent*	pDirEntry;
 	char			tempString[MXP_PATH_MAX+1];
 	char			ext[MXP_FILENAME_MAX+1];
-	
+
 	/* Global ST/TT RAM */
 	pInputArray = (char**)malloc_global( 2 * sizeof( char* ) );
 	if( VerifyAlloc( pInputArray ) == FALSE )
 	{
 		ExitPlayer( 1 );
 	}
-	
-	pDirStream = opendir( AUDIO_PLUGINS_PATH );	
+
+	pDirStream = opendir( AUDIO_PLUGINS_PATH );
 	if( pDirStream != NULL )
 	{
 		while( ( pDirEntry = readdir( pDirStream ) ) != NULL )
@@ -299,7 +299,7 @@ void LoadAudioPlugins( void )
 				}
 			}
 		}
-		
+
 		if( audioPluginsCount == 0 )
 		{
 			ShowNoAudioFoundDialog();
@@ -309,7 +309,7 @@ void LoadAudioPlugins( void )
 	{
 		ShowNoAudioFoundDialog();
 	}
-	
+
 	closedir( pDirStream );
 }
 
@@ -327,7 +327,7 @@ int AudioPluginModulePlay( void )
 		return MXP_OK;
 #endif
 	}
-	
+
 	return MXP_OK;
 }
 
@@ -337,7 +337,7 @@ int AudioPluginModulePlay( void )
 int AudioPluginModuleStop( void )
 {
 	int ret;
-	
+
 	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Unset != NULL )
 	{
 		g_modulePaused = FALSE;
@@ -351,7 +351,7 @@ int AudioPluginModuleStop( void )
 		return MXP_OK;
 #endif
 	}
-	
+
 	return MXP_OK;
 }
 
@@ -369,7 +369,7 @@ int AudioPluginModulePause( void )
 		return MXP_OK;
 #endif
 	}
-	
+
 	return MXP_UNIMPLEMENTED;
 }
 
@@ -387,7 +387,7 @@ int AudioPluginModuleFwd( BOOL bigStep )
 		return MXP_OK;
 #endif
 	}
-	
+
 	return MXP_UNIMPLEMENTED;
 }
 
@@ -405,14 +405,14 @@ int AudioPluginModuleRwd( BOOL bigStep )
 		return MXP_OK;
 #endif
 	}
-	
+
 	return MXP_UNIMPLEMENTED;
 }
 
 BOOL AudioPluginLockResources( void )
 {
 	long flags;
-	
+
 	if( g_pCurrAudioPlugin != NULL )
 	{
 		flags = g_pCurrAudioPlugin->pSInfo->flags;
@@ -493,7 +493,7 @@ BOOL AudioPluginLockResources( void )
 				return FALSE;
 			}
 		}
-		
+
 	}
 	return TRUE;
 }
@@ -532,7 +532,7 @@ void AudioPluginGetBaseInfo( struct SAudioPlugin* plugin,
 							 long* flags )
 {
 	struct SInfo* info = plugin->pSInfo;
-	
+
 	*pluginAuthor = info->pPluginAuthor;
 	*pluginVersion = info->pPluginVersion;
 	*replayName = info->pReplayName;
@@ -554,7 +554,7 @@ unsigned long AudioPluginGetPlayTime( void )
 		return 300;
 #endif
 	}
-	
+
 	return 0;
 }
 
@@ -564,7 +564,7 @@ unsigned long AudioPluginGetPlayTime( void )
 struct SParameter* AudioPluginGetParam( struct SAudioPlugin* plugin, char* name )
 {
 	struct SParameter* param = plugin->pSParameter;
-	
+
 	while( param->pName != NULL )
 	{
 		if( strncmp( param->pName, name, strlen( name ) ) == 0 )
@@ -573,7 +573,7 @@ struct SParameter* AudioPluginGetParam( struct SAudioPlugin* plugin, char* name 
 		}
 		param++;
 	}
-	
+
 	return NULL;
 }
 
@@ -583,7 +583,7 @@ struct SParameter* AudioPluginGetParam( struct SAudioPlugin* plugin, char* name 
 int AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long value )
 {
 	int ret;
-	
+
 	plugin->inBuffer = value;
 	ret = Supexec( param->Set );
 	AudioPluginGetInfoLine( plugin->pSParameter );	/* start from the first parameter */
@@ -596,7 +596,7 @@ int AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long 
 int AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long* value )
 {
 	int ret;
-	
+
 	ret = Supexec( param->Get );
 	*value = plugin->inBuffer;
 	return ret;

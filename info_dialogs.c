@@ -2,7 +2,7 @@
  * info_dialogs.c -- shared code between module and plugin info
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -39,9 +39,9 @@ short CloneDialog( OBJECT oldTree[], OBJECT** ppNewTree, short objs )
 {
 	short count;
 	short i;
-	
+
 	count = GetObjectCount( oldTree );
-	
+
 	*ppNewTree = (OBJECT*)malloc( ( count + objs ) * sizeof( OBJECT ) );	/* + new objs */
 	if( VerifyAlloc( *ppNewTree ) == FALSE )
 	{
@@ -54,13 +54,13 @@ short CloneDialog( OBJECT oldTree[], OBJECT** ppNewTree, short objs )
 		{
 			memcpy( &(*ppNewTree)[i], &oldTree[i], sizeof( OBJECT ) );
 		}
-		
+
 		/* init new objects */
 		for( i = count; i < count + objs; i++ )
 		{
 			memset( &(*ppNewTree)[i], 0, sizeof( OBJECT ) );
 		}
-		
+
 		/* this is a number for the first new object */
 		return count;
 	}
@@ -72,7 +72,7 @@ short CloneDialog( OBJECT oldTree[], OBJECT** ppNewTree, short objs )
 void ConvertMxpParamTypes( struct SAudioPlugin* plugin, struct SParameter* param, char* text )
 {
 	long	value;
-	
+
 	AudioPluginGet( plugin, param, &value );	/* call param->Get() */
 
 	switch( param->type & 0x7fff )
@@ -87,11 +87,11 @@ void ConvertMxpParamTypes( struct SAudioPlugin* plugin, struct SParameter* param
 				strcpy( text, "No" );
 			}
 		break;
-		
+
 		case MXP_PAR_TYPE_INT:
 			sprintf( text, "%ld", value );
 		break;
-		
+
 		case MXP_PAR_TYPE_CHAR:
 			if( strcmp( (char*)value, "" ) == 0 )
 			{

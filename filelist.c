@@ -2,7 +2,7 @@
  * filelist.c -- file operations - recursive searching, adding to file/playlist
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -54,7 +54,7 @@ static long		moduleHistoryUsed = 0;
 static struct SFileListFile* FileListGetLastEntry( void )
 {
 	struct SFileListFile* pSList = FileListGetFirstEntry();
-	
+
 	if( pSList != NULL )
 	{
 		while( pSList->pSNext != NULL )
@@ -80,9 +80,9 @@ long FileListGetFileNumber( struct SFileListFile* pSFile )
 {
 	struct SFileListFile* pSTempFile;
 	struct SFileListFile* pSInputFile;
-	
+
 	long number = 0;
-	
+
 	if( pSFile == NULL )
 	{
 		pSInputFile = pCurrFileListFile;
@@ -91,21 +91,21 @@ long FileListGetFileNumber( struct SFileListFile* pSFile )
 	{
 		pSInputFile = pSFile;
 	}
-	
+
 	pSTempFile = FileListGetFirstEntry();
-	
+
 	while( pSTempFile != NULL )
 	{
 		number++;
-		
+
 		if( pSTempFile->number == pSInputFile->number )	/* faster than comparing strings... */
 		{
 			return number;
 		}
-		
+
 		pSTempFile = pSTempFile->pSNext;
 	}
-	
+
 	return -1;
 }
 
@@ -115,7 +115,7 @@ long FileListGetFileNumber( struct SFileListFile* pSFile )
 struct SFileListFile* FileListGetEntry( int fileNumber )
 {
 	struct SFileListFile* pSFile = FileListGetFirstEntry();
-	
+
 	while( pSFile != NULL )
 	{
 		if( pSFile->number == fileNumber )
@@ -124,18 +124,18 @@ struct SFileListFile* FileListGetEntry( int fileNumber )
 		}
 		pSFile = pSFile->pSNext;
 	}
-	
+
 	return NULL;
 }
 
 void FileListSetCurrFile( struct SFileListFile* pSFile )
 {
 	char tempString[MXP_PATH_MAX+1];
-	
+
 	pCurrFileListFile = pSFile;
-	
+
 	CombinePath( tempString, pSFile->path, pSFile->name );
-	
+
 	if( file_exists( tempString ) == TRUE )
 	{
 		g_currPath = pCurrFileListFile->path;
@@ -166,7 +166,7 @@ BOOL FileListSetNext( void )
 	long	fileNumber = -1;
 	int		i;
 	struct SFileListFile* pSFile;
-	
+
 	if( g_random == FALSE )
 	{
 		if( pCurrFileListFile != NULL && pCurrFileListFile->pSNext != NULL )
@@ -182,7 +182,7 @@ BOOL FileListSetNext( void )
 	else if( g_filesCount > 0 )
 	{
 		fileNumber = random() % g_filesCount;
-		
+
 		/* find the 'fileNumber'-th entry; this is not the same as file number! */
 		pSFile = FileListGetFirstEntry();
 		for( i = 0; i != fileNumber; i++ )
@@ -190,10 +190,10 @@ BOOL FileListSetNext( void )
 			/* fileNumber is always in range from 0 to g_filesCount - 1 */
 			pSFile = pSFile->pSNext;
 		}
-		
+
 		fileNumber = pSFile->number;
 	}
-	
+
 	if( fileNumber == -1 )
 	{
 		return FALSE;
@@ -212,7 +212,7 @@ void FileListSetPrev( void )
 {
 	int						fileNumber;
 	struct SFileListFile*	pSFile;
-	
+
 	if( moduleHistoryUsed - 1 > 0 )
 	{
 		moduleHistoryUsed--;
@@ -253,7 +253,7 @@ BOOL FileListAddFile( char* path, char* name )
 	{
 		strcpy( g_lastUsedName, name );
 		strcpy( g_lastUsedPath, path );
-		
+
 		pSListFile = FileListGetLastEntry();
 		if( pSListFile == NULL )
 		{
@@ -281,12 +281,12 @@ BOOL FileListAddFile( char* path, char* name )
 				pSListFile = pSListFile->pSNext;
 			}
 		}
-	
+
 		pSListFile->name = (char*)malloc( strlen( name ) + 1 );
 		pSListFile->path = (char*)malloc( strlen( path ) + 1 );
 		pSListFile->pSPrev = pSListPrevFile;
 		pSListFile->pSNext = NULL;
-		
+
 		if( VerifyAlloc( pSListFile->name ) == FALSE )
 		{
 			free( pSListFile );
@@ -301,7 +301,7 @@ BOOL FileListAddFile( char* path, char* name )
 			pSListFile = NULL;
 			return FALSE;
 		}
-	
+
 		strcpy( pSListFile->name, name );
 		strcpy( pSListFile->path, path );
 		pSListFile->selected = FALSE;
@@ -309,9 +309,9 @@ BOOL FileListAddFile( char* path, char* name )
 		pSListFile->disabled = FALSE;
 		pSListFile->number = moduleCounter++;
 		g_filesCount++;
-		
+
 		PlayListUpdate( pSListFile );
-		
+
 		if( g_playAfterAdd == TRUE && g_currFileUpdated == FALSE )
 		{
 			FileListSetCurrFile( pSListFile );	/* change of global variables */
@@ -333,7 +333,7 @@ BOOL FileListAddDirectory( char* path, char* name )
 	{
 		return TRUE;
 	}
-	
+
 	tempPath = (char*)malloc( MXP_FILENAME_MAX + MXP_PATH_MAX + 1 );
 	tempName = (char*)malloc( MXP_FILENAME_MAX + 1 );
 	if( VerifyAlloc( tempPath ) == FALSE )
@@ -348,7 +348,7 @@ BOOL FileListAddDirectory( char* path, char* name )
 	else
 	{
 		CombinePath( tempPath, path, name );
-		
+
 		pDirStream = opendir( tempPath );
 		if( pDirStream == NULL )
 		{
@@ -357,7 +357,7 @@ BOOL FileListAddDirectory( char* path, char* name )
 			free( tempName );
 			return FALSE;
 		}
-		
+
 		while( ( pDirEntry = readdir( pDirStream ) ) != NULL )
 		{
 			if( IsDirectory( tempPath, pDirEntry->d_name ) == TRUE )
@@ -420,13 +420,13 @@ struct SFileListFile* FileListRemove( struct SFileListFile* pSFile )
 {
 	struct SFileListFile* pSPrev;
 	struct SFileListFile* pSNext;
-	
+
 	pSPrev = pSFile->pSPrev;
 	pSNext = pSFile->pSNext;
-	
+
 	pSFile->pSPrev = NULL;
 	pSFile->pSNext = NULL;
-	
+
 	free( pSFile->name );
 	pSFile->name = NULL;
 	free( pSFile->path );
@@ -447,7 +447,7 @@ struct SFileListFile* FileListRemove( struct SFileListFile* pSFile )
 		g_filesCount = 0;
 		return NULL;
 	}
-	
+
 	if( pSPrev != NULL )
 	{
 		pSPrev->pSNext = pSNext;
@@ -456,8 +456,8 @@ struct SFileListFile* FileListRemove( struct SFileListFile* pSFile )
 	{
 		pSNext->pSPrev = pSPrev;
 	}
-	
+
 	g_filesCount--;
-	
+
 	return pSNext;
 }

@@ -2,7 +2,7 @@
  * playlist.c -- Playlist dialog and all around it
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -71,8 +71,8 @@ static void PlayListGetColors( void )
 	short		obj;
 	OBJECT*		tree;
 	short		objects;
-	
-	/*typedef struct objc_colorword 
+
+	/*typedef struct objc_colorword
 	 *{
 	 *	unsigned	borderc : 4;
 	 *	unsigned	textc   : 4;
@@ -81,18 +81,18 @@ static void PlayListGetColors( void )
 	 *	unsigned	fillc   : 4;
 	 *} OBJC_COLORWORD;
 	 */
-	 
+
 	tree = g_winDialogs[WD_PLAYLIST]->tree;
-	
+
 	pTed = (TEDINFO*)get_obspec( tree, PLAYLIST_TEXT1 );
 	currFileColor = pTed->te_color;	/* first line represents color for current file */
 
 	pTed = (TEDINFO*)get_obspec( tree, PLAYLIST_TEXT2 );
 	normFileColor = pTed->te_color;	/* second line represents color for "normal" file */
-	
+
 	/* all playlist entries as normal color */
 	objects = GetObjectCount( tree );
-	
+
 	for( obj = 1; obj < objects; obj++ )
 	{
 		/* check text objects which are selectable i.e. our entries */
@@ -114,7 +114,7 @@ static void PlayListSliderSet( void )
 	short pos;
 	short old;
 	short dummy;
-	
+
 	if( g_filesCount != 0 )
 	{
 		size = MIN( 1000, Round( 1000.0 * (float)plWindowEntries / (float)g_filesCount ) );
@@ -122,7 +122,7 @@ static void PlayListSliderSet( void )
 		{
 			size = 1;
 		}
-		
+
 		pos = Round( ( 1000.0 * plAbove ) / (float)( g_filesCount - plWindowEntries ) );
 		if( pos < 0 )
 		{
@@ -134,13 +134,13 @@ static void PlayListSliderSet( void )
 		pos = 0;
 		size = 1000;
 	}
-	
+
 	wind_get( g_winDialogs[WD_PLAYLIST]->win_handle, WF_VSLSIZE, &old, &dummy, &dummy, &dummy );
 	if( old != size )
 	{
 		wind_set( g_winDialogs[WD_PLAYLIST]->win_handle, WF_VSLSIZE, size, 0, 0, 0 );
 	}
-	
+
 	wind_get( g_winDialogs[WD_PLAYLIST]->win_handle, WF_VSLIDE, &old, &dummy, &dummy, &dummy );
 	if( old != pos )
 	{
@@ -154,13 +154,13 @@ static void PlayListSliderSet( void )
 static void PlayListClear( void )
 {
 	int		i;
-	
+
 	for( i = 0; i < PL_WINDOW_ENTRIES_MAX; i++ )
 	{
 		SPlWindowEntry[i].obj = -1;
 		SPlWindowEntry[i].fileNumber = -1;
 	}
-	
+
 	g_emptyPlayList = TRUE;
 	plAbove = 0;
 }
@@ -172,7 +172,7 @@ static void PlayListClear( void )
 static int PlayListGetFileNumber( short obj )
 {
 	int i;
-	
+
 	for( i = 0; i < plWindowEntries; i++ )
 	{
 		if( SPlWindowEntry[i].obj == obj )
@@ -180,7 +180,7 @@ static int PlayListGetFileNumber( short obj )
 			return SPlWindowEntry[i].fileNumber;
 		}
 	}
-	
+
 	return -1;
 }
 
@@ -190,14 +190,14 @@ static int PlayListGetFileNumber( short obj )
 static void PlayListDeselectAllEntries( void )
 {
 	struct SFileListFile* pSFile;
-	
+
 	pSFile = FileListGetFirstEntry();
-	
+
 	while( pSFile != NULL )
 	{
 		pSFile->selected = FALSE;
 		pSFile->current = FALSE;
-		
+
 		pSFile = pSFile->pSNext;
 	}
 }
@@ -208,13 +208,13 @@ static void PlayListDeselectAllEntries( void )
 static void PlayListSelectAllEntries( void )
 {
 	struct SFileListFile* pSFile;
-	
+
 	pSFile = FileListGetFirstEntry();
-	
+
 	while( pSFile != NULL )
 	{
 		pSFile->selected = TRUE;
-		
+
 		pSFile = pSFile->pSNext;
 	}
 }
@@ -225,13 +225,13 @@ static void PlayListSelectAllEntries( void )
 static void PlayListInverseAllEntries( void )
 {
 	struct SFileListFile* pSFile;
-	
+
 	pSFile = FileListGetFirstEntry();
-	
+
 	while( pSFile != NULL )
 	{
 		pSFile->selected = !pSFile->selected;
-		
+
 		pSFile = pSFile->pSNext;
 	}
 }
@@ -246,7 +246,7 @@ static void PlayListUpdateEntry( struct SFileListFile* pSFile, short obj )
 	set_string( g_winDialogs[WD_PLAYLIST]->tree, obj, pSFile->name );
 	pTed = (TEDINFO*)get_obspec( g_winDialogs[WD_PLAYLIST]->tree, obj );
 	PadString( pTed->te_ptext, pTed->te_txtlen - 1 );
-	
+
 	if( pSFile->current == TRUE )
 	{
 		pTed->te_color = currFileColor;
@@ -255,7 +255,7 @@ static void PlayListUpdateEntry( struct SFileListFile* pSFile, short obj )
 	{
 		pTed->te_color = normFileColor;
 	}
-	
+
 	set_state( g_winDialogs[WD_PLAYLIST]->tree, obj, OS_SELECTED, pSFile->selected );
 	set_state( g_winDialogs[WD_PLAYLIST]->tree, obj, OS_DISABLED, pSFile->disabled );
 }
@@ -267,7 +267,7 @@ static void PlayListDownCommon( int count )
 {
 	struct SFileListFile* pSFile;
 	int fix = 0;
-	
+
 	/* scroll only if full playlist window */
 	if( SPlWindowEntry[plWindowEntries - 1].fileNumber != -1 )
 	{
@@ -276,14 +276,14 @@ static void PlayListDownCommon( int count )
 		if( pSFile != NULL && pSFile->pSNext != NULL )
 		{
 			plAbove += count;
-			
+
 			if( plWindowEntries + plAbove > g_filesCount )
 			{
 				fix = g_filesCount - plWindowEntries - plAbove;
 			}
 			plAbove += fix;
 			count += fix;
-			
+
 			if( count > 0 )
 			{
 				pSFile = FileListGetEntry( SPlWindowEntry[0].fileNumber );
@@ -292,7 +292,7 @@ static void PlayListDownCommon( int count )
 					pSFile = pSFile->pSNext;
 				}
 				SPlWindowEntry[0].fileNumber = pSFile->number;	/* this is everything we need */
-								
+
 				PlayListRefresh( TRUE );
 			}
 		}
@@ -305,7 +305,7 @@ static void PlayListDownCommon( int count )
 static void PlayListUpCommon( int count )
 {
 	struct SFileListFile* pSFile;
-	
+
 	/* scroll only if full playlist window */
 	if( plAbove > 0 )
 	{
@@ -314,13 +314,13 @@ static void PlayListUpCommon( int count )
 		if( pSFile != NULL && pSFile->pSPrev != NULL )
 		{
 			plAbove -= count;
-			
+
 			if( plAbove < 0 )
 			{
 				count += plAbove;
 				plAbove = 0;
 			}
-			
+
 			if( count > 0 )
 			{
 				while( count-- > 0 )
@@ -328,7 +328,7 @@ static void PlayListUpCommon( int count )
 					pSFile = pSFile->pSPrev;
 				}
 				SPlWindowEntry[0].fileNumber = pSFile->number;	/* this is everything we need */
-				
+
 				PlayListRefresh( TRUE );
 			}
 		}
@@ -344,7 +344,7 @@ static void PlayListSetPlWindowEntries( void )
 	OBJECT*	tree;
 	short	objects;
 	short	obj;
-	
+
 	tree = g_winDialogs[WD_PLAYLIST]->tree;
 	objects = GetObjectCount( tree );
 
@@ -407,11 +407,11 @@ static void PlayListCreateDialog( void )
 	short		fontSize;
 	short		y;
 	short		lastTextObj = -1;
-	
+
 	tree = g_winDialogs[WD_PLAYLIST]->tree;
-	
+
 	oldObjects = GetObjectCount( tree );
-	
+
 	/* we need to traverse whole dialog to find playlist entries */
 	for( obj = 1; obj < oldObjects; obj++ )
 	{
@@ -422,45 +422,45 @@ static void PlayListCreateDialog( void )
 			lastTextObj = obj;
 		}
 	}
-	
+
 	newTextFields = tree[PLAYLIST_BACKGROUND].ob_height / tree[PLAYLIST_TEXT2].ob_height;
-	
+
 	/* there's no chance there will be fewer new entries than old ones */
 	newObjects = oldObjects - oldTextFields + newTextFields;
-	
+
 	tempPlayListTree = (OBJECT*)malloc( newObjects * sizeof( OBJECT ) );
 	if( VerifyAlloc( tempPlayListTree ) == FALSE )
 	{
 		return;
 	}
-	
+
 	/* old objects */
 	memcpy( tempPlayListTree, tree, oldObjects * sizeof( OBJECT ) );
 	set_flag( tempPlayListTree, oldObjects - 1, OF_LASTOB, FALSE );
 
 	/* new objects (text fields) */
 	y = tree[lastTextObj].ob_y + tree[lastTextObj].ob_height;
-	
+
 	for( obj = oldObjects; obj < newObjects; obj++ )
 	{
 		memcpy( &tempPlayListTree[obj], &tree[PLAYLIST_TEXT2], sizeof( OBJECT ) );
 		tempPlayListTree[obj].ob_y = y;
-		
+
 		tempPlayListTree[obj].ob_head = -1;	/* no childrens */
 		tempPlayListTree[obj].ob_next = 0;
 		tempPlayListTree[obj].ob_tail = -1;	/* no childrens */
 		objc_add( tempPlayListTree, PLAYLIST_BACKGROUND, obj );
-		
+
 		/* this fix the situation TEXT2 objects is currently selected */
 		pTed = (TEDINFO*)get_obspec( tempPlayListTree, obj );
 		pTed->te_color = normFileColor;
-		
+
 		y += tree[PLAYLIST_TEXT2].ob_height;
 	}
 	set_flag( tempPlayListTree, newObjects - 1, OF_LASTOB, TRUE );
 
 	tree = tempPlayListTree;
-	
+
 	pTed = tree[PLAYLIST_TEXT2].ob_spec.tedinfo;	/* every text field must have the same size */
 	switch( pTed->te_font )
 	{
@@ -468,19 +468,19 @@ static void PlayListCreateDialog( void )
 			/* system font */
 			fontSize = 8;
 		break;
-		
+
 		case 5:
 			/* small system font */
 			fontSize = 6;
 		break;
-		
+
 		default:
 			/* GDOS font */
 			fontSize = pTed->te_fontsize;
 		break;
 	}
 	newTextSize = tree[PLAYLIST_BACKGROUND].ob_width / fontSize + 1;	/* incl. '\0' */
-		
+
 	/* allocate new tedinfo + te_ptext for every text field */
 	for( obj = 1; obj < newObjects; obj++ )
 	{
@@ -488,7 +488,7 @@ static void PlayListCreateDialog( void )
 		{
 			/* new width */
 			tree[obj].ob_width = tree[PLAYLIST_BACKGROUND].ob_width;	/* set new width */
-			
+
 			/* new tedinfo */
 			tree[obj].ob_spec.tedinfo = (TEDINFO*)malloc( sizeof( TEDINFO ) );
 			if( VerifyAlloc( tree[obj].ob_spec.tedinfo ) == FALSE )
@@ -496,7 +496,7 @@ static void PlayListCreateDialog( void )
 				return;
 			}
 			memcpy( tree[obj].ob_spec.tedinfo, pTed, sizeof( TEDINFO ) );	/* use TEXT2 attributes */
-		
+
 			/* new te_ptext */
 			string = (char*)malloc( newTextSize );
 			if( VerifyAlloc( string ) == FALSE )
@@ -508,18 +508,18 @@ static void PlayListCreateDialog( void )
 			set_string( tree, obj, "" );
 		}
 	}
-	
+
 	g_winDialogs[WD_PLAYLIST]->tree = tree;
 }
 
 static void PlayListResizeNested( OBJECT* tree, short root, short dx, short dy )
 {
 	short obj;
-	
+
 	if( tree[root].ob_head != -1 )
 	{
 		PlayListResizeNested( tree, tree[root].ob_head, dx, dy );
-	
+
 		if( dx != 0 )
 		{
 			obj = tree[root].ob_head;
@@ -530,7 +530,7 @@ static void PlayListResizeNested( OBJECT* tree, short root, short dx, short dy )
 			}
 			tree[obj].ob_width += dx;
 		}
-		
+
 		if( dy != 0 )
 		{
 			obj = tree[root].ob_head;
@@ -554,22 +554,22 @@ static void PlayListResizeObjects( short deltaX, short deltaY )
 	short	obj;
 	short	rightBound;
 	short	bottomBound;
-	
+
 	tree = g_winDialogs[WD_PLAYLIST]->tree;
-	
+
 	objects = GetObjectCount( tree );
-	
+
 	/* Change object's coordinate according to BACKGROUND box.
 	 * For nested elements it works too since their relative coordinate is
 	 * always smaller than values they compare to.
 	 */
-	
+
 	if( deltaX != 0 )
 	{
 		tree[ROOT].ob_width += deltaX;
-	
+
 		rightBound = tree[PLAYLIST_BACKGROUND].ob_x + tree[PLAYLIST_BACKGROUND].ob_width;
-		
+
 		for( obj = 1; obj < objects; obj++ )
 		{
 			if( tree[obj].ob_x > rightBound )
@@ -577,28 +577,28 @@ static void PlayListResizeObjects( short deltaX, short deltaY )
 				tree[obj].ob_x += deltaX;
 			}
 		}
-		
+
 		if( tree[PLAYLIST_BOX_UP].ob_head != -1 )
 		{
 			PlayListResizeNested( tree, PLAYLIST_BOX_UP, deltaX, 0 );
 		}
 		tree[PLAYLIST_BOX_UP].ob_width += deltaX;
-		
+
 		if( tree[PLAYLIST_BOX_DOWN].ob_head != -1 )
 		{
 			PlayListResizeNested( tree, PLAYLIST_BOX_DOWN, deltaX, 0 );
 		}
 		tree[PLAYLIST_BOX_DOWN].ob_width += deltaX;
-		
+
 		tree[PLAYLIST_BACKGROUND].ob_width += deltaX;
 	}
-	
+
 	if( deltaY != 0 )
 	{
 		tree[ROOT].ob_height += deltaY;
-		
+
 		bottomBound = tree[PLAYLIST_BACKGROUND].ob_y + tree[PLAYLIST_BACKGROUND].ob_height;
-		
+
 		for( obj = 1; obj < objects; obj++ )
 		{
 			if( tree[obj].ob_y > bottomBound )
@@ -612,7 +612,7 @@ static void PlayListResizeObjects( short deltaX, short deltaY )
 			PlayListResizeNested( tree, PLAYLIST_BOX_LEFT, 0, deltaY );
 		}
 		tree[PLAYLIST_BOX_LEFT].ob_height += deltaY;
-		
+
 		if( tree[PLAYLIST_BOX_RIGHT].ob_head != -1 )
 		{
 			PlayListResizeNested( tree, PLAYLIST_BOX_RIGHT, 0, deltaY );
@@ -632,9 +632,9 @@ void PlayListRefresh( BOOL redraw )
 	struct SFileListFile* pSFile;
 	int		i;
 	OBJECT*	tree;
-	
+
 	tree = g_winDialogs[WD_PLAYLIST]->tree;
-	
+
 	/* first entry in the window */
 	if( SPlWindowEntry[0].fileNumber != -1 )
 	{
@@ -645,7 +645,7 @@ void PlayListRefresh( BOOL redraw )
 		/* this happens when we have empty playlist */
 		pSFile = NULL;
 	}
-	
+
 	for( i = 0; i < plWindowEntries; i++ )
 	{
 		/* there could be a situation playlist is initialized and it's not full */
@@ -658,13 +658,13 @@ void PlayListRefresh( BOOL redraw )
 		else
 		{
 			SPlWindowEntry[i].fileNumber = -1;
-			
+
 			/* if not used, set as empty string */
 			set_string( tree, SPlWindowEntry[i].obj, "" );
 			/* for sure */
 			set_state( tree, SPlWindowEntry[i].obj, OS_SELECTED, FALSE );
 		}
-		
+
 		if( redraw == TRUE )
 		{
 			redraw_wdobj( g_winDialogs[WD_PLAYLIST], SPlWindowEntry[i].obj );
@@ -680,7 +680,7 @@ void PlayListRefresh( BOOL redraw )
 void PlayListDisplayTrackNumber( void )
 {
 	long fileNumber;
-	
+
 	fileNumber = FileListGetFileNumber( NULL );
 	if( fileNumber != -1 )
 	{
@@ -700,7 +700,7 @@ void PlayListDisplayTrackNumber( void )
 void PlayListSetCurrFile( struct SFileListFile* pSFile )
 {
 	PlayListDeselectAllEntries();
-	
+
 	/* only if filelist operation was successfull */
 	if( g_currPath != NULL && g_currName != NULL )
 	{
@@ -711,7 +711,7 @@ void PlayListSetCurrFile( struct SFileListFile* pSFile )
 	{
 		pSFile->disabled = TRUE;
 	}
-	
+
 	PlayListRefresh( TRUE );
 }
 
@@ -722,27 +722,27 @@ void PlayListSetCurrFile( struct SFileListFile* pSFile )
 void PlayListUpdate( struct SFileListFile* pSFile )
 {
 	int	i;
-	
+
 	g_emptyPlayList = FALSE;
 	g_playlistNotActual = TRUE;
-	
+
 	for( i = 0; i < plWindowEntries; i++ )
 	{
 		if( SPlWindowEntry[i].fileNumber == -1 )
 		{
 			SPlWindowEntry[i].fileNumber = pSFile->number;
-			
+
 			/* possible == -1 ? */
 			if( SPlWindowEntry[i].obj != -1 )
 			{
 				PlayListUpdateEntry( pSFile, SPlWindowEntry[i].obj );
 				redraw_wdobj( g_winDialogs[WD_PLAYLIST], SPlWindowEntry[i].obj );
 			}
-			
+
 			break;
 		}
 	}
-	
+
 	PlayListDisplayTracksCount();
 	PlayListSliderSet();
 }
@@ -754,13 +754,13 @@ void PlayListUpdate( struct SFileListFile* pSFile )
 void PlayListInit( void )
 {
 	origPlayListTree = g_winDialogs[WD_PLAYLIST]->tree;
-	
+
 	origWidth = origPlayListTree[ROOT].ob_width;	/* equivalent to work.g_w (which is could be still empty) */
 	origHeight = origPlayListTree[ROOT].ob_height;	/* equivalent to work.g_h */
-	
+
 	set_string( g_winDialogs[WD_PLAYLIST]->tree, PLAYLIST_TRACK_NUMBER, "-" );
 	set_string( g_winDialogs[WD_PLAYLIST]->tree, PLAYLIST_TRACKS, "0" );
-		
+
 	PlayListClear();
 	PlayListGetColors();
 	PlayListSetPlWindowEntries();
@@ -773,7 +773,7 @@ void PlayListInit( void )
 void PlayListReinit( void )
 {
 	struct SFileListFile* pSFile;
-	
+
 	origPlayListTree = g_winDialogs[WD_PLAYLIST]->tree;
 	origWidth = origPlayListTree[ROOT].ob_width;	/* equivalent to work.g_w (which is could be still empty) */
 	origHeight = origPlayListTree[ROOT].ob_height;	/* equivalent to work.g_h */
@@ -783,12 +783,12 @@ void PlayListReinit( void )
 		PlayListDestroyTree( tempPlayListTree );
 		tempPlayListTree = NULL;
 	}
-	
+
 	PlayListGetColors();
 	PlayListSetPlWindowEntries();
-	
+
 	plAbove = 0;
-	
+
 	pSFile = FileListGetFirstEntry();
 	if( pSFile != NULL )
 	{
@@ -798,10 +798,10 @@ void PlayListReinit( void )
 	{
 		SPlWindowEntry[0].fileNumber = -1;
 	}
-	
+
 	PlayListDisplayTracksCount();
 	PlayListDisplayTrackNumber();
-	
+
 	PlayListRefresh( TRUE );	/* refresh with correct values */
 }
 
@@ -812,7 +812,7 @@ void PlayListReinit( void )
 BOOL PlayListAdd( char* path, char* name )
 {
 	BOOL ret;
-	
+
 	if( strstr( name, ".m3u" ) != NULL || strstr( name, ".M3U" ) != NULL )
 	{
 		/* playlist on the way! */
@@ -845,7 +845,7 @@ BOOL PlayListLoadFromFile( char* filename )
 	char					tempPath[MXP_PATH_MAX+1];
 	char					path[MXP_PATH_MAX+1];
 	char					name[MXP_FILENAME_MAX+1];
-	
+
 	pFileStream = fopen( filename, "r" );
 	if( pFileStream == NULL )
 	{
@@ -860,22 +860,22 @@ BOOL PlayListLoadFromFile( char* filename )
 		FileListClear( pSFile );
 		PlayListClear();
 		PlayListSetPlWindowEntries();	/* for PlayListUpdate() */
-		
+
 		g_playAfterAdd = FALSE;
 		g_currFileUpdated = FALSE;	/* reset flag */
-		
+
 		while( fgets( tempPath, MXP_PATH_MAX+1, pFileStream ) != NULL )
 		{
 			tempPath[strlen( tempPath ) - 1] = '\0';	/* ignore newline char */
 			split_filename( tempPath, path, name );
 			FileListAddFile( path, name );
 		}
-		
+
 		fclose( pFileStream );
-		
+
 		g_playlistNotActual = FALSE;
 		PlayListRefresh( TRUE );
-		
+
 		return TRUE;
 	}
 }
@@ -904,35 +904,35 @@ BOOL PlayListSaveToFile( char* filename )
 		{
 			CombinePath( tempPath, pSFile->path, pSFile->name );
 			fprintf( pFileStream, "%s\n", tempPath );
-			
+
 			pSFile = pSFile->pSNext;
 		}
-		
+
 		fclose( pFileStream );
-		
+
 		g_playlistNotActual = FALSE;
 		return TRUE;
 	}
-	
+
 	return TRUE;
 }
 
 /*
  * Functions for each object (cicon)
  */
- 
+
 void PlayListSlider( short deltaY )
 {
 	short oldDeltaY;
 	float delta;
 	short value;
 	short dummy;
-	
+
 	wind_get( g_winDialogs[WD_PLAYLIST]->win_handle, WF_VSLIDE, &oldDeltaY, &dummy, &dummy, &dummy );
 
 	delta = ( deltaY - oldDeltaY ) * ( (float)( g_filesCount - plWindowEntries ) / 1000.0 );
 	value = Round( delta );
-	
+
 	if( value > 0 )
 	{
 		PlayListDownCommon( value );
@@ -947,12 +947,12 @@ void PlayListLoad( void )
 {
 	char path[MXP_PATH_MAX+1] = "";
 	char name[MXP_FILENAME_MAX+1] = "";
-	
+
 	SelectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_LOAD );
-	
+
 	strcpy( path, g_homePath );	/* $HOME as default */
 	split_filename( g_playlistFile, NULL, name );	/* current playlist */
-	
+
 	if( select_file( path, name, "*.M3U", "Select playlist", CB_PlayListFileSelect ) == TRUE )
 	{
 		/* Classic fileselector protocol? */
@@ -960,10 +960,10 @@ void PlayListLoad( void )
 		{
 			CombinePath( g_playlistFile, path, name );
 		}
-		
+
 		PlayListLoadFromFile( g_playlistFile );
 	}
-	
+
 	DeselectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_LOAD );
 }
 
@@ -973,10 +973,10 @@ void PlayListSave( void )
 	char name[MXP_FILENAME_MAX+1] = "";
 
 	SelectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_SAVE );
-	
+
 	strcpy( path, g_homePath );	/* $HOME as default */
 	split_filename( g_playlistFile, NULL, name );	/* current playlist */
-	
+
 	if( select_file( path, name, "*.M3U", "Select playlist", CB_PlayListFileSelect ) == TRUE )
 	{
 		/* Classic fileselector protocol? */
@@ -984,12 +984,12 @@ void PlayListSave( void )
 		{
 			CombinePath( g_playlistFile, path, name );
 		}
-		
+
 		if( strstr( g_playlistFile, ".m3u" ) == NULL && strstr( g_playlistFile, ".M3U" ) == NULL )
 		{
 			strcat( g_playlistFile, ".M3U" );
 		}
-		
+
 		if( file_exists( g_playlistFile ) == FALSE
 			|| ( file_exists( g_playlistFile ) == TRUE && ShowOverwriteFileDialog() == 1 ) )
 		{
@@ -1000,7 +1000,7 @@ void PlayListSave( void )
 			PlayListSave();
 		}
 	}
-	
+
 	DeselectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_SAVE );
 }
 
@@ -1017,7 +1017,7 @@ void PlayListAddDir( void )
 void PlayListSelectAll( void )
 {
 	SelectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_SELECT_ALL );
-	
+
 	if( g_withShift ==TRUE )
 	{
 		PlayListInverseAllEntries();
@@ -1026,7 +1026,7 @@ void PlayListSelectAll( void )
 	{
 		PlayListSelectAllEntries();
 	}
-	
+
 	PlayListRefresh( TRUE );
 	DeselectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_SELECT_ALL );
 }
@@ -1034,11 +1034,11 @@ void PlayListSelectAll( void )
 void PlayListRemove( void )
 {
 	struct SFileListFile* pSFile;
-	
+
 	SelectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_REMOVE );
-	
+
 	pSFile = FileListGetFirstEntry();
-	
+
 	while( pSFile != NULL )
 	{
 		if( pSFile->selected == TRUE )
@@ -1051,27 +1051,27 @@ void PlayListRemove( void )
 			pSFile = pSFile->pSNext;
 		}
 	}
-	
+
 	/* reinit */
 	PlayListClear();	/* this clears not only filenumbers but gem objects, too */
 	PlayListSetPlWindowEntries();	/* so we have to set them again... */
 	PlayListRefresh( FALSE );
-	
+
 	pSFile = FileListGetFirstEntry();
-	
+
 	/* refill */
 	while( pSFile != NULL )
 	{
 		PlayListUpdate( pSFile );
-		
+
 		pSFile = pSFile->pSNext;
 	}
-	
+
 	PlayListDisplayTrackNumber();
 	PlayListDisplayTracksCount();
-	
+
 	PlayListRefresh( TRUE );
-	
+
 	DeselectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_REMOVE );
 }
 
@@ -1086,15 +1086,15 @@ void PlayListResize( GRECT* pNewR )
 	int		oldPlWindowEntries;
 	GRECT	oldR;
 	GRECT	tempR;
-	
+
 	/* get area of old window */
 	wind_get_grect( g_winDialogs[WD_PLAYLIST]->win_handle, WF_CURRXYWH, &oldR );
-	
+
 	objWidth = g_winDialogs[WD_PLAYLIST]->tree[ROOT].ob_width;
 	objHeight = g_winDialogs[WD_PLAYLIST]->tree[ROOT].ob_height;
-	
+
 	tempR = *pNewR;
-	
+
 	deltaX = tempR.g_w - oldR.g_w;
 	deltaY = tempR.g_h - oldR.g_h;
 
@@ -1103,13 +1103,13 @@ void PlayListResize( GRECT* pNewR )
 		tempR.g_w += ( origWidth - ( objWidth + deltaX ) );
 		deltaX += ( origWidth - ( objWidth + deltaX ) );
 	}
-	
+
 	if( objHeight + deltaY < origHeight )
 	{
 		tempR.g_h += ( origHeight - ( objHeight + deltaY ) );
 		deltaY += ( origHeight - ( objHeight + deltaY ) );
 	}
-	
+
 	if( tempR.g_w == oldR.g_w && tempR.g_h == oldR.g_h )
 	{
 		return;
@@ -1119,35 +1119,35 @@ void PlayListResize( GRECT* pNewR )
 	if( tempPlayListTree != NULL )
 	{
 		g_winDialogs[WD_PLAYLIST]->tree = origPlayListTree;
-		
+
 		PlayListDestroyTree( tempPlayListTree );
 		tempPlayListTree = NULL;
 	}
-	
+
 	PlayListResizeObjects( deltaX, deltaY );
-	
+
 	PlayListCreateDialog();
-	
+
 	oldPlWindowEntries = plWindowEntries;
-	
+
 	PlayListSetPlWindowEntries();
-	
+
 	if( SPlWindowEntry[0].fileNumber != -1 && plAbove + oldPlWindowEntries == g_filesCount )
 	{
 		pSFile = FileListGetEntry( SPlWindowEntry[0].fileNumber );
 		count = MIN( plAbove, plWindowEntries - oldPlWindowEntries );
-		
+
 		while( count-- > 0 )
 		{
 			pSFile = pSFile->pSPrev;	/* no chance we'll get NULL */
 			plAbove--;
 		}
-		
+
 		SPlWindowEntry[0].fileNumber = pSFile->number;
 	}
-	
+
 	PlayListRefresh( FALSE );
-	
+
 	wind_set_grect( g_winDialogs[WD_PLAYLIST]->win_handle, WF_CURRXYWH, &tempR );
 	wind_calc_grect( WC_WORK, g_winDialogs[WD_PLAYLIST]->win_kind, &tempR, &g_winDialogs[WD_PLAYLIST]->work );
 
@@ -1161,15 +1161,15 @@ void PlayListScroll( short direction )
 		case WA_UPPAGE:
 			PlayListUpCommon( plWindowEntries );
 		break;
-		
+
 		case WA_UPLINE:
 			PlayListUpCommon( 1 );
 		break;
-		
+
 		case WA_DNPAGE:
 			PlayListDownCommon( plWindowEntries );
 		break;
-		
+
 		case WA_DNLINE:
 			PlayListDownCommon( 1 );
 		break;
@@ -1180,7 +1180,7 @@ void PlayListSelectFile( short obj )
 {
 	struct SFileListFile*	pSFile;
 	long					fileNumber;
-	
+
 	/* there's no chance we click on file which isn't in the window :) */
 	fileNumber = PlayListGetFileNumber( obj );
 	if( fileNumber == -1 )
@@ -1191,7 +1191,7 @@ void PlayListSelectFile( short obj )
 	else
 	{
 		pSFile = FileListGetEntry( fileNumber );
-		
+
 		if( g_mouseClicks == 1 )
 		{
 			if( pSFile->selected == TRUE )

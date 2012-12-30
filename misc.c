@@ -2,7 +2,7 @@
  * misc.h -- shared code, various topics
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -68,7 +68,7 @@ void InitRandom( void )
 void PadString( char* string, int newLength )
 {
 	int origLength = strlen( string );
-	
+
 	while( origLength < newLength )	/* there MUST be allocated space for 'newLength' + 1 bytes! */
 	{
 		string[origLength++] = ' ';
@@ -94,13 +94,13 @@ void SharedFileOpen( WDIALOG* wd, short obj )
 {
 	char	path[MXP_PATH_MAX+1] = "";
 	char	name[MXP_FILENAME_MAX+1] = "";
-	
+
 	SelectObject( wd, obj );
-	
+
 	/* copy last used ones */
 	strcpy( path, g_lastUsedPath );
 	strcpy( name, g_lastUsedName );
-	
+
 	if( obj == PANEL_EJECT )
 	{
 		g_playAfterAdd = TRUE;
@@ -110,7 +110,7 @@ void SharedFileOpen( WDIALOG* wd, short obj )
 		g_playAfterAdd = FALSE;
 	}
 	g_currFileUpdated = FALSE;	/* reset flag */
-	
+
 	if( select_file( path, name, "", "Select music file(s)", CB_ModuleFileSelect ) == TRUE )
 	{
 		/* Classic fileselector protocol? */
@@ -122,13 +122,13 @@ void SharedFileOpen( WDIALOG* wd, short obj )
 				return;
 			}
 		}
-		
+
 		if( g_playAfterAdd == TRUE )
 		{
 			LoadAndPlay();
 		}
 	}
-	
+
 	DeselectObject( wd, obj );
 }
 
@@ -141,12 +141,12 @@ void SharedDirOpen( WDIALOG* wd, short obj )
 	char	name[MXP_FILENAME_MAX+1] = "";
 
 	SelectObject( wd, obj );
-	
+
 	/* copy the last used path */
 	strcpy( path, g_lastUsedPath );
 	/* we don't care about name */
 	strcpy( name, "" );
-	
+
 	if( obj == PANEL_EJECT )
 	{
 		g_playAfterAdd = g_emptyPlayList;	/* play only if empty playlist */
@@ -169,13 +169,13 @@ void SharedDirOpen( WDIALOG* wd, short obj )
 				return;
 			}
 		}
-		
+
 		if( g_playAfterAdd == TRUE )
 		{
 			LoadAndPlay();
 		}
 	}
-	
+
 	DeselectObject( wd, obj );
 }
 
@@ -187,7 +187,7 @@ BOOL IsTopWindow( WDIALOG* wd )
 	short	winParam[4];
 
 	wind_get( wd->win_handle, WF_TOP, &winParam[0], &winParam[1], &winParam[2], &winParam[3] );
-	
+
 	return winParam[0] == wd->win_handle;
 }
 
@@ -197,10 +197,10 @@ BOOL IsTopWindow( WDIALOG* wd )
 short GetObjectCount( OBJECT tree[] )
 {
 	short count;
-	
+
 	for( count = 0; get_flag( tree, count, OF_LASTOB ) == FALSE; count++ );
 	count++;	/* the last one (with OF_LASTOB == TRUE */
-	
+
 	return count;
 }
 
@@ -217,7 +217,7 @@ short Round( float value )
 	{
 		value -= 0.5;
 	}
-	
+
 	return (short)value;
 }
 
@@ -292,7 +292,7 @@ BOOL VerifyAlloc( void* pointer )
 unsigned long GetFileNameSize( char* filename )
 {
 	struct stat	SFileStat;
-	
+
 	if( stat( filename, &SFileStat ) == E_OK )
 	{
 		return SFileStat.st_size;
@@ -309,9 +309,9 @@ unsigned long GetFileNameSize( char* filename )
 BOOL IsDirectory( char* path, char* name )
 {
 	char tempString[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
-	
+
 	CombinePath( tempString, path, name );
-	
+
 	return ( Fattrib( tempString, 0, 0 ) & FA_DIR ) != 0;
 }
 
@@ -340,7 +340,7 @@ void ARGVParseArgs( int argc, char* argv[] )
 			//fclose(fs);
 			if( strchr( argv[i], '\\' ) == NULL && strchr( argv[i], '/' ) == NULL )
 			{
-				
+
 				get_path( tempPath, 0 );	/* we've got just filename without path */
 				strcpy( tempName, argv[i] );
 				//fs = fopen("u:\\ram\\log.txt", "a");
@@ -354,7 +354,7 @@ void ARGVParseArgs( int argc, char* argv[] )
 			//fprintf( fs, "%s: za splitname\n", argv[i] );
 			//fclose(fs);
 			}
-			
+
 			if( PlayListAdd( tempPath,tempName ) == FALSE )
 			{
 				//fs = fopen("u:\\ram\\log.txt", "a");
@@ -400,15 +400,15 @@ void ParseArgs( char* cmdline )
 			{
 				all[j++] = cmdline[i++];
 			}
-			
+
 			all[j++] = '\0';
 			split_filename( all, path, name );
 			PlayListAdd( path, name );
-			
+
 			j = 0;
 			continue;
 		}
-		
+
 		switch( cmdline[i] )
 		{
 			case '\'':
@@ -426,7 +426,7 @@ void ParseArgs( char* cmdline )
 						all[j++] = '\0';
 						split_filename( all, path, name );
 						PlayListAdd( path, name );
-						
+
 						j = 0;
 					}
 				}
@@ -435,7 +435,7 @@ void ParseArgs( char* cmdline )
 					inQuote = TRUE;
 				}
 			break;
-			
+
 			case ' ':
 				if( inQuote == TRUE )
 				{
@@ -446,14 +446,14 @@ void ParseArgs( char* cmdline )
 					i++;
 				}
 			break;
-			
+
 			default:
 				all[j++] = cmdline[i++];
 			break;
-			
+
 		}
 	}
-	
+
 	//fs = fopen("u:\\ram\\log.txt", "a");
 	//fprintf( fs, "d&d/va cmdline:\n" );
 	//fprintf( fs, "%s\n", all );
@@ -470,16 +470,16 @@ unsigned long GetCurrentTime( void )
 	unsigned int min;
 	unsigned int sec;
 	unsigned int time;
-	
+
 	time = Tgettime();
-	
+
 	sec = ( time & 0x1f ) * 2;
 	min = ( time >> 5 ) & 0x3f;
-	
+
 	return min * 60 + sec;
 #else	/* NO_MINT false */
 	struct timeval time;
-	
+
 	Tgettimeofday( &time, NULL );
 	return time.tv_sec;
 #endif	/* NO_MINT */
@@ -494,7 +494,7 @@ void CombinePath( char* fullpath, char* path, char* name )
 	{
 		strcpy( fullpath, path );
 	}
-	
+
 	if( fullpath[strlen( fullpath ) - 1] != '\\' && fullpath[strlen( fullpath ) - 1] != '/' )
 	{
 		strcat( fullpath, "\\" );
@@ -513,7 +513,7 @@ void GetHomePath( void )
 {
 	char	temp[MXP_PATH_MAX+1];
 	char*	path = NULL;
-	
+
 	shel_envrn( &path, "HOME=" );
 	if( path != NULL && strlen( path ) > 0 )
 	{
@@ -541,15 +541,15 @@ void ReadConfigFile( void )
 {
 	char	temp[MXP_FILENAME_MAX+1];
 	FILE*	fs;
-	
+
 	strcpy( g_rscName, DEFAULT_RSC_FILE );	/* as default */
-	
+
 	CombinePath( temp, g_homePath, CNF_FILE );
-	
+
 	if( file_exists( temp ) == TRUE )
-	{ 
+	{
 		fs = fopen( temp, "r" );
-		
+
 		while( fscanf( fs, "%s", temp ) != EOF )
 		{
 			if( strcmp( temp, "rsc" ) == 0 )
@@ -605,7 +605,7 @@ void ReadConfigFile( void )
 				fscanf( fs, "%d", &g_openPlayList );
 			}
 		}
-		
+
 		fclose( fs );
 	}
 }
@@ -614,40 +614,40 @@ void WriteConfigFile( void )
 {
 	char	temp[MXP_PATH_MAX+1];
 	FILE*	fs;
-	
+
 	CombinePath( temp, g_homePath, CNF_FILE );
 	fs = fopen( temp, "w" );
-	
+
 	/* name of resource file */
 	fprintf( fs, "%s", "rsc" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%s", g_rscName );
 	fprintf( fs, "%s", "\n" );
-	
+
 	/* x position of panel */
 	fprintf( fs, "%s", "panelX" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%d", g_winDialogs[WD_PANEL]->work.g_x );
 	fprintf( fs, "%s", "\n" );
-	
+
 	/* y position of panel */
 	fprintf( fs, "%s", "panelY" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%d", g_winDialogs[WD_PANEL]->work.g_y );
 	fprintf( fs, "%s", "\n" );
-	
+
 	/* x position of playlist */
 	fprintf( fs, "%s", "playlistX" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%d", g_winDialogs[WD_PLAYLIST]->work.g_x );
 	fprintf( fs, "%s", "\n" );
-	
+
 	/* y position of playlist */
 	fprintf( fs, "%s", "playlistY" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%d", g_winDialogs[WD_PLAYLIST]->work.g_y );
 	fprintf( fs, "%s", "\n" );
-	
+
 	/* playlist file */
 	if( strcmp( g_playlistFile, "" ) != 0 )
 	{
@@ -656,26 +656,26 @@ void WriteConfigFile( void )
 		fprintf( fs, "%s", g_playlistFile );
 		fprintf( fs, "%s", "\n" );
 	}
-	
+
 	/* new random seed */
 	randomSeed = random();
 	fprintf( fs, "%s", "randomSeed" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%ld", randomSeed );
 	fprintf( fs, "%s", "\n" );
-	
+
 	/* playtime mode */
 	fprintf( fs, "%s", "timeMode" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%d", g_timeMode );
 	fprintf( fs, "%s", "\n" );
-	
+
 	/* repeat on/off */
 	fprintf( fs, "%s", "repeat" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%d", g_repeat );
 	fprintf( fs, "%s", "\n" );
-	
+
 	/* random on/off */
 	fprintf( fs, "%s", "random" );
 	fprintf( fs, "%s", "\t" );
@@ -687,7 +687,7 @@ void WriteConfigFile( void )
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%d", g_mute );
 	fprintf( fs, "%s", "\n" );
-	
+
 	/* opened playlist? */
 	fprintf( fs, "%s", "openPlayList" );
 	fprintf( fs, "%s", "\t" );

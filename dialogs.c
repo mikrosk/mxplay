@@ -2,7 +2,7 @@
  * dialogs.c -- AES dialogs - init, deinit, errors, ...
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
- * 
+ *
  * This file is part of the mxPlay project, multiformat audio player for
  * Atari TT/Falcon computers.
  *
@@ -65,17 +65,17 @@ void InitRsc( void )
 	char	tempPath[MXP_PATH_MAX+1];
 	BOOL	rscLoaded = FALSE;
 	int		i;
-	
+
 	while( rscLoaded == FALSE )
 	{
 		strcpy( tempPath, gl_appdir );
 		CombinePath( tempPath, tempPath, "skins" );		/* path\skins */
 		CombinePath( tempPath, tempPath, g_rscName );	/* path\skins\filename.rsc */
-		
+
 		if( rsrc_load( tempPath ) == FALSE )
 		{
 			strcpy( g_rscName, "" );	/* no rsc in memory */
-			
+
 			if( ShowRsrcLoadFailedDialog() == 1 )	/* "Choose" */
 			{
 				PanelChangeSkin();
@@ -90,7 +90,7 @@ void InitRsc( void )
 			rscLoaded = TRUE;
 		}
 	}
-	
+
 	/* find & init non-windialogs objects */
 	if( rsrc_gaddr( R_TREE, WICON, &tempDialog ) == FALSE
 		|| rsrc_gaddr( R_TREE, GPL, &licenseDialog ) == FALSE
@@ -105,16 +105,16 @@ void InitRsc( void )
 		licenseDialog->ob_x = 0;
 		licenseDialog->ob_y = 0;
 		fix_dial( licenseDialog );
-		
+
 		fix_dial( splashImage );
 	}
-	
+
 	/* make new instances of win-icons */
 	for( i = 0; i < WD_LIST_SIZE; i++ )
 	{
 		memcpy( winIcons[i], tempDialog, 2 * sizeof( OBJECT ) );	/* ROOT + WICON */
 	}
-	
+
 	/* find & init windialogs */
 	for( i = 0; i < WD_LIST_SIZE; i++ )
 	{
@@ -139,32 +139,32 @@ void InitRsc( void )
 			}
 		}
 	}
-	
+
 	set_string( g_winDialogs[WD_ABOUT]->tree, ABOUT_VERSION, VERSION );
-	
+
 	strcpy( g_winDialogs[WD_ABOUT]->win_name, "About" );
 	strcpy( g_winDialogs[WD_PLAYLIST]->win_name, "Playlist" );
 	strcpy( g_winDialogs[WD_PANEL]->win_name, "Panel" );
 	strcpy( g_winDialogs[WD_PLUGIN]->win_name, "Plugin" );
 	strcpy( g_winDialogs[WD_MODULE]->win_name, "Module" );
-	
+
 	sprintf( welcomeString, WELCOME_MESSAGE, VERSION );
 
 	set_string( licenseDialog, GPL_COPYRIGHT, copyrightString );
-	
+
 	canRefresh = TRUE;	/* for timer */
 }
 
 void InitDialogs( void )
 {
 	int i;
-	
+
 	/* used for also for alerts! */
 	set_mdial_wincb( HandleMessage );
-	
+
 	GetHomePath();
 	ReadConfigFile();
-	
+
 	for( i = 0; i < WD_LIST_SIZE; i++ )
 	{
 		g_winDialogs[i] = (WDIALOG*)malloc( sizeof( WDIALOG ) );
@@ -173,7 +173,7 @@ void InitDialogs( void )
 			ExitPlayer( 1 );
 		}
 	}
-	
+
 	for( i = 0; i < WD_LIST_SIZE; i++ )
 	{
 		winIcons[i] = (OBJECT*)malloc( 2 * sizeof( OBJECT ) );	/* ROOT + WICON */
@@ -182,7 +182,7 @@ void InitDialogs( void )
 			ExitPlayer( 1 );
 		}
 	}
-	
+
 	InitRsc();
 	PluginInfoInit();
 	ModuleInfoInit();
@@ -194,7 +194,7 @@ void ShowDefaultDialogs( void )
 	/* open the main panel */
 	open_wdial( g_winDialogs[WD_PANEL], g_panelX, g_panelY );
 	PanelVolumeInit();
-	
+
 	if( g_repeat == TRUE )
 	{
 		SelectObject( g_winDialogs[WD_PANEL], PANEL_REPEAT );
@@ -216,17 +216,17 @@ void ShowDefaultDialogs( void )
 void ShowSplashImage( void )
 {
 	GRECT r1, r2;
-	
+
 	form_center( splashImage, &r1.g_x, &r1.g_y, &r1.g_w, &r1.g_h );
-	
+
 	r1.g_x = splashImage[0].ob_x + splashImage[1].ob_x;
 	r1.g_y = splashImage[0].ob_y + splashImage[1].ob_y;
 	r1.g_w = splashImage[1].ob_width;
 	r1.g_h = splashImage[1].ob_height;
-	
+
 	/* r1 is working area, r2 will be complete window size */
 	wind_calc_grect( WC_BORDER, 0, &r1, &r2 );
-	
+
 	splashImageHandle = wind_create_grect( 0, &r2 );
 	if( splashImageHandle > 0 )
 	{
@@ -248,9 +248,9 @@ void CloseSplashImage( void )
 void DeleteDialogs( void )
 {
 	int i;
-	
+
 	canRefresh = FALSE;
-	
+
 	for( i = 0; i < WD_LIST_SIZE; i++ )
 	{
 		delete_wdial( g_winDialogs[i] );
@@ -399,12 +399,12 @@ static void CB_OpenWDialog( WDIALOG* wd )
 	}
 }
 
-static BOOL CB_ExitObject( WDIALOG* wd, short obj ) 
+static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 {
 	short close = FALSE;
-	
+
 	obj &= 0x7fff;	/* kill double-click flag */
-	
+
 	if( wd == g_winDialogs[WD_PANEL] )
 	{
 		/*
@@ -416,7 +416,7 @@ static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 				close = TRUE;
 				g_quitApp = TRUE;
 			break;
-			
+
 			case PANEL_EJECT:
 				if( g_withShift == TRUE )
 				{
@@ -428,69 +428,69 @@ static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 					PanelFileOpen();
 				}
 			break;
-			
+
 			case PANEL_PLAY:
 				PanelPlay();
 			break;
-			
+
 			case PANEL_STOP:
 				PanelStop();
 			break;
-			
+
 			case PANEL_PAUSE:
 				PanelPause();
 			break;
-			
+
 			case PANEL_FWD:
 				PanelFwd();
 			break;
-			
+
 			case PANEL_RWD:
 				PanelRwd();
 			break;
-			
+
 			case PANEL_NEXT:
 				PanelNext();
 			break;
-			
+
 			case PANEL_PREV:
 				PanelPrev();
 			break;
-			
+
 			case PANEL_REPEAT:
 				PanelRepeat();
 			break;
-			
+
 			case PANEL_RANDOM:
 				PanelRandom();
 			break;
-			
+
 			case PANEL_PLAYLIST:
 				PanelPlayList();
 			break;
-			
+
 			case PANEL_INFO_MOD:
 				PanelInfoModule();
 			break;
-			
+
 			case PANEL_INFO_PLG:
 				PanelInfoPlugin();
 			break;
-							
+
 			case PANEL_INFO_APP:
 				PanelInfoApp();
 			break;
-			
+
 			case PANEL_MUTE:
 				PanelMute();
 			break;
-			
+
 			case PANEL_PLAYTIME:
 				PanelPlayTime();
 			break;
 		}
 	}
-	
+
 	else if( wd == g_winDialogs[WD_ABOUT] )
 	{
 		/*
@@ -503,16 +503,16 @@ static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 				PanelInfoApp();
 				close = TRUE;
 			break;
-			
+
 			case ABOUT_LICENSE:
 				simple_mdial( licenseDialog, 0 );
 			break;
 		}
-		
+
 		set_state( wd->tree, obj, OS_SELECTED, FALSE );
 		redraw_wdobj( wd, obj );
 	}
-	
+
 	else if( wd == g_winDialogs[WD_PLAYLIST] )
 	{
 		/*
@@ -524,31 +524,31 @@ static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 				PanelPlayList();
 				close = TRUE;
 			break;
-			
+
 			case PLAYLIST_LOAD:
 				PlayListLoad();
 			break;
-			
+
 			case PLAYLIST_SAVE:
 				PlayListSave();
 			break;
-			
+
 			case PLAYLIST_ADD_FILE:
 				PlayListAddFile();
 			break;
-			
+
 			case PLAYLIST_ADD_DIR:
 				PlayListAddDir();
 			break;
-			
+
 			case PLAYLIST_SELECT_ALL:
 				PlayListSelectAll();
 			break;
-			
+
 			case PLAYLIST_REMOVE:
 				PlayListRemove();
 			break;
-			
+
 			default:
 				/* selected playlist entry? */
 				if( wd->tree[obj].ob_type == G_TEXT && get_flag( wd->tree, obj, OF_SELECTABLE ) == TRUE )
@@ -558,7 +558,7 @@ static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 			break;
 		}
 	}
-	
+
 	else if( wd == g_winDialogs[WD_PLUGIN] )
 	{
 		/*
@@ -570,7 +570,7 @@ static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 				PanelInfoPlugin();
 				close = TRUE;
 			break;
-			
+
 			default:
 				PluginInfoButton( obj );
 				if( obj == PLUGIN_OK )
@@ -584,11 +584,11 @@ static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 				}
 			break;
 		}
-		
+
 		set_state( wd->tree, obj, OS_SELECTED, FALSE );
 		redraw_wdobj( wd, obj );
 	}
-	
+
 	else if( wd == g_winDialogs[WD_MODULE] )
 	{
 		/*
@@ -601,13 +601,13 @@ static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 				PanelInfoModule();
 				close = TRUE;
 			break;
-			
+
 			default:
 				ModuleInfoButton( obj );
 				return FALSE;
 			break;
 		}
-		
+
 		set_state( wd->tree, obj, OS_SELECTED, FALSE );
 		redraw_wdobj( wd, obj );
 	}
@@ -631,23 +631,23 @@ void PanelDialogRefresh( void )
 	int				min;
 	char			time[10];
 	unsigned int	currTime;
-	
+
 	/* we are changing resource file */
 	if( canRefresh == FALSE )
 	{
 		return;
 	}
-	
+
 	/* update time first */
 	Vsync();
 	redraw_wdobj( g_winDialogs[WD_PANEL], PANEL_PLAYTIME );
 	redraw_wdobj( g_winDialogs[WD_PANEL], PANEL_SONGNAME );
-	
+
 	/* Update scrolling infoline */
 	pTed = (TEDINFO*)get_obspec( g_winDialogs[WD_PANEL]->tree, PANEL_SONGNAME );
 	field = pTed->te_ptext;
 	fieldLength = pTed->te_txtlen - 1;	/* including terminator '\0' */
-	
+
 	if( strcmp( g_panelInfoLine, "" ) == 0 )
 	{
 		infoLine = welcomeString;
@@ -657,7 +657,7 @@ void PanelDialogRefresh( void )
 		infoLine = g_panelInfoLine;
 	}
 	infoLineLength = strlen( infoLine );
-	
+
 	if( infoLineLength <= fieldLength )
 	{
 		/* for the case we used long songname before */
@@ -669,13 +669,13 @@ void PanelDialogRefresh( void )
 		/* ngname........so */
 		memset( field, ' ', fieldLength );
 		field[fieldLength] = '\0';
-		
+
 		stringIndexRev = fieldLength - stringIndex;
-		
+
 		/* place the first character & (possible) remaining ones */
 		strncpy( &field[stringIndex], infoLine, MIN( stringIndexRev, infoLineLength ) );
-		
-		
+
+
 		/* are there some remaining characters? */
 		if( stringIndexRev < infoLineLength )
 		{
@@ -692,21 +692,21 @@ void PanelDialogRefresh( void )
 		/* _long_ends.start */
 		strncpy( field, &infoLine[stringIndex], fieldLength );
 		field[fieldLength] = '\0';
-		
+
 		/* wrap text */
 		freeSpace = stringIndex + fieldLength - infoLineLength;
 		if( freeSpace > 0 )
 		{
 			strncpy( &field[fieldLength - freeSpace], infoLine, freeSpace );
 		}
-		
+
 		stringIndex++;
 		if( stringIndex >= infoLineLength )
 		{
 			stringIndex = 0;
 		}
 	}
-	
+
 	if( g_modulePlaying == TRUE && g_modulePaused == FALSE )
 	{
 		if( g_timeMode == TIME_MODE_ADD )
