@@ -1,5 +1,5 @@
 /*
- * vbl_timer.h -- VBL counter for one-second-exact time measure (definitions and external declarations)
+ * timer.c -- counter for one-second-exact time measure
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
  *
@@ -21,28 +21,44 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#ifndef _VLB_TIMER_H_
-#define _VLB_TIMER_H_
+#include <mint/mintbind.h>
+#include <stdio.h>
+#include <time.h>
 
 #include "mxplay.h"
+#include "audio_plugins.h"
 
-#ifdef NO_MINT
-extern long	timer_start_measure( void );
-extern long	timer_stop_measure( void );
+static clock_t pauseConst;
+static clock_t pausedTime;
+static clock_t playTime;
+static clock_t referenceTime;
 
-extern BOOL	timer_is_finished( void );
-extern long	timer_install( void );
-extern long	timer_uninstall( void );
+void TimerReset( unsigned long seconds )
+{
+	referenceTime = clock();
+	playTime = seconds * CLOCKS_PER_SEC;
+	pauseConst = 0;
+}
 
-extern unsigned long timer_addtime;
-extern unsigned long timer_subtime;
+void TimerPause( void )
+{
+	if( g_modulePaused == TRUE )
+	{
+		/* module is paused just since now */
+		pausedTime = clock();
+	}
+	else
+	{
+		pauseConst += clock() - pausedTime;
+	}
+}
 
-#endif	/* NO_MINT */
+unsigned long TimerGetSubTime( void )
+{
+	return ( playTime - ( clock() - ( referenceTime + pauseConst ) ) ) / CLOCKS_PER_SEC;	/* playtime - passed */
+}
 
-extern void	timer_reset( unsigned long time );
-extern void	timer_pause( void );
-
-extern unsigned long TimerGetSubTime( void );
-extern unsigned long TimerGetAddTime( void );
-
-#endif
+unsigned long TimerGetAddTime( void )
+{
+	return ( clock() - ( referenceTime + pauseConst ) ) / CLOCKS_PER_SEC;	/* current - starting */
+}

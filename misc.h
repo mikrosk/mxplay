@@ -34,7 +34,6 @@
 extern void			WriteConfigFile( void );
 extern void			ReadConfigFile( void );
 extern void			GetHomePath( void );
-extern unsigned long GetCurrentTime( void );
 extern void			CombinePath( char* fullpath, char* path, char* name );
 extern BOOL			VerifyAlloc( void* pointer );
 extern void			ParseArgs( char* cmdline );

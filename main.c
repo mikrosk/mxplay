@@ -38,7 +38,7 @@
 #include "playlist.h"
 #include "av.h"
 #include "dd.h"
-#include "vbl_timer.h"
+#include "timer.h"
 #include "module_info.h"
 
 BOOL	g_quitApp = FALSE;
@@ -50,11 +50,6 @@ BOOL	g_hasDsp = FALSE;
 
 static short	currMouseX;
 static short	currMouseY;
-
-#ifdef NO_MINT
-static BOOL		isTimerInstalled = FALSE;
-static BOOL		isVblInstalled = FALSE;
-#endif
 
 /*
  * Message-handling.
@@ -240,26 +235,6 @@ int SendMessage( short recipientId )
  */
 void ExitPlayer( int code )
 {
-#ifdef NO_MINT
-	if( isTimerInstalled == TRUE )
-	{
-		if( Supexec( timer_stop_measure ) == FALSE )
-		{
-			ShowMeasureDeinitFailedDialog();
-		}
-		isTimerInstalled = FALSE;
-	}
-
-	if( isVblInstalled == TRUE )
-	{
-		if( Supexec( timer_uninstall ) == FALSE )
-		{
-			ShowMeasureDeinitFailedDialog();
-		}
-		isVblInstalled = FALSE;
-	}
-#endif
-
 	exit_app( code );
 }
 
@@ -274,15 +249,6 @@ int main( int argc, char* argv[] )
 	short	obj;
 	long	temp;
 	BOOL	inVolume = FALSE;
-
-#ifdef NO_MINT
-	isTimerInstalled = TRUE;
-	if( Supexec( timer_start_measure ) == FALSE )
-	{
-		ShowMeasureInitFailedDialog();
-		ExitPlayer( 1 );
-	}
-#endif
 
 	/* register MiNT domain */
 	if( Pdomain( 1 ) != 1 )	/* MiNT domain */
@@ -325,26 +291,6 @@ int main( int argc, char* argv[] )
 
 	/* load & init all audio plugins */
 	LoadAudioPlugins();
-
-#ifdef NO_MINT
-	/* check if we reached the end of time measuring */
-	while( timer_is_finished() == FALSE );
-
-	if( Supexec( timer_stop_measure ) == FALSE )
-	{
-		ShowMeasureDeinitFailedDialog();
-		ExitPlayer( 1 );
-	}
-	isTimerInstalled = FALSE;
-
-	/* install vbl-timer for correct time show */
-	isVblInstalled = TRUE;
-	if( Supexec( timer_install ) == FALSE )
-	{
-		ShowMeasureInitFailedDialog();
-		ExitPlayer( 1 );
-	}
-#endif
 
 	/* close splash */
 	CloseSplashImage();
@@ -679,15 +625,6 @@ int main( int argc, char* argv[] )
 	}
 
 	PanelStop();
-
-#ifdef NO_MINT
-	if( Supexec( timer_uninstall ) == FALSE )
-	{
-		ShowMeasureDeinitFailedDialog();
-		/* has exit some sense? */
-	}
-	isVblInstalled = FALSE;
-#endif
 
 	AVExit();
 

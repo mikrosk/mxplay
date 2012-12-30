@@ -38,7 +38,7 @@
 #include "filelist.h"
 #include "playlist.h"
 #include "plugin_info.h"
-#include "vbl_timer.h"
+#include "timer.h"
 #include "module_info.h"
 
 int				g_timeMode = TIME_MODE_ADD;
@@ -277,7 +277,7 @@ void PanelPlay( void )
 			{
 				if( ( ret = AudioPluginModulePlay() ) == MXP_OK )
 				{
-					timer_reset( AudioPluginGetPlayTime() );	/* get playtime */
+					TimerReset( AudioPluginGetPlayTime() );	/* get playtime */
 				}
 				else
 				{
@@ -342,7 +342,7 @@ void PanelPause( void )
 		}
 		else
 		{
-			timer_pause();
+			TimerPause();
 		}
 	}
 }

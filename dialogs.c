@@ -36,7 +36,7 @@
 #include "misc.h"
 #include "playlist.h"
 #include "plugin_info.h"
-#include "vbl_timer.h"
+#include "timer.h"
 #include "module_info.h"
 
 WDIALOG*	g_winDialogs[WD_LIST_SIZE];
@@ -260,18 +260,6 @@ void DeleteDialogs( void )
 /*
  * Application dialogs and alerts
  */
-
-#ifdef NO_MINT
-int ShowMeasureInitFailedDialog( void )
-{
-	return do_walert( 1, TRUE, "[3][VBL handler installation failed.][Many apps]", "Fatal Error" );
-}
-
-int ShowMeasureDeinitFailedDialog( void )
-{
-	return do_walert( 1, TRUE, "[3][VBL handler deinstallation failed.][Should reboot]", "Fatal Error" );
-}
-#endif	/* NO_MINT */
 
 int ShowRsrcAddrFailedDialog( void )
 {

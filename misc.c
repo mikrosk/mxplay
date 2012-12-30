@@ -28,10 +28,6 @@
 #include <unistd.h>
 #include <mint/osbind.h>
 
-#ifndef NO_MINT
-#include <mint/mintbind.h>
-#endif
-
 #include <sys/stat.h>
 #include <fcntl.h>
 
@@ -459,30 +455,6 @@ void ParseArgs( char* cmdline )
 	//fprintf( fs, "%s\n", all );
 	//fclose( fs );
 	//return;
-}
-
-/*
- * Get and convert time to one long. (MiNT/No-MiNT version)
- */
-unsigned long GetCurrentTime( void )
-{
-#ifdef NO_MINT
-	unsigned int min;
-	unsigned int sec;
-	unsigned int time;
-
-	time = Tgettime();
-
-	sec = ( time & 0x1f ) * 2;
-	min = ( time >> 5 ) & 0x3f;
-
-	return min * 60 + sec;
-#else	/* NO_MINT false */
-	struct timeval time;
-
-	Tgettimeofday( &time, NULL );
-	return time.tv_sec;
-#endif	/* NO_MINT */
 }
 
 /*

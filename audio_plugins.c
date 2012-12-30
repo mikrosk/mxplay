@@ -444,7 +444,7 @@ BOOL AudioPluginLockResources( void )
 			}
 			else
 			{
-				ShowDmaRequiredDialog();
+				ShowDspRequiredDialog();
 				return FALSE;
 			}
 		}
