@@ -258,6 +258,12 @@ int main( int argc, char* argv[] )
 	/* get global variables etc */
 	init_app( NULL );
 
+	/* TosWin2 fix */
+	if( strcmp( gl_appdir, "\\" ) == 0 )
+	{
+		get_path( gl_appdir, 0 );
+	}
+
 	/* alloc & create all dialogs */
 	InitDialogs();
 
