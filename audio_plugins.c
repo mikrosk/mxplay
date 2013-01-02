@@ -86,6 +86,7 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 {
 	BASEPAGE*	bp;
 	char*		cmdline[128];
+	struct SAudioPlugin* p;
 
 	cmdline[0] = 0;	/* 0 bytes long */
 	cmdline[1] = '\0';	/* terminate it */
@@ -106,7 +107,21 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 
 		memset( bp->p_bbase, bp->p_blen, 0 );
 
-		return (struct SAudioPlugin*)bp->p_tbase;	/* text segment address */
+		// text segment
+		p = (struct SAudioPlugin*)bp->p_tbase;
+		if( strncmp( p->header, "MXP1", 4 ) == 0 )
+		{
+			return p;
+		}
+
+		// MiNT executables need this hack...
+		p = (struct SAudioPlugin*)( bp->p_tbase + 228 );
+		if( strncmp( p->header, "MXP1", 4 ) == 0 )
+		{
+			return p;
+		}
+
+		return NULL;
 	}
 }
 

@@ -2,9 +2,10 @@ TARGET	= xmp.mxp
 
 AS	= vasm
 CC	= m68k-atari-mint-gcc
+STRIP	= m68k-atari-mint-strip -s
 
 CPU	= -m68020-60
-ASFLAGS	= -Faout -m68882 -m68030 -opt-allbra -opt-brajmp -quiet
+ASFLAGS	= -Faout -m68882 -m68030 -quiet
 CFLAGS	= $(CPU) -Wall -O2 -fomit-frame-pointer -std=c99
 LDFLAGS	= $(CPU) -lxmp -lm -nostartfiles
 
@@ -20,4 +21,5 @@ clean:
 	rm -f *~ $(TARGET) *.o
 
 release: $(TARGET)
+	$(STRIP) $<
 	cp $< ..
