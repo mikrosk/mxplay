@@ -144,7 +144,6 @@ void AudioPluginGetInfoLine( struct SParameter* param )
 BOOL LoadAudioModule( char* path, char* name )
 {
 	char			tempString[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
-	int				handle;
 	unsigned long	length;
 	char*			pTempModule = NULL;
 
@@ -157,64 +156,69 @@ BOOL LoadAudioModule( char* path, char* name )
 
 	CombinePath( tempString, path, name );
 
-	handle = open( tempString, O_RDONLY );
-
-	if( handle < 0 )
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->pSInfo->flags & MXP_FLG_DONT_LOAD_MODULE )
 	{
-		ShowLoadErrorDialog( name );
-		return FALSE;
+		pTempModule = tempString;	// buffer is now a path pointer
+		length = 0;	// for sure
 	}
 	else
 	{
-		length = GetFileNameSize( tempString );
-		if( length == 0 )
-		{
-			return FALSE;
-		}
-
-		/* Global ST RAM */
-		if( getcookie( "MiNT", NULL ) == TRUE )
-		{
-			pTempModule = (char*)Mxalloc( length, MX_STRAM | 0x0008 | MX_GLOBAL );
-		}
-		else
-		{
-			pTempModule = (char*)Mxalloc( length, MX_STRAM );
-		}
-		if( VerifyAlloc( pTempModule ) == FALSE )
-		{
-			return FALSE;
-		}
-
-		if( read( (short)handle, pTempModule, length ) < 0 )
+		int	handle = open( tempString, O_RDONLY );
+		if( handle < 0 )
 		{
 			ShowLoadErrorDialog( name );
-			Mfree( pTempModule );
-			pTempModule = NULL;
-			close( handle );
 			return FALSE;
 		}
 		else
 		{
-			close( handle );
-
-			if( AudioPluginRegisterModule( g_pCurrAudioPlugin, pTempModule, length ) != MXP_OK )
+			length = GetFileNameSize( tempString );
+			if( length == 0 )
 			{
-				ShowBadHeaderDialog();
-				strcpy( g_panelInfoLine, "" );	/* infoline is no more actual */
-				strcpy( g_currModuleName, "-" );	/* this is even more critical */
+				return FALSE;
+			}
+
+			/* Global ST RAM */
+			if( getcookie( "MiNT", NULL ) == TRUE )
+			{
+				pTempModule = (char*)Mxalloc( length, MX_STRAM | 0x0008 | MX_GLOBAL );
+			}
+			else
+			{
+				pTempModule = (char*)Mxalloc( length, MX_STRAM );
+			}
+			if( VerifyAlloc( pTempModule ) == FALSE )
+			{
+				return FALSE;
+			}
+
+			if( read( (short)handle, pTempModule, length ) < 0 )
+			{
+				ShowLoadErrorDialog( name );
 				Mfree( pTempModule );
 				pTempModule = NULL;
+				close( handle );
 				return FALSE;
 			}
 			else
 			{
-				strcpy( g_currModuleName, tempString );
-				pCurrModule = pTempModule;
+				close( handle );
 			}
-			return TRUE;
 		}
 	}
+
+	if( AudioPluginRegisterModule( g_pCurrAudioPlugin, pTempModule, length ) != MXP_OK )
+	{
+		ShowBadHeaderDialog();
+		strcpy( g_panelInfoLine, "" );	/* infoline is no more actual */
+		strcpy( g_currModuleName, "-" );	/* this is even more critical */
+		Mfree( pTempModule );
+		pTempModule = NULL;
+		return FALSE;
+	}
+
+	strcpy( g_currModuleName, tempString );
+	pCurrModule = pTempModule;
+	return TRUE;
 }
 
 /*

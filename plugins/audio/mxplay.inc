@@ -4,7 +4,6 @@
 
 MXP_ERROR		EQU	0
 MXP_OK			EQU	1
-MXP_UNIMPLEMENTED	EQU	2			; DEPRECATED: use NULL pointers instead
 
 ; ===========================
 ; === mxPlay plugin flags ===
@@ -14,6 +13,7 @@ MXP_FLG_USE_DSP		EQU	1<<0			; plugin uses DSP
 MXP_FLG_USE_DMA		EQU	1<<1			; plugin uses DMA sound system
 MXP_FLG_USE_020		EQU	1<<2			; plugin uses 020+ CPU
 MXP_FLG_USE_FPU		EQU	1<<3			; plugin uses FPU
+MXP_FLG_DONT_LOAD_MODULE EQU	1<<4			; plugin loads modules by itself
 
 MXP_FLG_INFOLINE	EQU	1<<29			; show on infoline
 MXP_FLG_MOD_PARAM	EQU	1<<30			; module parameter
@@ -46,7 +46,7 @@ mxp_struct_settings_routine_set:
 			RS.L	1			; parameter 'set' routine (or 0)
 mxp_struct_settings_routine_get:
 			RS.L	1			; parameter 'get' routine
-			
+
 
 mxp_struct_extensions:
 			RSRESET
@@ -54,7 +54,7 @@ mxp_struct_extensions_string:
 			RS.L	1			; pointer to extension-string (e.g. "AM") or 0
 mxp_struct_extensions_name:
 			RS.L	1			; pointer to name-string (e.g. "ACE Module")
-			
+
 ; =============================
 ; === mxPlay plugin indices ===
 ; =============================
@@ -109,13 +109,13 @@ MXP_PLUGIN_DEINIT	EQU	7*4
 
 ; Name:    Music forward.
 ; Purpose: Forward music for a while.
-; Input:   
+; Input:
 ; Output:  Return code.
 MXP_PLUGIN_MUSIC_FWD	EQU	8*4
 
 ; Name:    Music rewind.
 ; Purpose: Rewind music for a while.
-; Input:   
+; Input:
 ; Output:  Return code.
 MXP_PLUGIN_MUSIC_RWD	EQU	9*4
 

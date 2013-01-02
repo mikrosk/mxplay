@@ -41,6 +41,7 @@
 #define MXP_FLG_USE_DMA			(1<<1)			/* plugin uses DMA sound system */
 #define MXP_FLG_USE_020			(1<<2)			/* plugin uses 020+ CPU */
 #define MXP_FLG_USE_FPU			(1<<3)			/* plugin uses FPU */
+#define MXP_FLG_DONT_LOAD_MODULE	(1<<4)			/* plugins loads modules by itself */
 
 #define MXP_PAR_TYPE_BOOL		0				/* bool value (on/off) */
 #define MXP_PAR_TYPE_CHAR		1				/* character field as string */
