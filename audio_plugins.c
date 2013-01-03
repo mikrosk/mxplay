@@ -22,7 +22,6 @@
  */
 
 #include <mint/osbind.h>
-#include <mint/ostruct.h>
 #include <mint/falcon.h>
 #include <mint/basepage.h>
 #include <cflib.h>
@@ -173,7 +172,7 @@ BOOL LoadAudioModule( char* path, char* name )
 	/* no more available */
 	if( pModule != NULL )
 	{
-		Mfree( pModule );
+		free( pModule );
 		pModule = NULL;
 	}
 
@@ -183,13 +182,11 @@ BOOL LoadAudioModule( char* path, char* name )
 	{
 		// buffer serves now as a path
 		length = strlen( tempString ) + 1;
-		// don't use strdup() as we release memory with Mfree() ...
-		pModule = (char*)Mxalloc( length, MX_PREFTTRAM );
+		pModule = strdup( tempString );
 		if( VerifyAlloc( pModule ) == FALSE )
 		{
 			return FALSE;
 		}
-		strcpy( pModule, tempString );
 	}
 	else
 	{
@@ -207,16 +204,7 @@ BOOL LoadAudioModule( char* path, char* name )
 				return FALSE;
 			}
 
-			// TODO: verify, do we really need to load it into ST RAM and as global memory?!
-			/* Global ST RAM */
-			if( getcookie( "MiNT", NULL ) == TRUE )
-			{
-				pModule = (char*)Mxalloc( length, MX_STRAM | 0x0008 | MX_GLOBAL );
-			}
-			else
-			{
-				pModule = (char*)Mxalloc( length, MX_STRAM );
-			}
+			pModule = (char*)malloc( length );
 			if( VerifyAlloc( pModule ) == FALSE )
 			{
 				return FALSE;
@@ -225,7 +213,7 @@ BOOL LoadAudioModule( char* path, char* name )
 			if( read( (short)handle, pModule, length ) < 0 )
 			{
 				ShowLoadErrorDialog( name );
-				Mfree( pModule );
+				free( pModule );
 				pModule = NULL;
 				close( handle );
 				return FALSE;
@@ -242,7 +230,7 @@ BOOL LoadAudioModule( char* path, char* name )
 		ShowBadHeaderDialog();
 		strcpy( g_panelInfoLine, "" );	/* infoline is no more actual */
 		strcpy( g_currModuleName, "-" );	/* this is even more critical */
-		Mfree( pModule );
+		free( pModule );
 		pModule = NULL;
 		return FALSE;
 	}

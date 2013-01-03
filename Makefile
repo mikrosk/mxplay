@@ -12,7 +12,7 @@ endif
 CC			= ${prefix}gcc
 AS			= ${prefix}as
 STRIP			= ${prefix}strip -s
-FLAGS			= ${prefix}flags -l -r -a
+FLAGS			= ${prefix}flags -l -r -a -S
 
 UPX			= upx
 MAKE			= make
@@ -47,6 +47,7 @@ $(TARGET): $(OBJS)
 
 debug:
 	$(MAKE) $(TARGET) CONFIG="Debug"
+	$(FLAGS) $(TARGET)
 
 release:
 	$(MAKE) $(TARGET) CONFIG="Release"
