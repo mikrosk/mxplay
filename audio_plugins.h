@@ -42,6 +42,7 @@
 #define MXP_FLG_USE_020			(1<<2)			/* plugin uses 020+ CPU */
 #define MXP_FLG_USE_FPU			(1<<3)			/* plugin uses FPU */
 #define MXP_FLG_DONT_LOAD_MODULE	(1<<4)			/* plugins loads modules by itself */
+#define MXP_FLG_USER_CODE 		(1<<5)			/* plugin handles supervisor calls by itself */
 
 #define MXP_PAR_TYPE_BOOL		0				/* bool value (on/off) */
 #define MXP_PAR_TYPE_CHAR		1				/* character field as string */
@@ -61,8 +62,8 @@ struct SParameter
 {
 	char*	pName;
 	long	type;
-	void*	Set;
-	void*	Get;
+	int (*Set)( void );
+	int (*Get)( void );
 };
 
 struct SExtension
@@ -71,19 +72,30 @@ struct SExtension
 	char*	name;
 };
 
+struct SModuleParameter
+{
+	char*	p;	// path or buffer
+	size_t	size;
+};
+union UParameterBuffer
+{
+	struct SModuleParameter* pModule;
+	long	value;
+};
+
 struct SAudioPlugin
 {
 	char				header[4];
-	long				inBuffer;
-	void*				RegisterModule;
-	void*				PlayTime;
-	void*				Init;
-	void*				Set;
-	void*				Unset;
-	void*				Deinit;
-	void*				ModuleFwd;
-	void*				ModuleRwd;
-	void*				ModulePause;
+	union UParameterBuffer inBuffer;
+	int (*RegisterModule)( void );
+	int (*PlayTime)( void );
+	int (*Init)( void );
+	int (*Set)( void );
+	int (*Unset)( void );
+	int (*Deinit)( void );
+	int (*ModuleFwd)( void );
+	int (*ModuleRwd)( void );
+	int (*ModulePause)( void );
 	struct SInfo*		pSInfo;
 	struct SExtension*	pSExtension;
 	struct SParameter*	pSParameter;

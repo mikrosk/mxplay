@@ -281,6 +281,7 @@ void PanelPlay( void )
 				}
 				else
 				{
+					g_modulePlaying = FALSE;
 					ShowPluginErrorDialog( ret );
 					/* most probably some HW registers were changed -> stop, unset and free */
 					PanelStop();

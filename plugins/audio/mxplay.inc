@@ -14,6 +14,7 @@ MXP_FLG_USE_DMA		EQU	1<<1			; plugin uses DMA sound system
 MXP_FLG_USE_020		EQU	1<<2			; plugin uses 020+ CPU
 MXP_FLG_USE_FPU		EQU	1<<3			; plugin uses FPU
 MXP_FLG_DONT_LOAD_MODULE EQU	1<<4			; plugin loads modules by itself
+MXP_FLG_USER_CODE 	EQU	1<<5			; plugin handles supervisor calls by itself
 
 MXP_FLG_INFOLINE	EQU	1<<29			; show on infoline
 MXP_FLG_MOD_PARAM	EQU	1<<30			; module parameter

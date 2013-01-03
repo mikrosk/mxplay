@@ -49,16 +49,24 @@ char						g_currModuleName[MXP_PATH_MAX+1] = "-";
 
 static struct SAudioPlugin*	pSAudioPlugin[MAX_AUDIO_PLUGINS];
 static int					audioPluginsCount;
-static char*				pCurrModule;
 static int					dspLocked = FALSE;
 static int					dmaLocked = FALSE;
-static char**				pInputArray;
+static struct SModuleParameter moduleParameter;
+
+static BOOL AudioPluginIsFlagSet( int flag )
+{
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->pSInfo != NULL )
+	{
+		return ( g_pCurrAudioPlugin->pSInfo->flags & flag ) != 0 ? TRUE : FALSE;
+	}
+	return FALSE;
+}
 
 static int AudioPluginInit( struct SAudioPlugin* plugin )
 {
 	if( plugin->Init != NULL )
 	{
-		return Supexec( &plugin->Init );
+		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? plugin->Init() : Supexec( plugin->Init );
 	}
 	else
 	{
@@ -66,15 +74,15 @@ static int AudioPluginInit( struct SAudioPlugin* plugin )
 	}
 }
 
-static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module, unsigned int length )
+static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module, size_t length )
 {
-	pInputArray[0] = (char*)module;
-	pInputArray[1] = (char*)length;
+	moduleParameter.p = module;
+	moduleParameter.size = length;
 
-	plugin->inBuffer = (long)pInputArray;
+	plugin->inBuffer.pModule = &moduleParameter;
 	if( plugin->RegisterModule != NULL )
 	{
-		return Supexec( &plugin->RegisterModule );
+		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? plugin->RegisterModule() : Supexec( plugin->RegisterModule );
 	}
 	else
 	{
@@ -103,20 +111,20 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 		bp->p_tlen +				/* length of text segment */
 		bp->p_dlen +				/* length of data segment */
 		bp->p_blen +				/* length of BSS segment */
-		4096 );						/* length of stack */
+		64*1024 );					/* length of stack */
 
 		memset( bp->p_bbase, bp->p_blen, 0 );
 
 		// text segment
 		p = (struct SAudioPlugin*)bp->p_tbase;
-		if( strncmp( p->header, "MXP1", 4 ) == 0 )
+		if( strncmp( p->header, "MXP2", 4 ) == 0 )
 		{
 			return p;
 		}
 
 		// MiNT executables need this hack...
 		p = (struct SAudioPlugin*)( bp->p_tbase + 228 );
-		if( strncmp( p->header, "MXP1", 4 ) == 0 )
+		if( strncmp( p->header, "MXP2", 4 ) == 0 )
 		{
 			return p;
 		}
@@ -160,21 +168,28 @@ BOOL LoadAudioModule( char* path, char* name )
 {
 	char			tempString[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
 	unsigned long	length;
-	char*			pTempModule = NULL;
+	static char*	pModule;
 
 	/* no more available */
-	if( pCurrModule != NULL )
+	if( pModule != NULL )
 	{
-		Mfree( pCurrModule );
-		pCurrModule = NULL;
+		Mfree( pModule );
+		pModule = NULL;
 	}
 
 	CombinePath( tempString, path, name );
 
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->pSInfo->flags & MXP_FLG_DONT_LOAD_MODULE )
+	if( AudioPluginIsFlagSet( MXP_FLG_DONT_LOAD_MODULE ) )
 	{
-		pTempModule = tempString;	// buffer is now a path pointer
-		length = 0;	// for sure
+		// buffer serves now as a path
+		length = strlen( tempString ) + 1;
+		// don't use strdup() as we release memory with Mfree() ...
+		pModule = (char*)Mxalloc( length, MX_PREFTTRAM );
+		if( VerifyAlloc( pModule ) == FALSE )
+		{
+			return FALSE;
+		}
+		strcpy( pModule, tempString );
 	}
 	else
 	{
@@ -192,25 +207,26 @@ BOOL LoadAudioModule( char* path, char* name )
 				return FALSE;
 			}
 
+			// TODO: verify, do we really need to load it into ST RAM and as global memory?!
 			/* Global ST RAM */
 			if( getcookie( "MiNT", NULL ) == TRUE )
 			{
-				pTempModule = (char*)Mxalloc( length, MX_STRAM | 0x0008 | MX_GLOBAL );
+				pModule = (char*)Mxalloc( length, MX_STRAM | 0x0008 | MX_GLOBAL );
 			}
 			else
 			{
-				pTempModule = (char*)Mxalloc( length, MX_STRAM );
+				pModule = (char*)Mxalloc( length, MX_STRAM );
 			}
-			if( VerifyAlloc( pTempModule ) == FALSE )
+			if( VerifyAlloc( pModule ) == FALSE )
 			{
 				return FALSE;
 			}
 
-			if( read( (short)handle, pTempModule, length ) < 0 )
+			if( read( (short)handle, pModule, length ) < 0 )
 			{
 				ShowLoadErrorDialog( name );
-				Mfree( pTempModule );
-				pTempModule = NULL;
+				Mfree( pModule );
+				pModule = NULL;
 				close( handle );
 				return FALSE;
 			}
@@ -221,18 +237,17 @@ BOOL LoadAudioModule( char* path, char* name )
 		}
 	}
 
-	if( AudioPluginRegisterModule( g_pCurrAudioPlugin, pTempModule, length ) != MXP_OK )
+	if( AudioPluginRegisterModule( g_pCurrAudioPlugin, pModule, length ) != MXP_OK )
 	{
 		ShowBadHeaderDialog();
 		strcpy( g_panelInfoLine, "" );	/* infoline is no more actual */
 		strcpy( g_currModuleName, "-" );	/* this is even more critical */
-		Mfree( pTempModule );
-		pTempModule = NULL;
+		Mfree( pModule );
+		pModule = NULL;
 		return FALSE;
 	}
 
 	strcpy( g_currModuleName, tempString );
-	pCurrModule = pTempModule;
 	return TRUE;
 }
 
@@ -281,13 +296,6 @@ void LoadAudioPlugins( void )
 	struct dirent*	pDirEntry;
 	char			tempString[MXP_PATH_MAX+1];
 	char			ext[MXP_FILENAME_MAX+1];
-
-	/* Global ST/TT RAM */
-	pInputArray = (char**)malloc_global( 2 * sizeof( char* ) );
-	if( VerifyAlloc( pInputArray ) == FALSE )
-	{
-		ExitPlayer( 1 );
-	}
 
 	pDirStream = opendir( AUDIO_PLUGINS_PATH );
 	if( pDirStream != NULL )
@@ -342,7 +350,7 @@ int AudioPluginModulePlay( void )
 	{
 		g_modulePlaying = TRUE;
 #ifndef DISABLE_PLUGINS
-		return Supexec( &g_pCurrAudioPlugin->Set );
+		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Set() : Supexec( g_pCurrAudioPlugin->Set );
 #else
 		return MXP_OK;
 #endif
@@ -356,17 +364,12 @@ int AudioPluginModulePlay( void )
  */
 int AudioPluginModuleStop( void )
 {
-	int ret;
-
 	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Unset != NULL )
 	{
 		g_modulePaused = FALSE;
 		g_modulePlaying = FALSE;
 #ifndef DISABLE_PLUGINS
-		ret = Supexec( &g_pCurrAudioPlugin->Unset );
-		// TODO: only if dsp is used by mxPlay (+ sound reset implementation?)
-		dsp_load_program( NULL, 0 );	/* reset DSP */
-		return ret;
+		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Unset() : Supexec( g_pCurrAudioPlugin->Unset );
 #else
 		return MXP_OK;
 #endif
@@ -384,7 +387,7 @@ int AudioPluginModulePause( void )
 	{
 		g_modulePaused = !g_modulePaused;
 #ifndef DISABLE_PLUGINS
-		return Supexec( &g_pCurrAudioPlugin->ModulePause );
+		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->ModulePause() : Supexec( g_pCurrAudioPlugin->ModulePause );
 #else
 		return MXP_OK;
 #endif
@@ -402,7 +405,7 @@ int AudioPluginModuleFwd( BOOL bigStep )
 	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModuleFwd != NULL )
 	{
 #ifndef DISABLE_PLUGINS
-		return Supexec( &g_pCurrAudioPlugin->ModuleFwd );
+		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->ModuleFwd() : Supexec( g_pCurrAudioPlugin->ModuleFwd );
 #else
 		return MXP_OK;
 #endif
@@ -420,7 +423,7 @@ int AudioPluginModuleRwd( BOOL bigStep )
 	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModuleRwd != NULL )
 	{
 #ifndef DISABLE_PLUGINS
-		return Supexec( &g_pCurrAudioPlugin->ModuleRwd );
+		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->ModuleRwd() : Supexec( g_pCurrAudioPlugin->ModuleRwd );
 #else
 		return MXP_OK;
 #endif
@@ -431,12 +434,9 @@ int AudioPluginModuleRwd( BOOL bigStep )
 
 BOOL AudioPluginLockResources( void )
 {
-	long flags;
-
 	if( g_pCurrAudioPlugin != NULL )
 	{
-		flags = g_pCurrAudioPlugin->pSInfo->flags;
-		if( flags & MXP_FLG_USE_DSP )
+		if( AudioPluginIsFlagSet( MXP_FLG_USE_DSP ) )
 		{
 			if( g_hasDsp == TRUE )
 			{
@@ -468,7 +468,7 @@ BOOL AudioPluginLockResources( void )
 				return FALSE;
 			}
 		}
-		if( flags & MXP_FLG_USE_DMA )
+		if( AudioPluginIsFlagSet( MXP_FLG_USE_DMA ) )
 		{
 			if( g_hasDma == TRUE )
 			{
@@ -497,7 +497,7 @@ BOOL AudioPluginLockResources( void )
 				return FALSE;
 			}
 		}
-		if( flags & MXP_FLG_USE_020 )
+		if( AudioPluginIsFlagSet( MXP_FLG_USE_020 ) )
 		{
 			if( g_cpu < 20 )
 			{
@@ -505,7 +505,7 @@ BOOL AudioPluginLockResources( void )
 				return FALSE;
 			}
 		}
-		if( flags & MXP_FLG_USE_FPU )
+		if( AudioPluginIsFlagSet( MXP_FLG_USE_FPU ) )
 		{
 			if( g_fpu == 0 )
 			{
@@ -520,21 +520,20 @@ BOOL AudioPluginLockResources( void )
 
 BOOL AudioPluginFreeResources( void )
 {
-	long flags;
-
 	if( g_pCurrAudioPlugin != NULL )
 	{
-		flags = g_pCurrAudioPlugin->pSInfo->flags;
-		if( ( flags & MXP_FLG_USE_DSP ) && dspLocked )
+		if( AudioPluginIsFlagSet( MXP_FLG_USE_DSP ) && dspLocked )
 		{
+			dsp_load_program( NULL, 0 );	/* reset DSP */
 			Dsp_Unlock();
 			dspLocked = FALSE;
 		}
-		if( ( flags & MXP_FLG_USE_DMA ) && dmaLocked )
+		if( AudioPluginIsFlagSet( MXP_FLG_USE_DMA ) && dmaLocked )
 		{
+			Sndstatus( SND_RESET );
+			dmaLocked = FALSE;
 			if( Unlocksnd() == -128 )
 			{
-				dmaLocked = FALSE;
 				ShowDmaNotLockedDialog();
 				return FALSE;
 			}
@@ -569,7 +568,7 @@ unsigned long AudioPluginGetPlayTime( void )
 	if( g_pCurrAudioPlugin != NULL )
 	{
 #ifndef DISABLE_PLUGINS
-		return Supexec( &g_pCurrAudioPlugin->PlayTime );
+		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->PlayTime() : Supexec( g_pCurrAudioPlugin->PlayTime );
 #else
 		return 300;
 #endif
@@ -604,8 +603,8 @@ int AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long 
 {
 	int ret;
 
-	plugin->inBuffer = value;
-	ret = Supexec( param->Set );
+	plugin->inBuffer.value = value;
+	ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? param->Set() : Supexec( param->Set );
 	AudioPluginGetInfoLine( plugin->pSParameter );	/* start from the first parameter */
 	return ret;
 }
@@ -617,7 +616,7 @@ int AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long*
 {
 	int ret;
 
-	ret = Supexec( param->Get );
-	*value = plugin->inBuffer;
+	ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? param->Get() : Supexec( param->Get );
+	*value = plugin->inBuffer.value;
 	return ret;
 }

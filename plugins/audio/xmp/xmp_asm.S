@@ -3,7 +3,7 @@
 ; (c) 2012-2013
 
 		INCLUDE	"../mxplay.inc"
-		XREF	_xmp_parameter
+		XDEF	_xmp_parameter
 
 		XREF	_xmp_register_module
 		XREF	_xmp_get_playtime
@@ -19,17 +19,17 @@
 		XDEF	_asm_install_timer_a
 		XDEF	_asm_uninstall_timer_a
 
-xmp_header:	dc.l	"MXP1"
+xmp_header:	dc.l	"MXP2"
 		ds.l	1
-		bra.w	xmp_register_module					; local function
-		bra.w	_xmp_get_playtime
-		bra.w	_xmp_init
-		bra.w	_xmp_set
-		bra.w	_xmp_unset
-		bra.w	_xmp_deinit
-		bra.w	_xmp_fwd
-		bra.w	_xmp_rwd
-		bra.w	_xmp_pause
+		dc.l	xmp_register_module					; local function
+		dc.l	_xmp_get_playtime
+		dc.l	_xmp_init
+		dc.l	_xmp_set
+		dc.l	_xmp_unset
+		dc.l	_xmp_deinit
+		dc.l	_xmp_fwd
+		dc.l	_xmp_rwd
+		dc.l	_xmp_pause
 		dc.l	xmp_info
 		dc.l	xmp_extensions
 		dc.l	xmp_settings
@@ -96,7 +96,7 @@ xmp_info:	dc.l	xmp_info_plugin_author
 		dc.l	xmp_info_replay_name
 		dc.l	xmp_info_replay_author
 		dc.l	xmp_info_replay_version
-		dc.l	MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_USE_FPU|MXP_FLG_DONT_LOAD_MODULE
+		dc.l	MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_USE_FPU|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
 
 xmp_extensions:	dc.l	xmp_extensions_all
 		dc.l	xmp_extensions_all_name
@@ -127,5 +127,7 @@ xmp_extensions_all_name:
 		SECTION BSS
 ; ----------------------------------------------------------------------------
 
+_xmp_parameter:
+		ds.l	1
 sample_save_mfp:
 		ds.b	4+5

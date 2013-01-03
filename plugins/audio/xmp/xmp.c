@@ -16,22 +16,19 @@
 
 extern void asm_install_timer_a();
 extern void asm_uninstall_timer_a();
-
-struct
+extern struct
 {
 	char* pModule;
 	size_t moduleSize;
-} xmp_parameter;
-#define MXP_OK		0
-#define MXP_ERROR	1
+} *xmp_parameter;
+
+#define MXP_ERROR	0
+#define MXP_OK		1
 
 static char* pPhysical;
 static char* pLogical;
 static xmp_context c;
 static size_t bufferSize;	// size of one buffer
-
-static char* pModule;	// either buffer or path
-static size_t moduleSize;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
@@ -78,11 +75,8 @@ void timerA( void )
 
 int xmp_register_module( void )
 {
-	pModule = xmp_parameter.pModule;
-	moduleSize = xmp_parameter.moduleSize;
-
 	struct xmp_test_info ti;	// name and extension
-	return xmp_test_module( pModule, &ti ) == 0 ? MXP_OK : MXP_ERROR;
+ 	return xmp_test_module( xmp_parameter->pModule, &ti ) == 0 ? MXP_OK : MXP_ERROR;
 }
 
 int xmp_get_playtime( void )
@@ -104,7 +98,7 @@ int xmp_set( void )
 	char* pBuffer;
 	struct xmp_frame_info fi;
 
-	if( xmp_load_module( c, pModule ) != 0 )
+	if( xmp_load_module( c, xmp_parameter->pModule ) != 0 )
 	{
 		return MXP_ERROR;
 	}
