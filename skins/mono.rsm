@@ -3,7 +3,7 @@ ResourceMaster v3.65
 #N 99@32@AZAaza___  _@AZAaza090___  _@@_@
 #FoC-Header@rsm2out@C-Header@rsh@@@[C-Header@0@
 #R 0@0@2@1@2@1@
-#M 20010100@0@7728@682@
+#M 20010100@0@7728@683@
 #T 0@2@WICON@@2@@
 #T 1@2@PANEL@@22@@
 #O 1@31@BACKGROUND@@
@@ -86,4 +86,4 @@ ResourceMaster v3.65
 #O 24@20@BOX_DOWN@@
 #O 27@31@ICON_DOWN_LEFT@@
 #O 28@20@BOX_LEFT@@
-#c 10306@
+#c 8306@
