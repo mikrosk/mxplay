@@ -112,7 +112,7 @@ xmp_info_plugin_version:
 xmp_info_replay_name:
 		dc.b	"Extended Module Player",0
 xmp_info_replay_author:
-		dc.b	"Claudio Matsuoka and Hipolito Carraro Jr",0
+		dc.b	"C.Matsuoka & H.Carraro Jr",0
 xmp_info_replay_version:
 		dc.b	"4.0.0",0	; TODO: read it from libxmp
 

@@ -505,7 +505,19 @@ static void PluginInfoCheckBaseInfo( void )
 
 	if( g_pCurrAudioPlugin != NULL )
 	{
+		const int lineWidth = 26;	// we can show only this many chars in the plugin info dialog
 		AudioPluginGetBaseInfo( g_pCurrAudioPlugin, &pluginAuthor, &pluginVersion, &replayName, &replayAuthor, &replayVersion, &flags );
+		if( strlen( pluginAuthor ) > lineWidth )
+			pluginAuthor[lineWidth] = '\0';
+		if( strlen( pluginVersion ) > lineWidth )
+			pluginVersion[lineWidth] = '\0';
+		if( strlen( replayName ) > lineWidth )
+			replayName[lineWidth] = '\0';
+		if( strlen( replayAuthor ) > lineWidth )
+			replayAuthor[lineWidth] = '\0';
+		if( strlen( replayVersion ) > lineWidth )
+			replayVersion[lineWidth] = '\0';
+
 		set_string( tree, PLUGIN_PLG_AUTHOR, pluginAuthor );
 		set_string( tree, PLUGIN_PLG_VERSION, pluginVersion );
 		set_string( tree, PLUGIN_REP_NAME, replayName );
