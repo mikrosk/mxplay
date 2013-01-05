@@ -163,7 +163,6 @@ int asap_set( void )
 
 	Soundcmd( ADDERIN, MATIN );
 
-	// even if Setbuffer() is set in TimerA, Sndstatus() reset it
 	if( Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize ) != 0 )
 	{
 		return MXP_ERROR;
