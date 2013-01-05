@@ -93,16 +93,8 @@ void ConvertMxpParamTypes( struct SAudioPlugin* plugin, struct SParameter* param
 		break;
 
 		case MXP_PAR_TYPE_CHAR:
-			if( strcmp( (char*)value, "" ) == 0 )
-			{
-				/* use filename as value */
-				split_filename( g_currModuleFilePath, NULL, text );	/* i.e. "TeXmas II.mp3" */
-			}
-			else
-			{
-				strcpy( text, (char*)value );
-				TrimString( text );	/* "TeXmas II     " -> "TeXmas II" */
-			}
+			strcpy( text, (char*)value );
+			TrimString( text );	/* "TeXmas II     " -> "TeXmas II" */
 		break;
 	}
 

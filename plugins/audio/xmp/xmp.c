@@ -31,60 +31,130 @@ struct SExtension		xmp_extensions[] =
 };
 
 static xmp_context c;
-static char* pPhysical;
-static char* pLogical;
-static size_t bufferSize;	// size of one buffer
-static int loadNewSample;
 
 static int getSongName( void )
 {
-	if( pPhysical != NULL )
-	{
-		static struct xmp_module_info mi;
-		xmp_get_module_info( c, &mi );
-		xmp_parameter.value = (long)mi.mod->name;
-		printf( "s laskou: %s\r\n", mi.mod->name );
-	}
+	struct xmp_module_info mi;
+	xmp_get_module_info( c, &mi );
+	xmp_parameter.value = (long)mi.mod->name;
 
 	return MXP_OK;
 }
 
 static int getChannels( void )
 {
-	if( pPhysical != NULL )
-	{
-		static struct xmp_module_info mi;
+	struct xmp_module_info mi;
 	xmp_get_module_info( c, &mi );
 	xmp_parameter.value = (long)mi.mod->chn;
-	printf( "s laskou: %d\r\n", mi.mod->chn );
-	}
 
 	return MXP_OK;
 }
 
 static int getModuleType( void )
 {
-	if( pPhysical != NULL )
-	{
-		static struct xmp_module_info mi;
+	struct xmp_module_info mi;
 	xmp_get_module_info( c, &mi );
 	xmp_parameter.value = (long)mi.mod->type;
-	printf( "s laskou: %s\r\n", mi.mod->type );
-	}
 
 	return MXP_OK;
 }
+
+static const char* na = "n/a";
+
+#define define_getSample( num )								\
+static int getSample##num( void )							\
+{															\
+	struct xmp_module_info mi;								\
+	xmp_get_module_info( c, &mi );							\
+	if( mi.mod->ins > num )									\
+	{														\
+		xmp_parameter.value = (long)mi.mod->xxi[num].name;	\
+	}														\
+	else													\
+	{														\
+		xmp_parameter.value = (long)na;						\
+	}														\
+															\
+	return MXP_OK;											\
+}
+define_getSample( 0 );
+define_getSample( 1 );
+define_getSample( 2 );
+define_getSample( 3 );
+define_getSample( 4 );
+define_getSample( 5 );
+define_getSample( 6 );
+define_getSample( 7 );
+define_getSample( 8 );
+define_getSample( 9 );
+define_getSample( 10 );
+define_getSample( 11 );
+define_getSample( 12 );
+define_getSample( 13 );
+define_getSample( 14 );
+define_getSample( 15 );
+define_getSample( 16 );
+define_getSample( 17 );
+define_getSample( 18 );
+define_getSample( 19 );
+define_getSample( 20 );
+define_getSample( 21 );
+define_getSample( 22 );
+define_getSample( 23 );
+define_getSample( 24 );
+define_getSample( 25 );
+define_getSample( 26 );
+define_getSample( 27 );
+define_getSample( 28 );
+define_getSample( 29 );
+define_getSample( 30 );
 
 struct SParameter		xmp_settings[] =
 {
 	{ "Song name", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongName },
 	{ "Channels", MXP_PAR_TYPE_INT|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getChannels },
 	{ "Module type", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getModuleType },
+	{ "#0", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample0 },
+	{ "#1", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample1 },
+	{ "#2", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample2 },
+	{ "#3", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample3 },
+	{ "#4", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample4 },
+	{ "#5", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample5 },
+	{ "#6", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample6 },
+	{ "#7", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample7 },
+	{ "#8", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample8 },
+	{ "#9", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample9 },
+	{ "#10", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample10 },
+	{ "#11", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample11 },
+	{ "#12", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample12 },
+	{ "#13", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample13 },
+	{ "#14", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample14 },
+	{ "#15", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample15 },
+	{ "#16", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample16 },
+	{ "#17", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample17 },
+	{ "#18", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample18 },
+	{ "#19", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample19 },
+	{ "#20", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample20 },
+	{ "#21", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample21 },
+	{ "#22", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample22 },
+	{ "#23", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample23 },
+	{ "#24", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample24 },
+	{ "#25", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample25 },
+	{ "#26", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample26 },
+	{ "#27", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample27 },
+	{ "#28", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample28 },
+	{ "#29", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample29 },
+	{ "#30", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSample30 },
 	{ NULL, 0, NULL, NULL }
 };
 
 #define SAMPLE_RATE	49170
 #define MODULE_FPS	50
+
+static char* pPhysical;
+static char* pLogical;
+static size_t bufferSize;	// size of one buffer
+static int loadNewSample;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
@@ -227,11 +297,6 @@ int xmp_set( void )
 	{
 		return MXP_ERROR;
 	}
-
-	printf( "prv raz\r\n");
-	getSongName();
-	getChannels();
-	getModuleType();
 
 	return MXP_OK;
 }
