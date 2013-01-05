@@ -29,6 +29,7 @@ static char* pPhysical;
 static char* pLogical;
 static xmp_context c;
 static size_t bufferSize;	// size of one buffer
+static int loadNewSample;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
@@ -69,8 +70,7 @@ void timerA( void )
 
 	Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize );
 
-	// somehow this works, no clue why
-	loadBuffer( pPhysical, bufferSize );
+	loadNewSample = 1;
 }
 
 int xmp_register_module( void )
@@ -169,6 +169,16 @@ int xmp_set( void )
 	}
 
 	return MXP_OK;
+}
+
+void xmp_feed( void )
+{
+	if( loadNewSample )
+	{
+		loadBuffer( pPhysical, bufferSize );
+
+		loadNewSample = 0;
+	}
 }
 
 int xmp_unset( void )

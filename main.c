@@ -606,6 +606,8 @@ int main( int argc, char* argv[] )
 				break;
 			}
 		}
+
+		AudioPluginModuleFeed();
 	}
 
 	if( g_playlistNotActual == TRUE )

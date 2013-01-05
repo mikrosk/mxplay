@@ -9,6 +9,7 @@
 		XREF	_asap_get_playtime
 		XREF	_asap_init
 		XREF	_asap_set
+		XREF	_asap_feed
 		XREF	_asap_unset
 		XREF	_asap_deinit
 		XREF	_asap_fwd
@@ -25,6 +26,7 @@ asap_header:	dc.l	"MXP2"
 		dc.l	_asap_get_playtime
 		dc.l	_asap_init
 		dc.l	_asap_set
+		dc.l	_asap_feed
 		dc.l	_asap_unset
 		dc.l	_asap_deinit
 		dc.l	_asap_fwd

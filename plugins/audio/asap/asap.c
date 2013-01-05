@@ -27,6 +27,7 @@ static ASAP* asap;
 static ASAPInfo* info;
 static size_t bufferSize;	// size of one buffer
 static int channels;
+static int loadNewSample;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
@@ -54,8 +55,7 @@ void timerA( void )
 
 	Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize );
 
-	// somehow this works, no clue why
-	loadBuffer( pPhysical, bufferSize );
+	loadNewSample = 1;
 }
 
 int asap_register_module( void )
@@ -154,6 +154,16 @@ int asap_set( void )
 	}
 
 	return MXP_OK;
+}
+
+void asap_feed( void )
+{
+	if( loadNewSample )
+	{
+		loadBuffer( pPhysical, bufferSize );
+
+		loadNewSample = 0;
+	}
 }
 
 int asap_unset( void )

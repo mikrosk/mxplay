@@ -9,6 +9,7 @@
 		XREF	_xmp_get_playtime
 		XREF	_xmp_init
 		XREF	_xmp_set
+		XREF	_xmp_feed
 		XREF	_xmp_unset
 		XREF	_xmp_deinit
 		XREF	_xmp_fwd
@@ -25,6 +26,7 @@ xmp_header:	dc.l	"MXP2"
 		dc.l	_xmp_get_playtime
 		dc.l	_xmp_init
 		dc.l	_xmp_set
+		dc.l	_xmp_feed
 		dc.l	_xmp_unset
 		dc.l	_xmp_deinit
 		dc.l	_xmp_fwd

@@ -91,6 +91,7 @@ struct SAudioPlugin
 	int (*PlayTime)( void );
 	int (*Init)( void );
 	int (*Set)( void );
+	int (*Feed)( void );
 	int (*Unset)( void );
 	int (*Deinit)( void );
 	int (*ModuleFwd)( void );
@@ -110,6 +111,7 @@ extern void					LoadAudioPlugins( void );
 extern struct SAudioPlugin*	LookForAudioPlugin( char* path, char* name );
 extern BOOL					LoadAudioModule( char* path, char* filename );
 extern int					AudioPluginModulePlay( void );
+extern void					AudioPluginModuleFeed( void );
 extern int					AudioPluginModuleStop( void );
 extern int					AudioPluginModulePause( void );
 extern int					AudioPluginModuleFwd( BOOL bigStep );

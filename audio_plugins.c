@@ -357,6 +357,19 @@ int AudioPluginModulePlay( void )
 }
 
 /*
+ * Update play buffers, if necessary.
+ */
+void AudioPluginModuleFeed( void )
+{
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Feed != NULL )
+	{
+#ifndef DISABLE_PLUGINS
+		AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Feed() : Supexec( g_pCurrAudioPlugin->Feed );
+#endif
+	}
+}
+
+/*
  * Stop current module playback
  */
 int AudioPluginModuleStop( void )
