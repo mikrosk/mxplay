@@ -10,16 +10,41 @@
 
 #include <asap.h>
 
-extern void asm_install_timer_a();
-extern void asm_uninstall_timer_a();
-extern struct
-{
-	char* pModule;
-	size_t moduleSize;
-} *asap_parameter;
+#include "../plugin.h"
 
-#define MXP_ERROR	0
-#define MXP_OK		1
+extern union UParameterBuffer asap_parameter;
+
+struct SInfo			asap_info =
+{
+	"MiKRO / Mystic Bytes",
+	"1.0",
+	"Another Slight Atari Player",
+	"Piotr Fusik",
+	ASAPInfo_VERSION,
+	MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_USE_FPU|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
+};
+
+struct SExtension		asap_extensions[] =
+{
+	{ "SAP", "Slight Atari Player" },
+	{ "CMC", "Chaos Music Composer" },
+	{ "CM3", "Chaos Music Composer \"3/4\"" },
+	{ "CMR", "Chaos Music Composer \"Rzog\"" },
+	{ "CMS", "Stereo Double Chaos Music Composer" },
+	{ "DMC", "DoublePlay Chaos Music Composer" },
+	{ "DLT", "Delta Music Composer" },
+	{ "FC", "Future Composer" },
+	{ "MPT", "Music ProTracker" },
+	{ "MPD", "Music ProTracker DoublePlay" },
+	{ "RMT", "Raster Music Tracker" },
+	{ "TMC", "Theta Music Composer 1.x" },
+	{ "TM8", "Theta Music Composer 1.x" },
+	{ "TM2", "Theta Music Composer 2.x" }
+};
+
+//struct SParameter		xmp_settings[] =
+//{
+//}
 
 static char* pPhysical;
 static char* pLogical;
@@ -46,7 +71,7 @@ static int loadBuffer( char* pBuffer, size_t bufferSize )
 	return bytes == bufferSize ? 0 : 1;
 }
 
-void timerA( void )
+static void __attribute__((interrupt)) timerA( void )
 {
 	// swap buffers (makes logical buffer physical)
 	char* tmp = pPhysical;
@@ -56,6 +81,13 @@ void timerA( void )
 	Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize );
 
 	loadNewSample = 1;
+
+	*( (volatile unsigned char*)0xFFFFFA0FL ) &= ~( 1<<5 );	//	clear in service bit
+}
+
+static void enableTimerASei( void )
+{
+	*( (volatile unsigned char*)0xFFFFFA17L ) |= ( 1<<3 );	//	software end-of-interrupt mode
 }
 
 int asap_register_module( void )
@@ -80,7 +112,7 @@ int asap_set( void )
 {
 	char* pBuffer;
 
-	FILE *fp = fopen( asap_parameter->pModule, "rb" );
+	FILE *fp = fopen( asap_parameter.pModule->p, "rb" );
 	if( fp == NULL )
 	{
 		return MXP_ERROR;
@@ -90,7 +122,7 @@ int asap_set( void )
 	int module_len = fread( module, 1, sizeof( module ), fp );
 	fclose( fp );
 
-	if( !ASAP_Load( asap, asap_parameter->pModule, module, module_len ) )
+	if( !ASAP_Load( asap, asap_parameter.pModule->p, module, module_len ) )
 	{
 		// unsupported
 		return MXP_ERROR;
@@ -114,11 +146,8 @@ int asap_set( void )
 	pPhysical = pBuffer;
 	pLogical = pBuffer + bufferSize;
 
+	loadBuffer( pPhysical, bufferSize );
 	loadBuffer( pLogical, bufferSize );
-	// logical buffer is ready to use!
-	char* tmp = pPhysical;
-	pPhysical = pLogical;
-	pLogical = tmp;
 
 	Sndstatus( SND_RESET );
 
@@ -145,7 +174,9 @@ int asap_set( void )
 		return MXP_ERROR;
 	}
 
-	Supexec( asm_install_timer_a );
+	Xbtimer( XB_TIMERA, 1<<3, 1, timerA );	// event count mode, count to '1'
+	Supexec( enableTimerASei );
+	Jenabint( MFP_TIMERA );
 
 	// start playback!!!
 	if( Buffoper( SB_PLA_ENA | SB_PLA_RPT ) != 0 )
@@ -160,7 +191,7 @@ void asap_feed( void )
 {
 	if( loadNewSample )
 	{
-		loadBuffer( pPhysical, bufferSize );
+		loadBuffer( pLogical, bufferSize );
 
 		loadNewSample = 0;
 	}
@@ -169,9 +200,8 @@ void asap_feed( void )
 int asap_unset( void )
 {
 	Buffoper( 0x00 );	// disable playback
+	Jdisint( MFP_TIMERA );
 	Sndstatus( SND_RESET );
-
-	Supexec( asm_uninstall_timer_a );
 
 	ASAPInfo_Delete( info );
 
