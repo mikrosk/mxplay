@@ -147,12 +147,9 @@ int xmp_set( void )
 	pLogical = pBuffer + bufferSize;
 
 	// one frame is already decoded
-	memcpy( pLogical, fi.buffer, fi.buffer_size );
-	loadBuffer( pLogical + fi.buffer_size, bufferSize - fi.buffer_size );
-	// logical buffer is ready to use!
-	char* tmp = pPhysical;
-	pPhysical = pLogical;
-	pLogical = tmp;
+	memcpy( pPhysical, fi.buffer, fi.buffer_size );
+	loadBuffer( pPhysical + fi.buffer_size, bufferSize - fi.buffer_size );
+	loadBuffer( pLogical, bufferSize );
 
 	Sndstatus( SND_RESET );
 
@@ -168,7 +165,6 @@ int xmp_set( void )
 
 	Soundcmd( ADDERIN, MATIN );
 
-	// even if Setbuffer() is set in TimerA, Sndstatus() reset it
 	if( Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize ) != 0 )
 	{
 		return MXP_ERROR;
@@ -196,7 +192,7 @@ void xmp_feed( void )
 {
 	if( loadNewSample )
 	{
-		loadBuffer( pPhysical, bufferSize );
+		loadBuffer( pLogical, bufferSize );
 
 		loadNewSample = 0;
 	}
