@@ -226,5 +226,20 @@ int asap_rwd( void )
 
 int asap_pause( void )
 {
-	return MXP_ERROR;
+	static int paused;
+	static SndBufPtr ptr;
+
+	paused = !paused;
+	if( paused )
+	{
+		Buffptr( &ptr );
+		Buffoper( 0x00 );	// disable playback
+	}
+	else
+	{
+		Setbuffer( SR_PLAY, ptr.play, pPhysical + bufferSize );
+		Buffoper( SB_PLA_ENA | SB_PLA_RPT );
+	}
+
+	return MXP_OK;
 }

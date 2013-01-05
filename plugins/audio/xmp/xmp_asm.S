@@ -17,7 +17,7 @@
 
 		XREF	_xmp_info
 		XREF	_xmp_extensions
-		;XREF	_xmp_settings
+		XREF	_xmp_settings
 
 		dc.l	"MXP2"
 _xmp_parameter:	ds.l	1
@@ -33,5 +33,4 @@ _xmp_parameter:	ds.l	1
 		dc.l	_xmp_pause
 		dc.l	_xmp_info
 		dc.l	_xmp_extensions
-		dc.l	0
-		;dc.l	_xmp_settings
+		dc.l	_xmp_settings

@@ -763,14 +763,13 @@ void LoadAndPlay( void )
 		{
 			if( LoadAudioModule( g_currPath, g_currName ) == TRUE )
 			{
+				PanelPlay();
+
 				AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
 
 				PluginInfoUpdate();
 
-				PanelPlay();
-
 				ModuleInfoUpdate();
-
 
 				PlayListDisplayTrackNumber();
 			}

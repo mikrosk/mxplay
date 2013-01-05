@@ -30,18 +30,61 @@ struct SExtension		xmp_extensions[] =
 	{ "*", "Module" }
 };
 
-//struct SParameter		xmp_settings[] =
-//{
-//}
+static xmp_context c;
+static char* pPhysical;
+static char* pLogical;
+static size_t bufferSize;	// size of one buffer
+static int loadNewSample;
+
+static int getSongName( void )
+{
+	if( pPhysical != NULL )
+	{
+		static struct xmp_module_info mi;
+		xmp_get_module_info( c, &mi );
+		xmp_parameter.value = (long)mi.mod->name;
+		printf( "s laskou: %s\r\n", mi.mod->name );
+	}
+
+	return MXP_OK;
+}
+
+static int getChannels( void )
+{
+	if( pPhysical != NULL )
+	{
+		static struct xmp_module_info mi;
+	xmp_get_module_info( c, &mi );
+	xmp_parameter.value = (long)mi.mod->chn;
+	printf( "s laskou: %d\r\n", mi.mod->chn );
+	}
+
+	return MXP_OK;
+}
+
+static int getModuleType( void )
+{
+	if( pPhysical != NULL )
+	{
+		static struct xmp_module_info mi;
+	xmp_get_module_info( c, &mi );
+	xmp_parameter.value = (long)mi.mod->type;
+	printf( "s laskou: %s\r\n", mi.mod->type );
+	}
+
+	return MXP_OK;
+}
+
+struct SParameter		xmp_settings[] =
+{
+	{ "Song name", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongName },
+	{ "Channels", MXP_PAR_TYPE_INT|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getChannels },
+	{ "Module type", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getModuleType },
+	{ NULL, 0, NULL, NULL }
+};
 
 #define SAMPLE_RATE	49170
 #define MODULE_FPS	50
-
-static char* pPhysical;
-static char* pLogical;
-static xmp_context c;
-static size_t bufferSize;	// size of one buffer
-static int loadNewSample;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
@@ -96,7 +139,7 @@ static void enableTimerASei( void )
 
 int xmp_register_module( void )
 {
-	struct xmp_test_info ti;	// name and extension
+	struct xmp_test_info ti;
  	return xmp_test_module( xmp_parameter.pModule->p, &ti ) == 0 ? MXP_OK : MXP_ERROR;
 }
 
@@ -185,6 +228,11 @@ int xmp_set( void )
 		return MXP_ERROR;
 	}
 
+	printf( "prv raz\r\n");
+	getSongName();
+	getChannels();
+	getModuleType();
+
 	return MXP_OK;
 }
 
@@ -230,5 +278,20 @@ int xmp_rwd( void )
 
 int xmp_pause( void )
 {
-	return MXP_ERROR;
+	static int paused;
+	static SndBufPtr ptr;
+
+	paused = !paused;
+	if( paused )
+	{
+		Buffptr( &ptr );
+		Buffoper( 0x00 );	// disable playback
+	}
+	else
+	{
+		Setbuffer( SR_PLAY, ptr.play, pPhysical + bufferSize );
+		Buffoper( SB_PLA_ENA | SB_PLA_RPT );
+	}
+
+	return MXP_OK;
 }
