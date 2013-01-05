@@ -101,7 +101,7 @@ void ConvertMxpParamTypes( struct SAudioPlugin* plugin, struct SParameter* param
 			else
 			{
 				strcpy( text, (char*)value );
-				UnpadString( text );	/* "TeXmas II     " -> "TeXmas II" */
+				TrimString( text );	/* "TeXmas II     " -> "TeXmas II" */
 			}
 		break;
 	}

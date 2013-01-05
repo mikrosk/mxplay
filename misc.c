@@ -75,7 +75,7 @@ void PadString( char* string, int newLength )
 /*
  * Delete trailing spaces from string
  */
-void UnpadString( char* string )
+void TrimString( char* string )
 {
 	while( string[strlen( string ) - 1] == ' ' )
 	{

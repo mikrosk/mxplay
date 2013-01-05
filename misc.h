@@ -46,7 +46,7 @@ extern short		Round( float value );
 extern BOOL			IsTopWindow( WDIALOG* wd );
 extern void			SharedFileOpen( WDIALOG* wd, short obj );
 extern void			SharedDirOpen( WDIALOG* wd, short obj );
-extern void			UnpadString( char* string );
+extern void			TrimString( char* string );
 extern void			PadString( char* string, int newLength );
 extern void			InitRandom( void );
 extern void			EnableObject( WDIALOG* wd, short obj );
