@@ -657,7 +657,7 @@ void PanelChangeSkin( void )
 
 	strcpy( name, g_rscName );	/* as default last (current) rsc file */
 
-	if( select_file( path, name, "*.rsc", "Select skin resource", CB_RscFileSelect ) == TRUE )
+	if( select_file( path, name, "*.RSC", "Select skin resource", CB_RscFileSelect ) == TRUE )
 	{
 		/* Classic fileselector protocol? */
 		if( strcmp( name, "" ) != 0 && strcmp( path, "" ) != 0 )
