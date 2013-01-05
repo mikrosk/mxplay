@@ -243,14 +243,17 @@ BOOL LoadAudioModule( char* path, char* name )
  * Return pointer to the plugin able to replay
  * current mod or NULL
  */
-struct SAudioPlugin* LookForAudioPlugin( char* extension )
+struct SAudioPlugin* LookForAudioPlugin( char* path, char* name )
 {
 	int 				i, j;
 	struct SExtension*	ext;
-	char				tempString[MXP_FILENAME_MAX+1];
+	char				extension[MXP_FILENAME_MAX+1];
+	char				filePath[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
 
-	strcpy( tempString, extension );
-	str_toupper( tempString );
+	split_extension( name, NULL, extension );
+	str_toupper( extension );
+
+	CombinePath( filePath, path, name );
 
 	for( i = 0; i < audioPluginsCount; i++ )
 	{
@@ -262,9 +265,15 @@ struct SAudioPlugin* LookForAudioPlugin( char* extension )
 			{
 				break;
 			}
-			/* nope, continue searching for the supported extension */
-			else if( strcmp( ext[j].ext, "*" ) == 0
-					 || strcmp( ext[j].ext, tempString ) == 0 )
+			else if( strcmp( ext[j].ext, "*" ) == 0 )
+			{
+				// ok, a wildcard, let's try to Register() it
+				if( AudioPluginRegisterModule( pSAudioPlugin[i], filePath, strlen( filePath ) ) == MXP_OK )
+				{
+					return pSAudioPlugin[i];
+				}
+			}
+			else if( strcmp( ext[j].ext, extension ) == 0 )
 			{
 				return pSAudioPlugin[i];
 			}

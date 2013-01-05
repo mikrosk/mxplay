@@ -107,7 +107,7 @@ extern BOOL					g_modulePaused;
 extern char					g_currModuleFilePath[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
 
 extern void					LoadAudioPlugins( void );
-extern struct SAudioPlugin*	LookForAudioPlugin( char* extension );
+extern struct SAudioPlugin*	LookForAudioPlugin( char* path, char* name );
 extern BOOL					LoadAudioModule( char* path, char* filename );
 extern int					AudioPluginModulePlay( void );
 extern int					AudioPluginModuleStop( void );

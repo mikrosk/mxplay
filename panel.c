@@ -746,8 +746,6 @@ void PanelChangeSkin( void )
  */
 void LoadAndPlay( void )
 {
-	char ext[MXP_FILENAME_MAX+1];
-
 	if( g_currPath != NULL && g_currName != NULL )	/* only if some file in playlist */
 	{
 		if( g_modulePlaying == TRUE )
@@ -755,9 +753,7 @@ void LoadAndPlay( void )
 			PanelStop();
 		}
 
-		split_extension( g_currName, NULL, ext );
-
-		g_pCurrAudioPlugin = LookForAudioPlugin( ext );
+		g_pCurrAudioPlugin = LookForAudioPlugin( g_currPath, g_currName );
 
 		if( g_pCurrAudioPlugin == NULL )	/* this should be impossible */
 		{

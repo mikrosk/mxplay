@@ -245,10 +245,8 @@ BOOL FileListAddFile( char* path, char* name )
 	struct SFileListFile*	pSListFile;
 	struct SFileListFile*	pSListPrevFile;
 	struct SAudioPlugin*	pSPlugin;
-	char					ext[MXP_FILENAME_MAX+1];	/* extension can be name.even_this */
 
-	split_extension( name, NULL, ext );
-	pSPlugin = LookForAudioPlugin( ext );
+	pSPlugin = LookForAudioPlugin( path, name );
 	if( pSPlugin != NULL )	/* add supported files only */
 	{
 		strcpy( g_lastUsedName, name );
