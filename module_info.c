@@ -424,20 +424,20 @@ static void ModuleInfoCheckParams( void )
 	tree = g_winDialogs[WD_MODULE]->tree;
 
 	objStringLength = tree[MODULE_FILENAME].ob_spec.tedinfo->te_txtlen - 1;
-	modStringLength = strlen( g_currModuleName );
+	modStringLength = strlen( g_currModuleFilePath );
 
 	if( objStringLength >= modStringLength )
 	{
-		set_string( tree, MODULE_FILENAME, g_currModuleName );
+		set_string( tree, MODULE_FILENAME, g_currModuleFilePath );
 	}
 	else
 	{
-		strncpy( text, g_currModuleName, ( objStringLength / 2 ) - 1 );
+		strncpy( text, g_currModuleFilePath, ( objStringLength / 2 ) - 1 );
 		text[( objStringLength / 2 ) - 2] = '.';
 		text[( objStringLength / 2 ) - 1] = '.';
 		text[( objStringLength / 2 ) - 0] = '.';
 		text[( objStringLength / 2 ) + 1] = '\0';
-		strcat( text, &g_currModuleName[modStringLength - ( ( objStringLength / 2 ) - 1 )] );
+		strcat( text, &g_currModuleFilePath[modStringLength - ( ( objStringLength / 2 ) - 1 )] );
 		set_string( tree, MODULE_FILENAME, text );
 	}
 

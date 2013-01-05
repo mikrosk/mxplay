@@ -96,7 +96,7 @@ void ConvertMxpParamTypes( struct SAudioPlugin* plugin, struct SParameter* param
 			if( strcmp( (char*)value, "" ) == 0 )
 			{
 				/* use filename as value */
-				split_filename( g_currModuleName, NULL, text );	/* i.e. "TeXmas II.mp3" */
+				split_filename( g_currModuleFilePath, NULL, text );	/* i.e. "TeXmas II.mp3" */
 			}
 			else
 			{

@@ -264,7 +264,7 @@ void PanelPlay( void )
 	PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 
 	/* no file loaded yet */
-	if( strcmp( g_currModuleName, "-" ) == 0 )
+	if( strcmp( g_currModuleFilePath, "-" ) == 0 )
 	{
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 		return;

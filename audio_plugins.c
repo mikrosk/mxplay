@@ -44,7 +44,7 @@
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
 BOOL						g_modulePlaying = FALSE;
 BOOL						g_modulePaused = FALSE;
-char						g_currModuleName[MXP_PATH_MAX+1] = "-";
+char						g_currModuleFilePath[MXP_PATH_MAX+MXP_FILENAME_MAX+1] = "-";
 
 static struct SAudioPlugin*	pSAudioPlugin[MAX_AUDIO_PLUGINS];
 static int					audioPluginsCount;
@@ -229,13 +229,13 @@ BOOL LoadAudioModule( char* path, char* name )
 	{
 		ShowBadHeaderDialog();
 		strcpy( g_panelInfoLine, "" );	/* infoline is no more actual */
-		strcpy( g_currModuleName, "-" );	/* this is even more critical */
+		strcpy( g_currModuleFilePath, "-" );	/* this is even more critical */
 		free( pModule );
 		pModule = NULL;
 		return FALSE;
 	}
 
-	strcpy( g_currModuleName, tempString );
+	strcpy( g_currModuleFilePath, tempString );
 	return TRUE;
 }
 
