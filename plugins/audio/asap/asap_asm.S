@@ -17,7 +17,7 @@
 
 		XREF	_asap_info
 		XREF	_asap_extensions
-		;XREF	_asap_settings
+		XREF	_asap_settings
 
 		dc.l	"MXP2"
 _asap_parameter:	ds.l	1
@@ -33,5 +33,4 @@ _asap_parameter:	ds.l	1
 		dc.l	_asap_pause
 		dc.l	_asap_info
 		dc.l	_asap_extensions
-		;dc.l	_asap_settings
-		dc.l	0
+		dc.l	_asap_settings

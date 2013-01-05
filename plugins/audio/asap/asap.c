@@ -1,3 +1,26 @@
+/*
+ * asap.c -- an mxPlay plugin based on asap.sourceforge.net
+ *
+ * Copyright (c) 2012-2013 Miro Kropacek; miro.kropacek@gmail.com
+ *
+ * This file is part of the mxPlay project, multiformat audio player for
+ * Atari TT/Falcon computers.
+ *
+ * mxPlay is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * mxPlay is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with mxPlay; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 #include <mint/osbind.h>
 #include <mint/ostruct.h>
 #include <mint/falcon.h>
@@ -39,19 +62,101 @@ struct SExtension		asap_extensions[] =
 	{ "RMT", "Raster Music Tracker" },
 	{ "TMC", "Theta Music Composer 1.x" },
 	{ "TM8", "Theta Music Composer 1.x" },
-	{ "TM2", "Theta Music Composer 2.x" }
+	{ "TM2", "Theta Music Composer 2.x" },
+	{ NULL, NULL }
 };
 
-//struct SParameter		xmp_settings[] =
-//{
-//}
+static ASAP* asap;
+static ASAPInfo* info;
+static int channels;
+static unsigned char moduleBuffer[ASAPInfo_MAX_MODULE_LENGTH];
+int moduleLength;
+
+static const char* na = "n/a";
+
+static int getSongName( void )
+{
+	const char* name = ASAPInfo_GetTitleOrFilename( info );
+	asap_parameter.value = (long)name;
+
+	return MXP_OK;
+}
+
+static int getChannels( void )
+{
+	asap_parameter.value = (long)( channels == 2 ? 1 : 0 );
+
+	return MXP_OK;
+}
+
+static int getSongDate( void )
+{
+	const char* date = ASAPInfo_GetDate( info );
+	if( strlen( date ) > 0 )
+	{
+		asap_parameter.value = (long)date;
+	}
+	else
+	{
+		asap_parameter.value = (long)na;
+	}
+
+	return MXP_OK;
+}
+
+static int getSongAuthor( void )
+{
+	const char* author = ASAPInfo_GetAuthor( info );
+	if( strlen( author ) > 0 )
+	{
+		asap_parameter.value = (long)author;
+	}
+	else
+	{
+		asap_parameter.value = (long)na;
+	}
+
+	return MXP_OK;
+}
+
+static int getModuleSongs( void )
+{
+	int songs = ASAPInfo_GetSongs( info );
+	asap_parameter.value = (long)songs;
+
+	return MXP_OK;
+}
+
+static int getSongType( void )
+{
+	const char* ext = ASAPInfo_GetOriginalModuleExt( info, moduleBuffer, moduleLength );
+	const char* desc = ASAPInfo_GetExtDescription( ext );
+	if( strlen( desc ) > 0 )
+	{
+		asap_parameter.value = (long)desc;
+	}
+	else
+	{
+		asap_parameter.value = (long)na;
+	}
+
+	return MXP_OK;
+}
+
+struct SParameter		asap_settings[] =
+{
+	{ "# songs", MXP_PAR_TYPE_INT|MXP_FLG_MOD_PARAM, NULL, getModuleSongs },
+	{ "Name", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongName },
+	{ "Author", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongAuthor },
+	{ "Type", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongType },
+	{ "Date", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSongDate },
+	{ "Stereo", MXP_PAR_TYPE_BOOL|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getChannels },
+	{ NULL, 0, NULL, NULL }
+};
 
 static char* pPhysical;
 static char* pLogical;
-static ASAP* asap;
-static ASAPInfo* info;
 static size_t bufferSize;	// size of one buffer
-static int channels;
 static int loadNewSample;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
@@ -92,7 +197,7 @@ static void enableTimerASei( void )
 
 int asap_register_module( void )
 {
-	return MXP_OK;
+	return ASAPInfo_IsOurFile( asap_parameter.pModule->p ) == 1 ? MXP_OK : MXP_ERROR;
 }
 
 int asap_get_playtime( void )
@@ -118,11 +223,10 @@ int asap_set( void )
 		return MXP_ERROR;
 	}
 
-	static unsigned char module[ASAPInfo_MAX_MODULE_LENGTH];
-	int module_len = fread( module, 1, sizeof( module ), fp );
+	moduleLength = fread( moduleBuffer, 1, sizeof( moduleBuffer ), fp );
 	fclose( fp );
 
-	if( !ASAP_Load( asap, asap_parameter.pModule->p, module, module_len ) )
+	if( !ASAP_Load( asap, asap_parameter.pModule->p, moduleBuffer, moduleLength ) )
 	{
 		// unsupported
 		return MXP_ERROR;
