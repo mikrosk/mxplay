@@ -24,6 +24,8 @@
 #ifndef _PLUGIN_H_
 #define _PLUGIN_H_
 
+#include <string.h>
+
 #define MXP_ERROR				0
 #define MXP_OK					1
 #define MXP_UNIMPLEMENTED		2

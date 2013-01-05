@@ -361,6 +361,8 @@ int AudioPluginModulePlay( void )
  */
 void AudioPluginModuleFeed( void )
 {
+	return;
+
 	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Feed != NULL )
 	{
 #ifndef DISABLE_PLUGINS

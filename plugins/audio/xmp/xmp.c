@@ -11,19 +11,31 @@
 
 #include <xmp.h>
 
+#include "../plugin.h"
+
+extern union UParameterBuffer xmp_parameter;
+
+struct SInfo			xmp_info =
+{
+	"MiKRO / Mystic Bytes",
+	"1.0",
+	"Extended Module Player",
+	"C.Matsuoka & H.Carraro Jr",
+	XMP_VERSION,
+	MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_USE_FPU|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
+};
+
+struct SExtension		xmp_extensions[] =
+{
+	{ "*", "Module" }
+};
+
+//struct SParameter		xmp_settings[] =
+//{
+//}
+
 #define SAMPLE_RATE	49170
 #define MODULE_FPS	50
-
-extern void asm_install_timer_a();
-extern void asm_uninstall_timer_a();
-extern struct
-{
-	char* pModule;
-	size_t moduleSize;
-} *xmp_parameter;
-
-#define MXP_ERROR	0
-#define MXP_OK		1
 
 static char* pPhysical;
 static char* pLogical;
@@ -61,7 +73,7 @@ double round(double number)
 	return number < 0.0 ? ceil(number - 0.5) : floor(number + 0.5);
 }
 
-void timerA( void )
+static void __attribute__((interrupt)) timerA( void )
 {
 	// swap buffers (makes logical buffer physical)
 	char* tmp = pPhysical;
@@ -71,12 +83,21 @@ void timerA( void )
 	Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize );
 
 	loadNewSample = 1;
+
+	*( (volatile unsigned char*)0xFFFFFA0FL ) &= ~( 1<<5 );	//	clear in service bit
 }
+
+static void enableTimerASei( void )
+{
+	*( (volatile unsigned char*)0xFFFFFA17L ) |= ( 1<<3 );	//	software end-of-interrupt mode
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 int xmp_register_module( void )
 {
 	struct xmp_test_info ti;	// name and extension
- 	return xmp_test_module( xmp_parameter->pModule, &ti ) == 0 ? MXP_OK : MXP_ERROR;
+ 	return xmp_test_module( xmp_parameter.pModule->p, &ti ) == 0 ? MXP_OK : MXP_ERROR;
 }
 
 int xmp_get_playtime( void )
@@ -98,7 +119,7 @@ int xmp_set( void )
 	char* pBuffer;
 	struct xmp_frame_info fi;
 
-	if( xmp_load_module( c, xmp_parameter->pModule ) != 0 )
+	if( xmp_load_module( c, xmp_parameter.pModule->p ) != 0 )
 	{
 		return MXP_ERROR;
 	}
@@ -158,9 +179,9 @@ int xmp_set( void )
 		return MXP_ERROR;
 	}
 
-	//Xbtimer( XB_TIMERA, 1<<4, 1, timerA );	// event count mode, count to '1'
-	//Jenabint( MFP_TIMERA );
-	Supexec( asm_install_timer_a );
+	Xbtimer( XB_TIMERA, 1<<3, 1, timerA );	// event count mode, count to '1'
+	Supexec( enableTimerASei );
+	Jenabint( MFP_TIMERA );
 
 	// start playback!!!
 	if( Buffoper( SB_PLA_ENA | SB_PLA_RPT ) != 0 )
@@ -184,9 +205,8 @@ void xmp_feed( void )
 int xmp_unset( void )
 {
 	Buffoper( 0x00 );	// disable playback
+	Jdisint( MFP_TIMERA );
 	Sndstatus( SND_RESET );
-
-	Supexec( asm_uninstall_timer_a );
 
 	xmp_stop_module( c );
 	xmp_end_player( c );
