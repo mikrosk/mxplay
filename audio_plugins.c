@@ -391,13 +391,31 @@ int AudioPluginModuleStop( void )
 /*
  * Pause current module playback
  */
-int AudioPluginModulePause( void )
+int AudioPluginModulePause( BOOL pause )
 {
 	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModulePause != NULL )
 	{
-		g_modulePaused = !g_modulePaused;
 #ifndef DISABLE_PLUGINS
+		g_pCurrAudioPlugin->inBuffer.value = pause;
 		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->ModulePause() : Supexec( g_pCurrAudioPlugin->ModulePause );
+#else
+		return MXP_OK;
+#endif
+	}
+
+	return MXP_UNIMPLEMENTED;
+}
+
+/*
+ * Mute current module playback
+ */
+int AudioPluginModuleMute( BOOL mute )
+{
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModulePause != NULL )
+	{
+#ifndef DISABLE_PLUGINS
+		g_pCurrAudioPlugin->inBuffer.value = mute;
+		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->ModuleMute() : Supexec( g_pCurrAudioPlugin->ModuleMute );
 #else
 		return MXP_OK;
 #endif

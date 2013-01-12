@@ -240,7 +240,7 @@ int asap_set( void )
 	info = (ASAPInfo*)ASAP_GetInfo( asap );
 	channels = ASAPInfo_GetChannels( info );
 
-	bufferSize = 2 * 2 * ASAP_SAMPLE_RATE * 2;	// 2 channels * 16 bit * 49170 Hz * 2 seconds
+	bufferSize = 2 * 2 * ASAP_SAMPLE_RATE * 1;	// 2 channels * 16 bit * 49170 Hz * 1 second
 
 	pBuffer = (char*)Mxalloc( 2 * bufferSize, MX_STRAM );
 	if( pBuffer == NULL )
@@ -330,11 +330,10 @@ int asap_rwd( void )
 
 int asap_pause( void )
 {
-	static int paused;
+	int pause = asap_parameter.value;
 	static SndBufPtr ptr;
 
-	paused = !paused;
-	if( paused )
+	if( pause )
 	{
 		Buffptr( &ptr );
 		Buffoper( 0x00 );	// disable playback
@@ -344,6 +343,21 @@ int asap_pause( void )
 		Setbuffer( SR_PLAY, ptr.play, pPhysical + bufferSize );
 		Buffoper( SB_PLA_ENA | SB_PLA_RPT );
 	}
+
+	return MXP_OK;
+}
+
+int asap_mute( void )
+{
+	int mute = asap_parameter.value;
+	if( mute )
+	{
+		memset( pPhysical, 0, bufferSize );
+		memset( pLogical, 0, bufferSize );
+	}
+
+	char mask = channels == 2 ? 0xff : 0x0f;
+	ASAP_MutePokeyChannels( asap, mute ? mask : ~mask );
 
 	return MXP_OK;
 }

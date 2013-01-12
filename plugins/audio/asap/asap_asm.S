@@ -14,6 +14,7 @@
 		XREF	_asap_fwd
 		XREF	_asap_rwd
 		XREF	_asap_pause
+		XREF	_asap_mute
 
 		XREF	_asap_info
 		XREF	_asap_extensions
@@ -31,6 +32,7 @@ _asap_parameter:	ds.l	1
 		dc.l	_asap_fwd
 		dc.l	_asap_rwd
 		dc.l	_asap_pause
+		dc.l	_asap_mute
 		dc.l	_asap_info
 		dc.l	_asap_extensions
 		dc.l	_asap_settings

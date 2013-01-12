@@ -127,25 +127,31 @@ MXP_PLUGIN_MUSIC_FWD	EQU	9*4
 MXP_PLUGIN_MUSIC_RWD	EQU	10*4
 
 ; Name:    Music pause.
-; Purpose: Pause music and free resources.
-; Input:   -
+; Purpose: Pause music.
+; Input:   0: unpause, 1: pause
 ; Output:  Return code.
 MXP_PLUGIN_MUSIC_PAUSE	EQU	11*4
+
+; Name:    Music mute.
+; Purpose: Mute music.
+; Input:   0: unmute, 1: mute
+; Output:  Return code.
+MXP_PLUGIN_MUSIC_MUTE	EQU	12*4
 
 ; Name:    Plugin information.
 ; Purpose: Pointer to structure with information about plugin. (see also: mxp_struct_info)
 ; Input:   -
 ; Output:  -
-MXP_PLUGIN_INFO		EQU	12*4
+MXP_PLUGIN_INFO		EQU	13*4
 
 ; Name:    Supported module extensions by plugin.
 ; Purpose: Pointer to structure-field with file extensions which plugin supports. (see also: mxp_struct_extensions)
 ; Input:   -
 ; Output:  -
-MXP_PLUGIN_EXTENSIONS	EQU	13*4
+MXP_PLUGIN_EXTENSIONS	EQU	14*4
 
 ; Name:    Plugin settings structure.
 ; Purpose: Pointer to structure-field with optional replay parameters. (see also: mxp_struct_settings)
 ; Input:   -
 ; Output:  -
-MXP_PLUGIN_SETTINGS	EQU	14*4
+MXP_PLUGIN_SETTINGS	EQU	15*4

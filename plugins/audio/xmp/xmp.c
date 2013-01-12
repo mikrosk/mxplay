@@ -273,7 +273,7 @@ int xmp_set( void )
 
 	// now we know how much we need for one frame
 	// the frame is defined as: ( SAMPLE_RATE / 50 ) * 2 channels * 16 bit (approx.)
-	bufferSize = fi.buffer_size * MODULE_FPS * 5;	// 5 seconds
+	bufferSize = fi.buffer_size * MODULE_FPS * 1;	// 1 second
 
 	pBuffer = (char*)Mxalloc( 2 * bufferSize, MX_STRAM );
 	if( pBuffer == NULL )
@@ -367,11 +367,10 @@ int xmp_rwd( void )
 
 int xmp_pause( void )
 {
-	static int paused;
+	int pause = xmp_parameter.value;
 	static SndBufPtr ptr;
 
-	paused = !paused;
-	if( paused )
+	if( pause )
 	{
 		Buffptr( &ptr );
 		Buffoper( 0x00 );	// disable playback
@@ -380,6 +379,26 @@ int xmp_pause( void )
 	{
 		Setbuffer( SR_PLAY, ptr.play, pPhysical + bufferSize );
 		Buffoper( SB_PLA_ENA | SB_PLA_RPT );
+	}
+
+	return MXP_OK;
+}
+
+int xmp_mute( void )
+{
+	struct xmp_module_info mi;
+	xmp_get_module_info( c, &mi );
+
+	int mute = xmp_parameter.value;
+	if( mute )
+	{
+		memset( pPhysical, 0, bufferSize );
+		memset( pLogical, 0, bufferSize );
+	}
+
+	for( int i = 0; i < mi.mod->chn; ++i )
+	{
+		xmp_channel_mute( c, i, mute );
 	}
 
 	return MXP_OK;

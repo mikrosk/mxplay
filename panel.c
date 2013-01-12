@@ -322,30 +322,16 @@ void PanelStop( void )
 
 void PanelPause( void )
 {
-	int ret;
-
 	if( g_modulePlaying == TRUE )
 	{
-		if( g_modulePaused == FALSE )
+		if( AudioPluginModulePause( !g_modulePaused ) == MXP_OK )
 		{
-			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PAUSE );
-		}
-		else
-		{
-			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
-		}
-
-		if( ( ret = AudioPluginModulePause() ) != MXP_OK )
-		{
-			ShowPluginErrorDialog( ret );
-			g_modulePaused = FALSE;
-			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
-		}
-		else
-		{
-			TimerPause();
+			g_modulePaused = !g_modulePaused;
 		}
 	}
+
+	g_modulePaused ? PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PAUSE ), TimerPause()
+				   : PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 }
 
 void PanelFwd( void )
@@ -500,27 +486,13 @@ void PanelPlayList( void )
 
 void PanelMute( void )
 {
-	if( g_mute == FALSE )
+	if( AudioPluginModuleMute( !g_mute ) == MXP_OK )
 	{
-		/* illegal connection */
-		if( g_hasDma == TRUE )
-		{
-			Devconnect( DMAPLAY, DAC, CLK25M, CLKOLD, NO_SHAKE );
-		}
-		else /* yamaha */
-		{
-			Devconnect( ADC, DAC, CLK25M, CLKOLD, NO_SHAKE );
-		}
-		Soundcmd( SETPRESCALE, 0 );	/* CCLK_6K */
+		g_mute = !g_mute;
+	}
 
-		g_mute = TRUE;
-		SelectObject( g_winDialogs[WD_PANEL], PANEL_MUTE );
-	}
-	else
-	{
-		g_mute = FALSE;
-		DeselectObject( g_winDialogs[WD_PANEL], PANEL_MUTE );
-	}
+	g_mute ? SelectObject( g_winDialogs[WD_PANEL], PANEL_MUTE )
+		   : DeselectObject( g_winDialogs[WD_PANEL], PANEL_MUTE );
 }
 
 void PanelRandom( void )

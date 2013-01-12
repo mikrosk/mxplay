@@ -14,6 +14,7 @@
 		XREF	_xmp_fwd
 		XREF	_xmp_rwd
 		XREF	_xmp_pause
+		XREF	_xmp_mute
 
 		XREF	_xmp_info
 		XREF	_xmp_extensions
@@ -31,6 +32,7 @@ _xmp_parameter:	ds.l	1
 		dc.l	_xmp_fwd
 		dc.l	_xmp_rwd
 		dc.l	_xmp_pause
+		dc.l	_xmp_mute
 		dc.l	_xmp_info
 		dc.l	_xmp_extensions
 		dc.l	_xmp_settings

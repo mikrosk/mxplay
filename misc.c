@@ -568,10 +568,6 @@ void ReadConfigFile( void )
 			{
 				fscanf( fs, "%d", &g_random );
 			}
-			else if( strcmp( temp, "mute" ) == 0 )
-			{
-				fscanf( fs, "%d", &g_mute );
-			}
 			else if( strcmp( temp, "openPlayList" ) == 0 )
 			{
 				fscanf( fs, "%d", &g_openPlayList );
@@ -652,12 +648,6 @@ void WriteConfigFile( void )
 	fprintf( fs, "%s", "random" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%d", g_random );
-	fprintf( fs, "%s", "\n" );
-
-	/* mute on/off */
-	fprintf( fs, "%s", "mute" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", g_mute );
 	fprintf( fs, "%s", "\n" );
 
 	/* opened playlist? */
