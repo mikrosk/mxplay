@@ -26,7 +26,7 @@
 
 #ifdef DEBUG
 
-extern void	debugMessage( const char* file, int line, const char* func, const char* fmt, ... );
+extern void	DebugMessage( const char* file, int line, const char* func, const char* fmt, ... );
 
 #if __STDC_VERSION__ < 199901L	// C99
 	#if __GNUC__ >= 2 || defined WIN32
