@@ -92,7 +92,7 @@ static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module,
 static struct SAudioPlugin* AudioPluginLoad( char* filename )
 {
 	BASEPAGE*	bp;
-	char*		cmdline[128];
+	char		cmdline[128];
 	struct SAudioPlugin* p;
 
 	cmdline[0] = 0;	/* 0 bytes long */
