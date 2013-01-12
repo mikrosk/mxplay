@@ -40,6 +40,7 @@
 #include "dd.h"
 #include "timer.h"
 #include "module_info.h"
+#include "debug.h"
 
 BOOL	g_quitApp = FALSE;
 short	g_msgBuffer[8];
@@ -266,9 +267,11 @@ int main( int argc, char* argv[] )
 
 	/* alloc & create all dialogs */
 	InitDialogs();
+	debug( "past InitDialogs" );
 
 	/* show splash */
 	ShowSplashImage();
+	debug( "past ShowSplashImage" );
 
 	/* for N.AES, XaAES & MagiC install nice name */
 	if( gl_gem >= 0x400 )
@@ -291,18 +294,23 @@ int main( int argc, char* argv[] )
 
 	/* find AV server etc */
 	AVInit();
+	debug( "past AVInit" );
 
 	/* set random seed */
 	InitRandom();
+	debug( "past InitRandom" );
 
 	/* load & init all audio plugins */
 	LoadAudioPlugins();
+	debug( "past LoadAudioPlugins" );
 
 	/* close splash */
 	CloseSplashImage();
+	debug( "past CloseSplashImage" );
 
 	/* open & init dialogs to open on startup */
 	ShowDefaultDialogs();
+	debug( "past ShowDefaultDialogs" );
 
 	/* if there's some playlist in .inf file, load it */
 	if( strcmp( g_playlistFile, "" ) != 0 )
@@ -314,6 +322,7 @@ int main( int argc, char* argv[] )
 			strcpy( g_playlistFile, "" );
 		}
 	}
+	debug( "past PlayListLoadFromFile" );
 
 	/* if there's some module/playlist dragged on startup, play it */
 	g_playAfterAdd = TRUE;	/* playlist is empty for sure */
@@ -323,6 +332,7 @@ int main( int argc, char* argv[] )
 	{
 		LoadAndPlay();
 	}
+	debug( "past LoadAndPlay" );
 
 	/* Application mainloop */
 	while( g_quitApp == FALSE )
