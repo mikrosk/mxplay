@@ -365,8 +365,8 @@ int main( int argc, char* argv[] )
 		my		= evmultOut.emo_mouse.p_y;	/* mouse y */
 		mb		= evmultOut.emo_mbutton;	/* mouse button */
 		kstate	= evmultOut.emo_kmeta;		/* shift state */
-		key =	evmultOut.emo_kreturn;		/* key pressed */
-		mc =	evmultOut.emo_mclicks;		/* how many mouse clicks occured */
+		key		= evmultOut.emo_kreturn;	/* key pressed */
+		mc		= evmultOut.emo_mclicks;	/* how many mouse clicks occured */
 
 		debug( "0.2" );
 
