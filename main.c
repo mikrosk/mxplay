@@ -334,20 +334,39 @@ int main( int argc, char* argv[] )
 	}
 	debug( "past LoadAndPlay" );
 
+	const EVMULT_IN evmultIn =
+	{
+		.emi_flags		= MU_KEYBD | MU_MESAG | MU_BUTTON | MU_TIMER,
+
+		.emi_bclicks	= 2,			// not used
+		.emi_bmask		= LEFT_BUTTON,	// not used
+		.emi_bstate		= 1,			// not used
+
+		.emi_m1leave	= 0,			// m1flag (not used)
+		.emi_m1			= { 0, 0, 0, 0 },	// m1x, m1y, m1w, m1h (not used)
+
+		.emi_m2leave	= 0,			// m1flag (not used)
+		.emi_m2			= { 0, 0, 0, 0 },	// m1x, m1y, m1w, m1h (not used)
+
+		.emi_tlow		= 250,			// 250 ms = 0.25 second
+		.emi_thigh		= 0				//
+	};
+
+	EVMULT_OUT evmultOut;
+
 	/* Application mainloop */
 	while( g_quitApp == FALSE )
 	{
 		debug( "0.1" );
 
-		event = evnt_multi( MU_KEYBD | MU_MESAG | MU_BUTTON | MU_TIMER,
-							2, LEFT_BUTTON, 1,	/* bclicks, bmask, bstate -- not used */
-							0, 0, 0, 0, 0,		/* m1flag, m1x, m1y, m1w, m1h -- not used */
-							0, 0, 0, 0, 0,		/* m2flag, m2x, m2y, m2w, m2h -- not used */
-							g_msgBuffer,
-							250,				/* 250 ms = 0.25 second */
-							&mx, &my, &mb,		/* mouse x, mouse y, mouse button */
-							&kstate, &key,		/* shift state, key pressed */
-							&mc );				/* how many mouse clicks occured */
+		event = evnt_multi_fast( &evmultIn, g_msgBuffer, &evmultOut );
+
+		mx		= evmultOut.emo_mouse.p_x;	/* mouse x */
+		my		= evmultOut.emo_mouse.p_y;	/* mouse y */
+		mb		= evmultOut.emo_mbutton;	/* mouse button */
+		kstate	= evmultOut.emo_kmeta;		/* shift state */
+		key =	evmultOut.emo_kreturn;		/* key pressed */
+		mc =	evmultOut.emo_mclicks;		/* how many mouse clicks occured */
 
 		debug( "0.2" );
 
