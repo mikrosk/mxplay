@@ -40,7 +40,6 @@
 #include "dd.h"
 #include "timer.h"
 #include "module_info.h"
-#include "debug.h"
 
 BOOL	g_quitApp = FALSE;
 short	g_msgBuffer[8];
@@ -357,8 +356,6 @@ int main( int argc, char* argv[] )
 	/* Application mainloop */
 	while( g_quitApp == FALSE )
 	{
-		debug( "0.1" );
-
 		event = evnt_multi_fast( &evmultIn, g_msgBuffer, &evmultOut );
 
 		mx		= evmultOut.emo_mouse.p_x;	/* mouse x */
@@ -367,8 +364,6 @@ int main( int argc, char* argv[] )
 		kstate	= evmultOut.emo_kmeta;		/* shift state */
 		key		= evmultOut.emo_kreturn;	/* key pressed */
 		mc		= evmultOut.emo_mclicks;	/* how many mouse clicks occured */
-
-		debug( "0.2" );
 
 		/* here we check if user pressed some shift key along with mouse/key */
 		if( ( kstate & K_RSHIFT ) || ( kstate & K_LSHIFT ) )
@@ -392,18 +387,14 @@ int main( int argc, char* argv[] )
 			{
 				if( mx != currMouseX )
 				{
-					debug( "1.1" );
 					PanelVolumeSlider( mx - currMouseX );
-					debug( "1.2" );
 				}
 				currMouseX = mx;
 				continue;
 			}
 			else
 			{
-				debug( "2.1" );
 				DeselectObject( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );
-				debug( "2.2" );
 
 				/* reset the mouse cursor */
 				graf_mouse( ARROW, NULL );
@@ -414,10 +405,8 @@ int main( int argc, char* argv[] )
 		/*
 		 * Watch for some realtime moveable objects.
 		 */
-		debug( "3.1" );
 		if( IsTopWindow( g_winDialogs[WD_PANEL] ) == TRUE )
 		{
-			debug( "3.2" );
 			obj = objc_find( g_winDialogs[WD_PANEL]->tree, PANEL_BACKGROUND, MAX_DEPTH, mx, my );
 			if( obj != -1 )
 			{
@@ -426,9 +415,7 @@ int main( int argc, char* argv[] )
 					case PANEL_VOLUME_SLIDER:
 						if( mc == 1 && inVolume == FALSE )
 						{
-							debug( "4.1" );
 							SelectObject( g_winDialogs[WD_PANEL], obj );
-							debug( "4.2" );
 							graf_mouse( FLAT_HAND, NULL );
 							inVolume = TRUE;
 							continue;
@@ -438,15 +425,12 @@ int main( int argc, char* argv[] )
 					case PANEL_VOLUME_SLIDER_BOX:
 						if( mc == 1 )
 						{
-							debug( "5.1" );
 							PanelVolumeSliderBox( mx );
-							debug( "5.2" );
 						}
 					break;
 				}
 			}
 		}
-		debug( "3.3" );
 
 		currMouseX = mx;
 		currMouseY = my;
@@ -454,20 +438,15 @@ int main( int argc, char* argv[] )
 		g_mouseClicks = mc;
 
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );	/* yes, it has some sense :) */
-		debug( "3.4" );
 
 		/* if we reached playtime */
 		if( g_modulePlaying == TRUE && g_modulePaused == FALSE && TimerGetSubTime() <= 0 )
 		{
-			debug( "6.1" );
 			PanelNext();
-			debug( "6.2" );
 		}
 
-		debug( "3.5" );
 		/* update volume slider */
 		PanelVolumeSliderUpdate();
-		debug( "3.6" );
 
 		/*
 		 * Event handlers
@@ -475,50 +454,37 @@ int main( int argc, char* argv[] )
 
 		if( event & MU_MESAG )
 		{
-			debug( "7.1" );
 			HandleMessage( g_msgBuffer );
-			debug( "7.2" );
 		}
 
 		if( event & MU_BUTTON )
 		{
-			debug( "8.1" );
 			if( !click_wdial( mc, mx, my, kstate, mb ) )
 			{
 			}
-			debug( "8.2" );
 		}
 
 		if( event & MU_TIMER )
 		{
-			debug( "9.1" );
 			PanelDialogRefresh();
-			debug( "9.2" );
 		}
 
 		if( event & MU_KEYBD )
 		{
-			debug( "10.1" );
 			key_wdial( key, kstate );
 			switch( key )
 			{
 				/* (shift) control o */
 				case 0x180f:
-					debug( "11.1" );
 					if( IsTopWindow( g_winDialogs[WD_PANEL] ) == TRUE )
 					{
-						debug( "11.2" );
 						if( g_withShift == FALSE )
 						{
-							debug( "11.3" );
 							PanelFileOpen();
-							debug( "11.4" );
 						}
 						else
 						{
-							debug( "11.5" );
 							PanelDirOpen();
-							debug( "11.6" );
 						}
 					}
 				break;
@@ -669,9 +635,7 @@ int main( int argc, char* argv[] )
 			}
 		}
 
-		debug( "12.1" );
 		AudioPluginModuleFeed();
-		debug( "12.2" );
 	}
 
 	if( g_playlistNotActual == TRUE )

@@ -24,7 +24,7 @@
 #ifndef _DEBUG_H_
 #define _DEBUG_H_
 
-#ifdef DEBUGX
+#ifdef DEBUG
 
 extern void	DebugMessage( const char* file, int line, const char* func, const char* fmt, ... );
 
