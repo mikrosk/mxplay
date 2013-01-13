@@ -179,6 +179,7 @@ static char* pPhysical;
 static char* pLogical;
 static size_t bufferSize;	// size of one buffer
 static int loadNewSample;
+static char* moduleFilePath;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
@@ -233,8 +234,10 @@ static void enableTimerASei( void )
 
 int xmp_register_module( void )
 {
+	moduleFilePath = xmp_parameter.pModule->p;
+
 	struct xmp_test_info ti;
- 	return xmp_test_module( xmp_parameter.pModule->p, &ti ) == 0 ? MXP_OK : MXP_ERROR;
+ 	return xmp_test_module( moduleFilePath, &ti ) == 0 ? MXP_OK : MXP_ERROR;
 }
 
 int xmp_get_playtime( void )
@@ -256,7 +259,7 @@ int xmp_set( void )
 	char* pBuffer;
 	struct xmp_frame_info fi;
 
-	if( xmp_load_module( c, xmp_parameter.pModule->p ) != 0 )
+	if( xmp_load_module( c, moduleFilePath ) != 0 )
 	{
 		return MXP_ERROR;
 	}
@@ -353,16 +356,6 @@ int xmp_deinit( void )
 	xmp_free_context( c );          /* destroy the player context */
 
 	return MXP_OK;
-}
-
-int xmp_fwd( void )
-{
-	return MXP_ERROR;
-}
-
-int xmp_rwd( void )
-{
-	return MXP_ERROR;
 }
 
 int xmp_pause( void )

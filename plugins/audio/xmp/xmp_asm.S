@@ -11,8 +11,6 @@
 		XREF	_xmp_feed
 		XREF	_xmp_unset
 		XREF	_xmp_deinit
-		XREF	_xmp_fwd
-		XREF	_xmp_rwd
 		XREF	_xmp_pause
 		XREF	_xmp_mute
 
@@ -24,13 +22,12 @@
 _xmp_parameter:	ds.l	1
 		dc.l	_xmp_register_module
 		dc.l	_xmp_get_playtime
+		dc.l	0			; 1 song per module
 		dc.l	_xmp_init
 		dc.l	_xmp_set
 		dc.l	_xmp_feed
 		dc.l	_xmp_unset
 		dc.l	_xmp_deinit
-		dc.l	_xmp_fwd
-		dc.l	_xmp_rwd
 		dc.l	_xmp_pause
 		dc.l	_xmp_mute
 		dc.l	_xmp_info
