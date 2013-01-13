@@ -1,5 +1,5 @@
 /*
- * misc.h -- shared code, various topics
+ * misc.c -- shared code, various topics
  *
  * Copyright (c) 2005-2013 Miro Kropacek; miro.kropacek@gmail.com
  *
@@ -319,54 +319,32 @@ void ARGVParseArgs( int argc, char* argv[] )
 	int i;
 	char	tempPath[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
 	char	tempName[MXP_FILENAME_MAX+1];
-	//FILE* fs = fopen("u:\\ram\\log.txt", "a");
-	//fprintf( fs, "ARGV:\n" );
-	//fprintf( fs, "%s\n", argv[0] );
-	//fclose(fs);
 
 	for( i = 1; i < argc; i++ )
 	{
-		//fs = fopen("u:\\ram\\log.txt", "a");
-		//fprintf( fs, "%s\n", argv[i] );
-		//fclose(fs);
 		if( file_exists( argv[i] ) == TRUE || path_exists( argv[i] ) == TRUE )
 		{
-			//fs = fopen("u:\\ram\\log.txt", "a");
-			//fprintf( fs, "%s: za exists\n", argv[i] );
-			//fclose(fs);
 			if( strchr( argv[i], '\\' ) == NULL && strchr( argv[i], '/' ) == NULL )
 			{
 
 				get_path( tempPath, 0 );	/* we've got just filename without path */
 				strcpy( tempName, argv[i] );
-				//fs = fopen("u:\\ram\\log.txt", "a");
-			//fprintf( fs, "%s: za getpath\n", argv[i] );
-			//fclose(fs);
 			}
 			else
 			{
 				split_filename( argv[i], tempPath, tempName );
-				//fs = fopen("u:\\ram\\log.txt", "a");
-			//fprintf( fs, "%s: za splitname\n", argv[i] );
-			//fclose(fs);
 			}
 
 			if( PlayListAdd( tempPath,tempName ) == FALSE )
 			{
-				//fs = fopen("u:\\ram\\log.txt", "a");
-			//fprintf( fs, "%s: za playlistadd\n", argv[i] );
-			//fclose(fs);
 				break;
 			}
 		}
 		else
 		{
-			//split_filename( argv[i], NULL, tempName );
-			//ShowLoadErrorDialog( tempName );
 			ShowLoadErrorDialog( argv[i] );
 		}
 	}
-	//fclose(fs);
 }
 
 /*
@@ -381,11 +359,6 @@ void ParseArgs( char* cmdline )
 	char	path[MXP_PATH_MAX+1];
 	char	name[MXP_FILENAME_MAX+1];
 	char	all[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
-	//	FILE* fs = fopen("u:\\ram\\log.txt", "a");
-	//fprintf( fs, "d&d/va cmdline:\n" );
-	//fprintf( fs, "%s\n", cmdline );
-	//fclose( fs );
-	//return;
 
 	while( cmdline[i] != '\0' )
 	{
@@ -449,12 +422,6 @@ void ParseArgs( char* cmdline )
 
 		}
 	}
-
-	//fs = fopen("u:\\ram\\log.txt", "a");
-	//fprintf( fs, "d&d/va cmdline:\n" );
-	//fprintf( fs, "%s\n", all );
-	//fclose( fs );
-	//return;
 }
 
 /*
