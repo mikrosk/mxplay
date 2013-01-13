@@ -816,8 +816,8 @@ BOOL PlayListAdd( char* path, char* name )
 	if( strstr( name, ".m3u" ) != NULL || strstr( name, ".M3U" ) != NULL )
 	{
 		/* playlist on the way! */
-		CombinePath( g_playlistFile, path, name );
-		return PlayListLoadFromFile( g_playlistFile );
+		CombinePath( g_playlistFilePath, path, name );
+		return PlayListLoadFromFile( g_playlistFilePath );
 	}
 	else
 	{
@@ -951,17 +951,17 @@ void PlayListLoad( void )
 	SelectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_LOAD );
 
 	strcpy( path, g_homePath );	/* $HOME as default */
-	split_filename( g_playlistFile, NULL, name );	/* current playlist */
+	split_filename( g_playlistFilePath, NULL, name );	/* current playlist */
 
 	if( select_file( path, name, "*.M3U", "Select playlist", CB_PlayListFileSelect ) == TRUE )
 	{
 		/* Classic fileselector protocol? */
 		if( strcmp( name, "" ) != 0 && strcmp( path, "" ) != 0 )
 		{
-			CombinePath( g_playlistFile, path, name );
+			CombinePath( g_playlistFilePath, path, name );
 		}
 
-		PlayListLoadFromFile( g_playlistFile );
+		PlayListLoadFromFile( g_playlistFilePath );
 	}
 
 	DeselectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_LOAD );
@@ -975,25 +975,25 @@ void PlayListSave( void )
 	SelectObject( g_winDialogs[WD_PLAYLIST], PLAYLIST_SAVE );
 
 	strcpy( path, g_homePath );	/* $HOME as default */
-	split_filename( g_playlistFile, NULL, name );	/* current playlist */
+	split_filename( g_playlistFilePath, NULL, name );	/* current playlist */
 
 	if( select_file( path, name, "*.M3U", "Select playlist", CB_PlayListFileSelect ) == TRUE )
 	{
 		/* Classic fileselector protocol? */
 		if( strcmp( name, "" ) != 0 && strcmp( path, "" ) != 0 )
 		{
-			CombinePath( g_playlistFile, path, name );
+			CombinePath( g_playlistFilePath, path, name );
 		}
 
-		if( strstr( g_playlistFile, ".m3u" ) == NULL && strstr( g_playlistFile, ".M3U" ) == NULL )
+		if( strstr( g_playlistFilePath, ".m3u" ) == NULL && strstr( g_playlistFilePath, ".M3U" ) == NULL )
 		{
-			strcat( g_playlistFile, ".M3U" );
+			strcat( g_playlistFilePath, ".M3U" );
 		}
 
-		if( file_exists( g_playlistFile ) == FALSE
-			|| ( file_exists( g_playlistFile ) == TRUE && ShowOverwriteFileDialog() == 1 ) )
+		if( file_exists( g_playlistFilePath ) == FALSE
+			|| ( file_exists( g_playlistFilePath ) == TRUE && ShowOverwriteFileDialog() == 1 ) )
 		{
-			PlayListSaveToFile( g_playlistFile );
+			PlayListSaveToFile( g_playlistFilePath );
 		}
 		else
 		{

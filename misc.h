@@ -55,7 +55,7 @@ extern short		GetObjectCount( OBJECT tree[] );
 
 extern char		g_homePath[MXP_PATH_MAX+1];
 extern char		g_rscName[MXP_FILENAME_MAX+1];
-extern char		g_playlistFile[MXP_PATH_MAX+1];
+extern char		g_playlistFilePath[MXP_PATH_MAX+1];
 extern int		g_panelX;
 extern int		g_panelY;
 extern int		g_playlistX;

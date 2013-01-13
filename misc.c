@@ -41,7 +41,7 @@
 
 char	g_homePath[MXP_PATH_MAX+1];
 char	g_rscName[MXP_FILENAME_MAX+1];
-char	g_playlistFile[MXP_PATH_MAX+1] = "";
+char	g_playlistFilePath[MXP_PATH_MAX+1] = "";
 int		g_panelX = -1;
 int		g_panelY = -1;
 int		g_playlistX = -1;
@@ -549,8 +549,8 @@ void ReadConfigFile( void )
 			else if( strcmp( temp, "playlistFile" ) == 0 )
 			{
 				fgetc( fs );	/* TAB */
-				fgets( g_playlistFile, MXP_PATH_MAX+1, fs );
-				g_playlistFile[strlen( g_playlistFile ) - 1] = '\0';	/* ignore newline char */
+				fgets( g_playlistFilePath, MXP_PATH_MAX+1, fs );
+				g_playlistFilePath[strlen( g_playlistFilePath ) - 1] = '\0';	/* ignore newline char */
 			}
 			else if( strcmp( temp, "randomSeed" ) == 0 )
 			{
@@ -617,11 +617,11 @@ void WriteConfigFile( void )
 	fprintf( fs, "%s", "\n" );
 
 	/* playlist file */
-	if( strcmp( g_playlistFile, "" ) != 0 )
+	if( strcmp( g_playlistFilePath, "" ) != 0 )
 	{
 		fprintf( fs, "%s", "playlistFile" );
 		fprintf( fs, "%s", "\t" );
-		fprintf( fs, "%s", g_playlistFile );
+		fprintf( fs, "%s", g_playlistFilePath );
 		fprintf( fs, "%s", "\n" );
 	}
 

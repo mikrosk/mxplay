@@ -72,7 +72,7 @@ BOOL CB_PlayListFileSelect( char* path, char* name )
 {
 	if( strcmp( name, "" ) != 0 && strcmp( path, "" ) != 0 )
 	{
-		CombinePath( g_playlistFile, path, name );
+		CombinePath( g_playlistFilePath, path, name );
 		return TRUE;
 	}
 	else

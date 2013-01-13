@@ -312,13 +312,13 @@ int main( int argc, char* argv[] )
 	debug( "past ShowDefaultDialogs" );
 
 	/* if there's some playlist in .inf file, load it */
-	if( strcmp( g_playlistFile, "" ) != 0 )
+	if( strcmp( g_playlistFilePath, "" ) != 0 )
 	{
 		g_playAfterAdd = FALSE;	/* we don't want to play everytime playlist is found on startup */
 		g_currFileUpdated = FALSE;	/* reset flag */
-		if( PlayListLoadFromFile( g_playlistFile ) == FALSE )
+		if( PlayListLoadFromFile( g_playlistFilePath ) == FALSE )
 		{
-			strcpy( g_playlistFile, "" );
+			strcpy( g_playlistFilePath, "" );
 		}
 	}
 	debug( "past PlayListLoadFromFile" );
@@ -644,20 +644,20 @@ int main( int argc, char* argv[] )
 		if( ShowPlayListNotActualDialog() == 1 )
 		{
 			/* save playlist */
-			if( strcmp( g_playlistFile, "" ) == 0 )
+			if( strcmp( g_playlistFilePath, "" ) == 0 )
 			{
 				/* show fileselector */
 				PlayListSave();
 			}
 			else
 			{
-				PlayListSaveToFile( g_playlistFile );
+				PlayListSaveToFile( g_playlistFilePath );
 			}
 		}
 		#endif
-		strcpy( g_playlistFile, g_homePath );
-		CombinePath( g_playlistFile, g_playlistFile, DEFAULT_M3U_FILE );
-		PlayListSaveToFile( g_playlistFile );
+		strcpy( g_playlistFilePath, g_homePath );
+		CombinePath( g_playlistFilePath, g_playlistFilePath, DEFAULT_M3U_FILE );
+		PlayListSaveToFile( g_playlistFilePath );
 	}
 
 	PanelStop();
