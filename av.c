@@ -24,6 +24,7 @@
 #include <cflib.h>
 #include <string.h>
 #include <mint/osbind.h>
+#include <stdio.h>
 
 #include "mxplay.h"
 #include "vaproto.h"
@@ -43,13 +44,12 @@ void AVSetStatus( short msg[8] )
 void AVInit( void )
 {
 	char*	avServer;
-	char	tempString[8+1];
 	short	dummy;
 	short	temp;
 	short	appId;
 
 	/* alloc global memory for AV protocol */
-	sharedString = (char*)malloc_global( MXP_FILENAME_MAX+1 );
+	sharedString = (char*)malloc_global( 8 + 1 );
 	if( VerifyAlloc( sharedString ) == FALSE )
 	{
 		ExitPlayer( 1 );
@@ -59,10 +59,10 @@ void AVInit( void )
 	if( avServer != NULL )
 	{
 		/* get AV server ID */
-		strncpy( tempString, avServer, 8 );
-		tempString[8] = '\0';
-		PadString( tempString, 8 );
-		avServerId = appl_find( tempString );
+		strncpy( sharedString, avServer, 8 );
+		sharedString[8] = '\0';
+		PadString( sharedString, 8 );
+		avServerId = appl_find( sharedString );
 		if( avServerId > 0 )
 		{
 			memset( g_msgBuffer, 0, sizeof( g_msgBuffer ) );
@@ -73,7 +73,7 @@ void AVInit( void )
 			if( appl_xgetinfo( AES_PROCESS, &dummy, &dummy, &temp, &dummy ) != FALSE
 				&& temp == TRUE )	/* appl_search exists? */
 			{
-				temp = appl_search( APP_FIRST, tempString, &dummy, &appId );
+				temp = appl_search( APP_FIRST, sharedString, &dummy, &appId );
 				while( temp == TRUE )
 				{
 					if( appId == gl_apid )
@@ -82,14 +82,12 @@ void AVInit( void )
 					}
 					else
 					{
-						temp = appl_search( APP_NEXT, tempString, &dummy, &appId );
+						temp = appl_search( APP_NEXT, sharedString, &dummy, &appId );
 					}
 				}
 
 				if( temp == TRUE )	/* application was found */
 				{
-					strncpy( sharedString, tempString, 8 );
-					sharedString[8] = '\0';
 					PadString( sharedString, 8 );
 					ol2ts( (long)sharedString, &g_msgBuffer[6], &g_msgBuffer[7] );
 				}
