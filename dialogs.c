@@ -430,11 +430,11 @@ static BOOL CB_ExitObject( WDIALOG* wd, short obj )
 			break;
 
 			case PANEL_FWD:
-				PanelFwd();
+				PanelNextSubSong();
 			break;
 
 			case PANEL_RWD:
-				PanelRwd();
+				PanelPrevSubSong();
 			break;
 
 			case PANEL_NEXT:

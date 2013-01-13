@@ -70,7 +70,10 @@ static ASAP* asap;
 static ASAPInfo* info;
 static int channels;
 static unsigned char moduleBuffer[ASAPInfo_MAX_MODULE_LENGTH];
-int moduleLength;
+static int moduleLength;
+static int moduleRegistered;
+static int moduleSong;
+static char* moduleFilePath;
 
 static const char* na = "n/a";
 
@@ -92,7 +95,7 @@ static int getChannels( void )
 static int getSongDate( void )
 {
 	const char* date = ASAPInfo_GetDate( info );
-	if( strlen( date ) > 0 )
+	if( date != NULL && strlen( date ) > 0 )
 	{
 		asap_parameter.value = (long)date;
 	}
@@ -107,7 +110,7 @@ static int getSongDate( void )
 static int getSongAuthor( void )
 {
 	const char* author = ASAPInfo_GetAuthor( info );
-	if( strlen( author ) > 0 )
+	if( author != NULL && strlen( author ) > 0 )
 	{
 		asap_parameter.value = (long)author;
 	}
@@ -119,33 +122,38 @@ static int getSongAuthor( void )
 	return MXP_OK;
 }
 
-static int getModuleSongs( void )
+static int getSongType( void )
 {
-	int songs = ASAPInfo_GetSongs( info );
-	asap_parameter.value = (long)songs;
+	const char* ext = ASAPInfo_GetOriginalModuleExt( info, moduleBuffer, moduleLength );
+	if( ext != NULL && strlen( ext ) > 0 )
+	{
+		const char* desc = ASAPInfo_GetExtDescription( ext );
+		if( desc != NULL && strlen( desc ) > 0 )
+		{
+			asap_parameter.value = (long)desc;
+		}
+		else
+		{
+			asap_parameter.value = (long)na;
+		}
+	}
 
 	return MXP_OK;
 }
 
-static int getSongType( void )
+static int getSongs( void )
 {
-	const char* ext = ASAPInfo_GetOriginalModuleExt( info, moduleBuffer, moduleLength );
-	const char* desc = ASAPInfo_GetExtDescription( ext );
-	if( strlen( desc ) > 0 )
-	{
-		asap_parameter.value = (long)desc;
-	}
-	else
-	{
-		asap_parameter.value = (long)na;
-	}
+	static char buff[64];
+
+	sprintf( buff, "%d / %d", moduleSong + 1, ASAPInfo_GetSongs( info ) );
+	asap_parameter.value = (long)buff;
 
 	return MXP_OK;
 }
 
 struct SParameter		asap_settings[] =
 {
-	{ "# songs", MXP_PAR_TYPE_INT|MXP_FLG_MOD_PARAM, NULL, getModuleSongs },
+	{ "Song", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongs },
 	{ "Name", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongName },
 	{ "Author", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongAuthor },
 	{ "Type", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongType },
@@ -197,13 +205,19 @@ static void enableTimerASei( void )
 
 int asap_register_module( void )
 {
-	return ASAPInfo_IsOurFile( asap_parameter.pModule->p ) == 1 ? MXP_OK : MXP_ERROR;
+	moduleFilePath = asap_parameter.pModule->p;
+	return ASAPInfo_IsOurFile( moduleFilePath ) == 1 ? MXP_OK : MXP_ERROR;
 }
 
 int asap_get_playtime( void )
 {
-	int time = ASAPInfo_GetDuration( info, 0 );	// song 0
+	int time = ASAPInfo_GetDuration( info, moduleSong );
 	return time != -1 ? time / 1000 : 300;	// return value is in seconds
+}
+
+int asap_get_songs( void )
+{
+	return ASAPInfo_GetSongs( info );
 }
 
 int asap_init( void )
@@ -215,9 +229,7 @@ int asap_init( void )
 
 int asap_set( void )
 {
-	char* pBuffer;
-
-	FILE *fp = fopen( asap_parameter.pModule->p, "rb" );
+	FILE *fp = fopen( moduleFilePath, "rb" );
 	if( fp == NULL )
 	{
 		return MXP_ERROR;
@@ -226,13 +238,7 @@ int asap_set( void )
 	moduleLength = fread( moduleBuffer, 1, sizeof( moduleBuffer ), fp );
 	fclose( fp );
 
-	if( !ASAP_Load( asap, asap_parameter.pModule->p, moduleBuffer, moduleLength ) )
-	{
-		// unsupported
-		return MXP_ERROR;
-	}
-
-	if( !ASAP_PlaySong( asap, 0, -1 ) )	// song 0, unlimited time
+	if( !ASAP_Load( asap, moduleFilePath, moduleBuffer, moduleLength ) )
 	{
 		return MXP_ERROR;
 	}
@@ -240,9 +246,21 @@ int asap_set( void )
 	info = (ASAPInfo*)ASAP_GetInfo( asap );
 	channels = ASAPInfo_GetChannels( info );
 
+	moduleSong = (int)asap_parameter.value;
+// 	if( moduleSong == -1 )
+// 	{
+// 		// if played for the first time, set the default one
+// 		moduleSong = ASAPInfo_GetDefaultSong( info );
+// 	}
+
+	if( !ASAP_PlaySong( asap, moduleSong, -1 ) )	// unlimited time
+	{
+		return MXP_ERROR;
+	}
+
 	bufferSize = 2 * 2 * ASAP_SAMPLE_RATE * 1;	// 2 channels * 16 bit * 49170 Hz * 1 second
 
-	pBuffer = (char*)Mxalloc( 2 * bufferSize, MX_STRAM );
+	char* pBuffer = (char*)Mxalloc( 2 * bufferSize, MX_STRAM );
 	if( pBuffer == NULL )
 	{
 		return MXP_ERROR;
@@ -308,6 +326,8 @@ int asap_unset( void )
 
 	ASAPInfo_Delete( info );
 
+	moduleRegistered = 0;
+
 	return MXP_OK;
 }
 
@@ -316,16 +336,6 @@ int asap_deinit( void )
 	ASAP_Delete( asap );
 
 	return MXP_OK;
-}
-
-int asap_fwd( void )
-{
-	return MXP_ERROR;
-}
-
-int asap_rwd( void )
-{
-	return MXP_ERROR;
 }
 
 int asap_pause( void )

@@ -165,11 +165,11 @@ void HandleMessage( short msg[8] )
 					break;
 
 					case PANEL_FWD:
-						PanelFwd();
+						PanelNextSubSong();
 					break;
 
 					case PANEL_RWD:
-						PanelRwd();
+						PanelPrevSubSong();
 					break;
 
 					case PANEL_NEXT:
@@ -548,12 +548,12 @@ int main( int argc, char* argv[] )
 
 				/* right arrow */
 				case 0x4d00:
-					PanelFwd();
+					PanelNextSubSong();
 				break;
 
 				/* left arrow */
 				case 0x4b00:
-					PanelRwd();
+					PanelPrevSubSong();
 				break;
 
 				/* (shift) up arrow */

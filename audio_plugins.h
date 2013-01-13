@@ -31,8 +31,6 @@
 #define AUDIO_PLUGINS_PATH		"plugins\\audio"
 
 extern struct SAudioPlugin*	g_pCurrAudioPlugin;
-extern BOOL					g_modulePlaying;
-extern BOOL					g_modulePaused;
 extern char					g_currModuleFilePath[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
 
 extern void					LoadAudioPlugins( void );
@@ -43,8 +41,8 @@ extern void					AudioPluginModuleFeed( void );
 extern int					AudioPluginModuleStop( void );
 extern int					AudioPluginModulePause( BOOL pause );
 extern int					AudioPluginModuleMute( BOOL mute );
-extern int					AudioPluginModuleFwd( BOOL bigStep );
-extern int					AudioPluginModuleRwd( BOOL bigStep );
+extern int					AudioPluginModuleNextSubSong( void );
+extern int					AudioPluginModulePrevSubSong( void );
 extern BOOL					AudioPluginLockResources( void );
 extern BOOL					AudioPluginFreeResources( void );
 extern void					AudioPluginGetBaseInfo( struct SAudioPlugin* plugin, char** pluginAuthor, char** pluginVersion, char** replayName, char** replayAuthor, char** replayVersion, long* flags );

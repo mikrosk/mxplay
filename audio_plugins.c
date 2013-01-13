@@ -42,8 +42,6 @@
 #include "info_dialogs.h"
 
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
-BOOL						g_modulePlaying = FALSE;
-BOOL						g_modulePaused = FALSE;
 char						g_currModuleFilePath[MXP_PATH_MAX+MXP_FILENAME_MAX+1] = "-";
 
 static struct SAudioPlugin*	pSAudioPlugin[MAX_AUDIO_PLUGINS];
@@ -51,6 +49,9 @@ static int					audioPluginsCount;
 static int					dspLocked = FALSE;
 static int					dmaLocked = FALSE;
 static struct SModuleParameter moduleParameter;
+
+static int					moduleSongNumber;
+static int					moduleSongs;
 
 static BOOL AudioPluginIsFlagSet( int flag )
 {
@@ -268,6 +269,7 @@ struct SAudioPlugin* LookForAudioPlugin( char* path, char* name )
 			else if( strcmp( ext[j].ext, "*" ) == 0 )
 			{
 				// ok, a wildcard, let's try to Register() it
+				// TODO: now we pass only file path!
 				if( AudioPluginRegisterModule( pSAudioPlugin[i], filePath, strlen( filePath ) ) == MXP_OK )
 				{
 					return pSAudioPlugin[i];
@@ -345,15 +347,24 @@ int AudioPluginModulePlay( void )
 {
 	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Set != NULL )
 	{
-		g_modulePlaying = TRUE;
 #ifndef DISABLE_PLUGINS
-		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Set() : Supexec( g_pCurrAudioPlugin->Set );
+		g_pCurrAudioPlugin->inBuffer.value = moduleSongNumber = 0;	// first song
+		int ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Set() : Supexec( g_pCurrAudioPlugin->Set );
+		if( ret == MXP_OK && g_pCurrAudioPlugin->Songs != NULL )
+		{
+			moduleSongs = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Songs() : Supexec( g_pCurrAudioPlugin->Songs );
+		}
+		else
+		{
+			moduleSongs = 1;
+		}
+		return ret;
 #else
 		return MXP_OK;
 #endif
 	}
 
-	return MXP_OK;
+	return MXP_UNIMPLEMENTED;
 }
 
 /*
@@ -376,8 +387,6 @@ int AudioPluginModuleStop( void )
 {
 	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Unset != NULL )
 	{
-		g_modulePaused = FALSE;
-		g_modulePlaying = FALSE;
 #ifndef DISABLE_PLUGINS
 		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Unset() : Supexec( g_pCurrAudioPlugin->Unset );
 #else
@@ -385,7 +394,7 @@ int AudioPluginModuleStop( void )
 #endif
 	}
 
-	return MXP_OK;
+	return MXP_UNIMPLEMENTED;
 }
 
 /*
@@ -425,15 +434,19 @@ int AudioPluginModuleMute( BOOL mute )
 }
 
 /*
- * Forward module. Still very simple implementation,
- * 'bigStep' is ignored for this moment.
+ * Next subsong, if available.
  */
-int AudioPluginModuleFwd( BOOL bigStep )
+int AudioPluginModuleNextSubSong( void )
 {
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModuleFwd != NULL )
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Set != NULL )
 	{
 #ifndef DISABLE_PLUGINS
-		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->ModuleFwd() : Supexec( g_pCurrAudioPlugin->ModuleFwd );
+		if( moduleSongNumber + 1 < moduleSongs )
+		{
+			AudioPluginModuleStop();
+			g_pCurrAudioPlugin->inBuffer.value = ++moduleSongNumber;
+			return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Set() : Supexec( g_pCurrAudioPlugin->Set );
+		}
 #else
 		return MXP_OK;
 #endif
@@ -443,15 +456,19 @@ int AudioPluginModuleFwd( BOOL bigStep )
 }
 
 /*
- * Rewind module. Still very simple implementation,
- * 'bigStep' is ignored for this moment.
+ * Previous subsong, if available.
  */
-int AudioPluginModuleRwd( BOOL bigStep )
+int AudioPluginModulePrevSubSong( void )
 {
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModuleRwd != NULL )
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Set != NULL )
 	{
 #ifndef DISABLE_PLUGINS
-		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->ModuleRwd() : Supexec( g_pCurrAudioPlugin->ModuleRwd );
+		if( moduleSongNumber - 1 >= 0 )
+		{
+			AudioPluginModuleStop();
+			g_pCurrAudioPlugin->inBuffer.value = --moduleSongNumber;
+			return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Set() : Supexec( g_pCurrAudioPlugin->Set );
+		}
 #else
 		return MXP_OK;
 #endif

@@ -81,77 +81,71 @@ MXP_PLUGIN_REGISTER_MOD	EQU	2*4
 ; Name:	   Get module play time.
 ; Purpose: Get the more or less accurate play time in seconds.
 ; Input:   -
-; Output:  Return code and play time.
+; Output:  Play time.
 MXP_PLUGIN_PLAYTIME	EQU	3*4
+
+; Name:	   Get number of module songs.
+; Purpose: Returns number of (sub)songs, if NULL 1 is assumed.
+; Input:   -
+; Output:  Number of songs.
+MXP_PLUGIN_SONGS	EQU	4*4
 
 ; Name:	   Plugin initialization.
 ; Purpose: Alloc buffers, generate tables, etc.
 ; Input:   -
 ; Output:  Return code.
-MXP_PLUGIN_INIT		EQU	4*4
+MXP_PLUGIN_INIT		EQU	5*4
 
 ; Name:    Plugin set.
 ; Purpose: Set up hw registers & play music.
-; Input:   -
+; Input:   Number of song, can be ignored if n/a.
 ; Output:  Return code.
-MXP_PLUGIN_SET		EQU	5*4
+MXP_PLUGIN_SET		EQU	6*4
 
 ; Name:    Plugin feed.
 ; Purpose: Used for D2D playback, called periodically from the mainloop.
 ; Input:   -
 ; Output:  -
-MXP_PLUGIN_FEED		EQU	6*4
+MXP_PLUGIN_FEED		EQU	7*4
 
 ; Name:    Plugin unset.
 ; Purpose: Stop music & restore registers
 ; Input:   -
 ; Output:  Return code.
-MXP_PLUGIN_UNSET	EQU	7*4
+MXP_PLUGIN_UNSET	EQU	8*4
 
 ; Name:    Plugin deinitialization.
 ; Purpose: Free buffers.
 ; Input:   -
 ; Output:  Return code.
-MXP_PLUGIN_DEINIT	EQU	8*4
-
-; Name:    Music forward.
-; Purpose: Forward music for a while.
-; Input:
-; Output:  Return code.
-MXP_PLUGIN_MUSIC_FWD	EQU	9*4
-
-; Name:    Music rewind.
-; Purpose: Rewind music for a while.
-; Input:
-; Output:  Return code.
-MXP_PLUGIN_MUSIC_RWD	EQU	10*4
+MXP_PLUGIN_DEINIT	EQU	9*4
 
 ; Name:    Music pause.
 ; Purpose: Pause music.
 ; Input:   0: unpause, 1: pause
 ; Output:  Return code.
-MXP_PLUGIN_MUSIC_PAUSE	EQU	11*4
+MXP_PLUGIN_MUSIC_PAUSE	EQU	10*4
 
 ; Name:    Music mute.
 ; Purpose: Mute music.
 ; Input:   0: unmute, 1: mute
 ; Output:  Return code.
-MXP_PLUGIN_MUSIC_MUTE	EQU	12*4
+MXP_PLUGIN_MUSIC_MUTE	EQU	11*4
 
 ; Name:    Plugin information.
 ; Purpose: Pointer to structure with information about plugin. (see also: mxp_struct_info)
 ; Input:   -
 ; Output:  -
-MXP_PLUGIN_INFO		EQU	13*4
+MXP_PLUGIN_INFO		EQU	12*4
 
 ; Name:    Supported module extensions by plugin.
 ; Purpose: Pointer to structure-field with file extensions which plugin supports. (see also: mxp_struct_extensions)
 ; Input:   -
 ; Output:  -
-MXP_PLUGIN_EXTENSIONS	EQU	14*4
+MXP_PLUGIN_EXTENSIONS	EQU	13*4
 
 ; Name:    Plugin settings structure.
 ; Purpose: Pointer to structure-field with optional replay parameters. (see also: mxp_struct_settings)
 ; Input:   -
 ; Output:  -
-MXP_PLUGIN_SETTINGS	EQU	15*4
+MXP_PLUGIN_SETTINGS	EQU	14*4

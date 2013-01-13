@@ -46,6 +46,9 @@ BOOL			g_repeat = FALSE;
 BOOL			g_random = FALSE;
 BOOL			g_mute = FALSE;
 
+BOOL			g_modulePlaying = FALSE;
+BOOL			g_modulePaused = FALSE;
+
 static BOOL		playlistOpened = FALSE;
 static BOOL		infoAppOpened = FALSE;
 static BOOL		infoModOpened = FALSE;
@@ -277,11 +280,11 @@ void PanelPlay( void )
 			{
 				if( ( ret = AudioPluginModulePlay() ) == MXP_OK )
 				{
+					g_modulePlaying = TRUE;
 					TimerReset( AudioPluginGetPlayTime() );	/* get playtime */
 				}
 				else
 				{
-					g_modulePlaying = FALSE;
 					ShowPluginErrorDialog( ret );
 					/* most probably some HW registers were changed -> stop, unset and free */
 					PanelStop();
@@ -314,6 +317,8 @@ void PanelStop( void )
 		{
 			ShowPluginErrorDialog( ret );
 		}
+		g_modulePaused = FALSE;
+		g_modulePlaying = FALSE;
 		AudioPluginFreeResources();
 	}
 
@@ -334,45 +339,45 @@ void PanelPause( void )
 				   : PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 }
 
-void PanelFwd( void )
+void PanelNextSubSong( void )
 {
-	int ret;
-
 	if( g_modulePlaying == TRUE )
 	{
-
 		PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_FWD );
 
-		if( ( ret = AudioPluginModuleFwd( g_withShift ) ) != MXP_OK )
+		if( AudioPluginModuleNextSubSong() != MXP_OK )
 		{
-			ShowPluginErrorDialog( ret );
+			PanelStop();
+		}
+		else
+		{
+			TimerReset( AudioPluginGetPlayTime() );
+			AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
+			ModuleInfoUpdate();
 			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 		}
-
-		/* was big forward-step */
-		g_withShift = FALSE;
 
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_FWD );
 	}
 }
 
-void PanelRwd( void )
+void PanelPrevSubSong( void )
 {
-	int ret;
-
 	if( g_modulePlaying == TRUE )
 	{
-
 		PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_RWD );
 
-		if( ( ret = AudioPluginModuleRwd( g_withShift ) ) != MXP_OK )
+		if( AudioPluginModulePrevSubSong() != MXP_OK )
 		{
-			ShowPluginErrorDialog( ret );
+			PanelStop();
+		}
+		else
+		{
+			TimerReset( AudioPluginGetPlayTime() );
+			AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
+			ModuleInfoUpdate();
 			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 		}
-
-		/* was big rewind-step */
-		g_withShift = FALSE;
 
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_RWD );
 	}

@@ -26,7 +26,7 @@
 #include <time.h>
 
 #include "mxplay.h"
-#include "audio_plugins.h"
+#include "panel.h"
 
 static clock_t pauseConst;
 static clock_t pausedTime;

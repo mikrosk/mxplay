@@ -86,13 +86,12 @@ struct SAudioPlugin
 	union UParameterBuffer inBuffer;
 	int (*RegisterModule)( void );
 	int (*PlayTime)( void );
+	int (*Songs)( void );
 	int (*Init)( void );
 	int (*Set)( void );
 	int (*Feed)( void );
 	int (*Unset)( void );
 	int (*Deinit)( void );
-	int (*ModuleFwd)( void );
-	int (*ModuleRwd)( void );
 	int (*ModulePause)( void );
 	int (*ModuleMute)( void );
 	struct SInfo*		pSInfo;

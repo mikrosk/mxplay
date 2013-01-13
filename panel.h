@@ -44,13 +44,15 @@ extern int			g_timeMode;
 extern BOOL			g_repeat;
 extern BOOL			g_random;
 extern BOOL			g_mute;
+extern BOOL			g_modulePlaying;
+extern BOOL			g_modulePaused;
 
 extern void	PanelPlayTime( void );
 extern void	PanelPlay( void );
 extern void	PanelStop( void );
 extern void	PanelPause( void );
-extern void	PanelFwd( void );
-extern void	PanelRwd( void );
+extern void	PanelNextSubSong( void );
+extern void	PanelPrevSubSong( void );
 extern void	PanelFileOpen( void );
 extern void	PanelDirOpen( void );
 extern void	PanelPrev( void );
