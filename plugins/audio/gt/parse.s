@@ -15,11 +15,13 @@ parse_gt2file:
 
 		cmp.w	#"GT",(a0)+				;
 		beq.s	.ok					;
+		movem.l	(sp)+,d2-d7/a2-a6
 		moveq	#MXP_ERROR,d0				;
 		rts						;no
 
 .ok:		cmp.b	#"2",(a0)+				;
 		beq.s	parse_songname				;
+		movem.l	(sp)+,d2-d7/a2-a6
 		moveq	#MXP_ERROR,d0				;no
 		rts						;
 
