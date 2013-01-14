@@ -66,7 +66,11 @@ static int AudioPluginInit( struct SAudioPlugin* plugin )
 {
 	if( plugin->Init != NULL )
 	{
+#ifndef DISABLE_PLUGINS
 		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? plugin->Init() : Supexec( plugin->Init );
+#else
+		return MXP_OK;
+#endif
 	}
 	else
 	{
@@ -82,7 +86,11 @@ static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module,
 	plugin->inBuffer.pModule = &moduleParameter;
 	if( plugin->RegisterModule != NULL )
 	{
+#ifndef DISABLE_PLUGINS
 		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? plugin->RegisterModule() : Supexec( plugin->RegisterModule );
+#else
+	return MXP_OK;
+#endif
 	}
 	else
 	{
@@ -646,12 +654,16 @@ struct SParameter* AudioPluginGetParam( struct SAudioPlugin* plugin, char* name 
  */
 int AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long value )
 {
+#ifndef DISABLE_PLUGINS
 	int ret;
 
 	plugin->inBuffer.value = value;
 	ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? param->Set() : Supexec( param->Set );
 	AudioPluginGetInfoLine( plugin->pSParameter );	/* start from the first parameter */
 	return ret;
+#else
+	return MXP_OK;
+#endif
 }
 
 /*
@@ -659,9 +671,13 @@ int AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long 
  */
 int AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long* value )
 {
+#ifndef DISABLE_PLUGINS
 	int ret;
 
 	ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? param->Get() : Supexec( param->Get );
 	*value = plugin->inBuffer.value;
 	return ret;
+#else
+	return MXP_ERROR;
+#endif
 }
