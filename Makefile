@@ -60,3 +60,4 @@ clean:
 	rm -f plugins/audio/*~ plugins/audio/*.mxp
 	make -C plugins/audio/xmp clean
 	make -C plugins/audio/asap clean
+	#make -C plugins/audio/gt clean
