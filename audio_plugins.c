@@ -114,14 +114,7 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 	}
 	else
 	{
-		Mshrink( bp->p_lowtpa,		/* basepage address */
-		0x100 +						/* length of basepage */
-		bp->p_tlen +				/* length of text segment */
-		bp->p_dlen +				/* length of data segment */
-		bp->p_blen +				/* length of BSS segment */
-		64*1024 );					/* length of stack */
-
-		memset( bp->p_bbase, bp->p_blen, 0 );
+		memset( bp->p_bbase, bp->p_blen, 0 );	// clear the BSS segment
 
 		// text segment
 		p = (struct SAudioPlugin*)bp->p_tbase;
