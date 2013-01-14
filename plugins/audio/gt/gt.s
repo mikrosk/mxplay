@@ -24,7 +24,7 @@ gt2_header:	dc.l	"MXP2"
 		dc.l	0			; gt2_mute
 		dc.l	gt2_info
 		dc.l	gt2_extensions
-		dc.l	0			; gt2_settings
+		dc.l	gt2_settings
 
 ; ----------------------------------------------
 
@@ -149,6 +149,8 @@ gt2_extensions:
 		dc.l	gt2_extensions_gt2
 		dc.l	gt2_extensions_gt2_name
 		dc.l	0
+
+gt2_settings:	dc.l	0
 
 gt2_info_plugin_author:
 		dc.b	"MiKRO / Mystic Bytes",0
