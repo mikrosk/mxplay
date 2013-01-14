@@ -74,7 +74,7 @@ MXP_PLUGIN_PARAMETER	EQU	1*4
 
 ; Name:	   Module registration & validation.
 ; Purpose: Let the plugin know where can find music module.
-; Input:   Music module address.
+; Input:   Music module address and length (pointer to an 8-byte couple).
 ; Output:  Return code; if MXP_OK plugin is able to replay given module else MXP_ERROR.
 MXP_PLUGIN_REGISTER_MOD	EQU	2*4
 
