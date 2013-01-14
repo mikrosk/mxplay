@@ -3,7 +3,7 @@
 ; (c) 2012-2013
 
 		comment HEAD=%111
-		output .mxp
+		output	.mxp
 		opt	p=68030,NOCASE,D-
 
 ; ----------------------------------------------
@@ -159,7 +159,7 @@ gt2_info_plugin_version:
 gt2_info_replay_name:
 		dc.b	"Graoumf Tracker Replay",0
 gt2_info_replay_author:
-		dc.b	"Laurent de Soras & Earx / FUN",0
+		dc.b	"Laurent de Soras & Earx",0
 gt2_info_replay_version:
 		dc.b	"May 7 2001",0
 

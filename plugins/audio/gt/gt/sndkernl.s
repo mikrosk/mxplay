@@ -196,18 +196,6 @@ gtkr_kernel_on:
 	tst.w	gtkr_flag_installed	; D‚j… install‚ ?
 	bne	.warning1
 
-	move.w	#$80,-(sp)
-	trap	#14		; Locksnd
-	addq.l	#2,sp
-	tst.w	d0
-	bmi	.error1		; D‚j… occup‚!
-
-	move.w	#$68,-(sp)
-	trap	#14		; Dsp_Lock
-	addq.l	#2,sp
-	tst.w	d0
-	bmi	.error2		; D‚j… occup‚!
-
 	zmove.w	f002.nbrvoice,gtkr_nbrvoies
 	zmove.l	f002.adrbloc,gtkr_adr_info_track
 	clr.w	gtkr_current_track
@@ -240,13 +228,6 @@ gtkr_kernel_on:
 	bra.s	.fin
 
 .warning1:	moveq	#1,d0			; D‚j… install‚
-	bra.s	.fin
-
-.error1:	moveq	#-1,d0			; Sound sub-system locked
-	bra.s	.fin
-
-.error2:	moveq	#-2,d0			; DSP locked
-
 .fin:	movem.l	(sp)+,d1-a5
 	rts
 
@@ -327,14 +308,6 @@ gtkr_kernel_off:
 	move.w	#1,gtkr_flag_the_end	; Ordre d'arret du noyau
 .loop:	tst.w	gtkr_flag_the_end	; Attend qu'il se soit d‚sinstall‚
 	bne.s	.loop
-
-	move.w	#$69,-(sp)
-	trap	#14			; Dsp_Unlock
-	addq.l	#2,sp
-
-	move.w	#$81,-(sp)
-	trap	#14			; Unlocksnd
-	addq.l	#2,sp
 
 	moveq	#0,d0
 	bra.s	.fin
@@ -1030,7 +1003,7 @@ gtkr_nbr_of_app_id:
 
 	lea	gtkr_app_id_stack,a0
 	moveq	#0,d0
-.loop:	
+.loop:
 	tst.l	(a0)
 	beq.s	.fin
 	addq.l	#1,d0
@@ -1059,7 +1032,7 @@ gtkr_interpolate_track:
 	ztst.w	f01c.etat
 	beq.s	.nointerp
 .interpol:	move.w	#1,interpol_t(a0,d1.l)
-	bra.s	.fin	
+	bra.s	.fin
 .nointerp:	clr.w	interpol_t(a0,d1.l)
 .fin:
 	moveq	#0,d0
