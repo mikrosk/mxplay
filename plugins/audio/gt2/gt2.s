@@ -43,8 +43,6 @@ gt2_register_module:
 		movea.l	gt2_header+MXP_PLUGIN_PARAMETER,a0
 		move.l	(a0),filename
 
-		movem.l	d2-d7/a2-a6,-(sp)
-
 		include	'loader.s'
 
 		move.l	filebuffer,a0				; Check if the file is a Graoumf Tracker file
@@ -55,16 +53,15 @@ gt2_register_module:
 		cmp.b	#"2",(a0)+
 		bne.s	.err
 
-		movem.l	(sp)+,d2-d7/a2-a6
 		moveq	#MXP_OK,d0
 		rts
 
-.err:		movem.l	(sp)+,d2-d7/a2-a6
-		moveq	#MXP_ERROR,d0
+.err:		moveq	#MXP_ERROR,d0
 		rts
 
 gt2_read_playtime:
-		move.l	gt2_custom_playtime,d0
+		move.l	gt2_custom_playtime,gt2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 gt2_init:	move.l	#98340,d0		; calculate new replayfreq data
@@ -76,8 +73,6 @@ gt2_init:	move.l	#98340,d0		; calculate new replayfreq data
 		rts
 
 gt2_start_playback:
-		movem.l	d2-d7/a2-a6,-(sp)
-
 		move.l	#gtkpl_info_track,-(sp)
 		move.w	#NBRVOIES_MAXI,-(sp)
 		sndkernel kernel_on
@@ -103,13 +98,10 @@ gt2_start_playback:
 		bsr	gtkpl_new_module
 		lea	12(sp),sp
 
-		movem.l	(sp)+,d2-d7/a2-a6
 		moveq	#MXP_OK,d0
 		rts
 
 gt2_stop_playback:
-		movem.l	d2-d7/a2-a6,-(sp)
-
 		bsr	gtkpl_stop_module
 		bsr	gtkpl_player_off
 		sndkernel kernel_off
@@ -119,27 +111,22 @@ gt2_stop_playback:
 		trap	#1
 		addq.l	#6,sp
 
-		movem.l	(sp)+,d2-d7/a2-a6
 		moveq	#MXP_OK,d0
 		rts
 
 gt2_deinit:	moveq	#MXP_OK,d0
 		rts
 
-gt2_pause:	movem.l	d2-d7/a2-a6,-(sp)
-
-		move.l	gt2_header+MXP_PLUGIN_PARAMETER,d0
+gt2_pause:	move.l	gt2_header+MXP_PLUGIN_PARAMETER,d0
 		bne.b	.pause
 
 .cont:		bsr	gtkpl_cont_module
 
-		movem.l	(sp)+,d2-d7/a2-a6
 		moveq	#MXP_OK,d0
 		rts
 
 .pause:		bsr	gtkpl_pause_module
 
-		movem.l	(sp)+,d2-d7/a2-a6
 		moveq	#MXP_OK,d0
 		rts
 

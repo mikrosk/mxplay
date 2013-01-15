@@ -23,7 +23,6 @@ loader:		move.l	#dta,-(sp)				;fsetdta() set new dta
 		tst.l	d0					;file found ?
 		beq.s	.size					;yep
 
-		movem.l	(sp)+,d2-d7/a2-a6
 		moveq	#MXP_ERROR,d0				;no
 		rts						;exit
 
@@ -39,7 +38,6 @@ loader:		move.l	#dta,-(sp)				;fsetdta() set new dta
 		tst.l	d0					;enough mem?
 		bne.s	.loadit					;yes
 
-		movem.l	(sp)+,d2-d7/a2-a6
 		moveq	#MXP_ERROR,d0				;no
 		rts						;exit
 

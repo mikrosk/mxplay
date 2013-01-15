@@ -304,7 +304,7 @@ unsigned long GetFileNameSize( char* filename )
  */
 BOOL IsDirectory( char* path, char* name )
 {
-	char tempString[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
+	char tempString[MXP_PATH_MAX+1];
 
 	CombinePath( tempString, path, name );
 
@@ -317,7 +317,7 @@ BOOL IsDirectory( char* path, char* name )
 void ARGVParseArgs( int argc, char* argv[] )
 {
 	int i;
-	char	tempPath[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
+	char	tempPath[MXP_PATH_MAX+1];
 	char	tempName[MXP_FILENAME_MAX+1];
 
 	for( i = 1; i < argc; i++ )
@@ -358,7 +358,7 @@ void ParseArgs( char* cmdline )
 	int		j = 0;
 	char	path[MXP_PATH_MAX+1];
 	char	name[MXP_FILENAME_MAX+1];
-	char	all[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
+	char	all[MXP_PATH_MAX+1];
 
 	while( cmdline[i] != '\0' )
 	{

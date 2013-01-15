@@ -24,6 +24,7 @@
 #ifndef _AUDIO_PLUGINS_H_
 #define _AUDIO_PLUGINS_H_
 
+#include <time.h>
 #include "mxplay.h"
 #include "plugins/audio/plugin.h"
 
@@ -31,24 +32,26 @@
 #define AUDIO_PLUGINS_PATH		"plugins\\audio"
 
 extern struct SAudioPlugin*	g_pCurrAudioPlugin;
-extern char					g_currModuleFilePath[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
+extern char					g_currModuleFilePath[MXP_PATH_MAX+1];
 
 extern void					LoadAudioPlugins( void );
 extern struct SAudioPlugin*	LookForAudioPlugin( char* path, char* name );
 extern BOOL					LoadAudioModule( char* path, char* filename );
-extern int					AudioPluginModulePlay( void );
-extern void					AudioPluginModuleFeed( void );
-extern int					AudioPluginModuleStop( void );
-extern int					AudioPluginModulePause( BOOL pause );
-extern int					AudioPluginModuleMute( BOOL mute );
-extern int					AudioPluginModuleNextSubSong( void );
-extern int					AudioPluginModulePrevSubSong( void );
+
+extern time_t				AudioPluginGetPlayTime( struct SAudioPlugin* plugin );
+extern int					AudioPluginModulePlay( struct SAudioPlugin* plugin );
+extern int					AudioPluginModuleFeed( struct SAudioPlugin* plugin );
+extern int					AudioPluginModuleStop( struct SAudioPlugin* plugin );
+extern int					AudioPluginModulePause( struct SAudioPlugin* plugin, BOOL pause );
+extern int					AudioPluginModuleMute( struct SAudioPlugin* plugin, BOOL mute );
+extern int					AudioPluginModuleNextSubSong( struct SAudioPlugin* plugin );
+extern int					AudioPluginModulePrevSubSong( struct SAudioPlugin* plugin );
+extern int					AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long value );
+extern int					AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long* value );
+
 extern BOOL					AudioPluginLockResources( void );
 extern BOOL					AudioPluginFreeResources( void );
 extern void					AudioPluginGetBaseInfo( struct SAudioPlugin* plugin, char** pluginAuthor, char** pluginVersion, char** replayName, char** replayAuthor, char** replayVersion, long* flags );
-extern unsigned long		AudioPluginGetPlayTime( void );
-extern int					AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long value );
-extern int					AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long* value );
 extern struct SParameter*	AudioPluginGetParam( struct SAudioPlugin* plugin, char* name );
 extern void					AudioPluginGetInfoLine( struct SParameter* param );
 

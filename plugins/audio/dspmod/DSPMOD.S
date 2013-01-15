@@ -33,7 +33,7 @@ dspmod_samplesets:	equ	70
 dspmod_play_module:
 		movea.l	dspmod_buffer,a0
 		move.l	1080(a0),d0
-		
+
 		move.l	#"M.K.",d1
 		cmp.l	d0,d1
 		beq.w	.four
@@ -82,18 +82,18 @@ dspmod_play_module:
 		move.l	#"FA08",d1
 		cmp.l	d0,d1
 		beq.b	.eight
-		
+
 .four:		move.l	#"M.K.",1080(a0)			;put general 4ch header
 		move.b	#'4',dspmod_channels
 		bra.b	.skip
-		
+
 .six:		move.l	#"CD61",1080(a0)			;put general 6ch header
 		move.b	#'6',dspmod_channels
 		bra.b	.skip
-		
+
 .eight:		move.l	#"CD81",1080(a0)			;put general 8ch header
 		move.b	#'8',dspmod_channels
-				
+
 .skip:		lea.l	dspmod_voltab4,a1			;4channel volumetable
 		bsr.w	dspmod_player+dspmod_modtype	;check mod type
 		cmp.w	#4,d0					;if 4, start module
@@ -110,7 +110,7 @@ dspmod_vbl:
 
 
 
-dspmod_start:	
+dspmod_start:
 		bsr.w	dspmod_player+dspmod_on 		;install player
 		move.l	a0,dspmod_version
 
@@ -180,7 +180,7 @@ dspmod_begin:	bsr.w	saveaudio				;save audio hardware
 		bsr.w	dspmod_install_vbi			;..to install
 		;move.l	#dspmod_vbl,$04d2.w			;place routine on vbl
 		rts
-		
+
 ; There is a pointer to a list of "deferred vbl handlers" at
 ; address $0456. The size of this list (in pointers) are found
 ; in $0454. The routines 'dspmod_install_vbi' and 'dspmod_desintall_vbi'
@@ -226,7 +226,7 @@ dspmod_deinstall_vbi:
 .exit:		movem.l	(sp)+,d1/a0
 		rts
 
-		
+
 saveaudio:	lea.l	saveaudiobuf,a0
 		move.w	$ffff8930.w,(a0)+
 		move.w	$ffff8932.w,(a0)+
@@ -275,39 +275,47 @@ dspmod_get_interpolation:
 		beq.b	.off
 
 .on:		move.l	#1,dspmod_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 .off:		move.l	#0,dspmod_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 dspmod_set_interpolation:
 		tst.l	dspmod_header+MXP_PLUGIN_PARAMETER
 		beq.b	.unset
-		
+
 .set:		bset	#1,dspmod_player+dspmod_flags
+		moveq	#MXP_OK,d0
 		rts
-		
+
 .unset:		bclr	#1,dspmod_player+dspmod_flags
+		moveq	#MXP_OK,d0
 		rts
-		
+
 dspmod_get_surround:
 		btst	#0,dspmod_player+dspmod_flags
 		beq.b	.off
 
 .on:		move.l	#1,dspmod_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 .off:		move.l	#0,dspmod_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 dspmod_set_surround:
 		tst.l	dspmod_header+MXP_PLUGIN_PARAMETER
 		beq.b	.unset
-		
+
 .set:		bset	#0,dspmod_player+dspmod_flags
+		moveq	#MXP_OK,d0
 		rts
-		
+
 .unset:		bclr	#0,dspmod_player+dspmod_flags
+		moveq	#MXP_OK,d0
 		rts
 
 dspmod_get_module_name:
@@ -317,12 +325,14 @@ dspmod_get_module_name:
 .loop:		move.b	(a0)+,(a1)+
 		dbra	d0,.loop
 		clr.b	(a1)				; terminate it (for sure)
-		
+
 		move.l	#dspmod_module_name,dspmod_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
-		
+
 dspmod_get_module_channels:
 		move.l	#dspmod_channels,dspmod_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 dspmod_get_module_type:
@@ -336,46 +346,47 @@ dspmod_get_module_type:
 		beq.b	.found
 		addq.l	#4,a0				; skip 'name' address
 		bra.b	.loop
-		
+
 .found:		move.l	(a0),dspmod_header+MXP_PLUGIN_PARAMETER
 		moveq	#MXP_OK,d0
 		rts
-		
+
 .not_found:	moveq	#MXP_ERROR,d0
 		rts
-		
+
 dspmod_calc_playtime:
 		movea.l	dspmod_buffer,a0
 		bsr.w	dspmod_player+dspmod_playtime
-		
+
 		clr.l	d2				; d0.w: $MMSS (in BCD)
 		clr.l	d3
-		
+
 		move.b	d0,d1				; d1.b: $SS
 		and.b	#$0f,d1				; d1.b: $0S
 		move.b	d1,d2
-		
+
 		lsr.w	#4,d0				; d0.w: $0MMS
 		move.b	d0,d1				; d1.b: $MS
 		and.b	#$0f,d1				; d1.b: $0S
 		mulu.w	#10,d1
 		add.l	d1,d2
-		
+
 		lsr.w	#4,d0				; d0.w: $00MM
 		move.b	d0,d1				; d1.b: $MM
 		and.b	#$0f,d1				; d1.b: $0M
 		move.b	d1,d3
-		
+
 		lsr.w	#4,d0				; d0.w: $000M
 		mulu.w	#10,d0
 		add.l	d0,d3
-		
+
 		mulu.w	#60,d3				; mins * 60 = seconds
 		add.l	d3,d2
 
-		move.l	d2,d0
+		move.l	d2,dspmod_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
-		
+
 		section	data
 
 		even
@@ -390,13 +401,13 @@ dspmod_voltab8:
 		dc.w $3fff,$3fff,$3fff,$3fff
 		dc.w $3fff,$3fff,$3fff,$3fff
 		even
-		
+
 dspmod_formats:	dc.l	dspmod_formats_mk1
 		dc.l	dspmod_formats_mk1_name
-		
+
 		dc.l	dspmod_formats_mk2
 		dc.l	dspmod_formats_mk2_name
-		
+
 		dc.l	dspmod_formats_mk3
 		dc.l	dspmod_formats_mk3_name
 
@@ -408,37 +419,37 @@ dspmod_formats:	dc.l	dspmod_formats_mk1
 
 		dc.l	dspmod_formats_fa04
 		dc.l	dspmod_formats_fa04_name
-		
+
 		dc.l	dspmod_formats_6chn
 		dc.l	dspmod_formats_6chn_name
-		
+
 		dc.l	dspmod_formats_cd61
 		dc.l	dspmod_formats_cd61_name
-		
+
 		dc.l	dspmod_formats_06ch
 		dc.l	dspmod_formats_06ch_name
-		
+
 		dc.l	dspmod_formats_fa06
 		dc.l	dspmod_formats_fa06_name
-		
+
 		dc.l	dspmod_formats_8chn
 		dc.l	dspmod_formats_8chn_name
-		
+
 		dc.l	dspmod_formats_cd81
 		dc.l	dspmod_formats_cd81_name
-		
+
 		dc.l	dspmod_formats_flt8
 		dc.l	dspmod_formats_flt8_name
-		
+
 		dc.l	dspmod_formats_08ch
 		dc.l	dspmod_formats_08ch_name
-		
+
 		dc.l	dspmod_formats_octa
 		dc.l	dspmod_formats_octa_name
-		
+
 		dc.l	dspmod_formats_fa08
 		dc.l	dspmod_formats_fa08_name
-		
+
 		dc.l	0
 
 dspmod_formats_mk1:
@@ -510,7 +521,7 @@ dspmod_formats_fa08_name:
 dspmod_player:
 		incbin 'dspmod.tce'
 		even
-		
+
 		section	bss
 
 		even

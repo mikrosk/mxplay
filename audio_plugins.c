@@ -42,7 +42,7 @@
 #include "info_dialogs.h"
 
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
-char						g_currModuleFilePath[MXP_PATH_MAX+MXP_FILENAME_MAX+1] = "-";
+char						g_currModuleFilePath[MXP_PATH_MAX+1] = "-";
 
 static struct SAudioPlugin*	pSAudioPlugin[MAX_AUDIO_PLUGINS];
 static int					audioPluginsCount;
@@ -52,51 +52,6 @@ static struct SModuleParameter moduleParameter;
 
 static int					moduleSongNumber;
 static int					moduleSongs;
-
-static BOOL AudioPluginIsFlagSet( int flag )
-{
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->pSInfo != NULL )
-	{
-		return ( g_pCurrAudioPlugin->pSInfo->flags & flag ) != 0 ? TRUE : FALSE;
-	}
-	return FALSE;
-}
-
-static int AudioPluginInit( struct SAudioPlugin* plugin )
-{
-	if( plugin->Init != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? plugin->Init() : Supexec( plugin->Init );
-#else
-		return MXP_OK;
-#endif
-	}
-	else
-	{
-		return MXP_ERROR;
-	}
-}
-
-static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module, size_t length )
-{
-	moduleParameter.p = module;
-	moduleParameter.size = length;
-
-	plugin->inBuffer.pModule = &moduleParameter;
-	if( plugin->RegisterModule != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? plugin->RegisterModule() : Supexec( plugin->RegisterModule );
-#else
-	return MXP_OK;
-#endif
-	}
-	else
-	{
-		return MXP_ERROR;
-	}
-}
 
 static struct SAudioPlugin* AudioPluginLoad( char* filename )
 {
@@ -141,6 +96,156 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 	}
 }
 
+//////////////////////////////////////////////////////////////////////////////
+
+inline static BOOL AudioPluginIsFlagSet( int flag )
+{
+	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->pSInfo != NULL )
+	{
+		return ( g_pCurrAudioPlugin->pSInfo->flags & flag ) != 0 ? TRUE : FALSE;
+	}
+	return FALSE;
+}
+
+inline static int AudioPluginCallFunction( int (*f)( void ) )
+{
+	extern void asm_save_regs( void );
+	extern void asm_restore_regs( void );
+
+	int ret = MXP_UNIMPLEMENTED;
+#ifndef DISABLE_PLUGINS
+	if( f != NULL )
+	{
+		asm_save_regs();
+		ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? f() : Supexec( f );
+		asm_restore_regs();
+	}
+#else
+	ret = MXP_OK;
+#endif
+
+	return ret;
+}
+
+//
+// In the following functions we expect that 'plugin' is never NULL!
+//
+
+static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module, size_t length )
+{
+	moduleParameter.p = module;
+	moduleParameter.size = length;
+
+	plugin->inBuffer.pModule = &moduleParameter;
+	return AudioPluginCallFunction( plugin->RegisterModule );
+}
+
+static int AudioPluginInit( struct SAudioPlugin* plugin )
+{
+	return AudioPluginCallFunction( plugin->Init );
+}
+
+time_t AudioPluginGetPlayTime( struct SAudioPlugin* plugin )
+{
+	// TODO: maybe if a plugin can't tell, do it for him?
+	plugin->inBuffer.value = 5 * 60;	// 5 minutes by default
+	AudioPluginCallFunction( plugin->PlayTime );
+	return plugin->inBuffer.value;
+}
+
+int AudioPluginModulePlay( struct SAudioPlugin* plugin )
+{
+	int ret;
+
+	plugin->inBuffer.value = moduleSongNumber = 0;	// first song
+	if( ( ret = AudioPluginCallFunction( plugin->Set ) ) == MXP_OK
+		&& AudioPluginCallFunction( plugin->Songs ) == MXP_OK )
+	{
+		moduleSongs = plugin->inBuffer.value;
+	}
+	else
+	{
+		moduleSongs = 1;
+	}
+
+	return ret;
+}
+
+int AudioPluginModuleFeed( struct SAudioPlugin* plugin )
+{
+	return AudioPluginCallFunction( plugin->Feed );
+}
+
+int AudioPluginModuleStop( struct SAudioPlugin* plugin )
+{
+	return AudioPluginCallFunction( plugin->Unset );
+}
+
+int AudioPluginModulePause( struct SAudioPlugin* plugin, BOOL pause )
+{
+	plugin->inBuffer.value = pause;
+	return AudioPluginCallFunction( plugin->ModulePause );
+}
+
+int AudioPluginModuleMute( struct SAudioPlugin* plugin, BOOL mute )
+{
+	plugin->inBuffer.value = mute;
+	return AudioPluginCallFunction( plugin->ModuleMute );
+}
+
+int AudioPluginModuleNextSubSong( struct SAudioPlugin* plugin )
+{
+	if( moduleSongNumber + 1 < moduleSongs )
+	{
+		AudioPluginModuleStop( plugin );
+		plugin->inBuffer.value = ++moduleSongNumber;
+		return AudioPluginCallFunction( plugin->Set );
+	}
+
+	return MXP_OK;
+}
+
+int AudioPluginModulePrevSubSong( struct SAudioPlugin* plugin )
+{
+	if( moduleSongNumber - 1 >= 0 )
+	{
+		AudioPluginModuleStop( plugin );
+		plugin->inBuffer.value = --moduleSongNumber;
+		return AudioPluginCallFunction( plugin->Set );
+	}
+
+	return MXP_OK;
+}
+
+int AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long value )
+{
+	int ret = MXP_UNIMPLEMENTED;
+
+	plugin->inBuffer.value = value;
+	// always user mode (changes are supposed to take effect on the next playback) TODO (why info line then?)
+	if( param->Set != NULL && ( ret = param->Set() ) == MXP_OK )
+	{
+		AudioPluginGetInfoLine( plugin->pSParameter );	/* start from the first parameter */
+	}
+
+	return ret;
+}
+
+int AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long* value )
+{
+	int ret = MXP_UNIMPLEMENTED;
+
+	// TODO: maybe to cache these values? it's horribly slow,,,
+	if( param->Get != NULL && ( ret = param->Get() ) == MXP_OK )
+	{
+		*value = plugin->inBuffer.value;
+	}
+
+	return ret;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
 /*
  * Fill scrollable infoline in the main panel.
  */
@@ -151,6 +256,7 @@ void AudioPluginGetInfoLine( struct SParameter* param )
 	char	tempString[255+1];
 
 	strcpy( infoLine, "" );
+	// TODO: what about the empty param? module filename?
 
 	for( i = 0; param[i].pName != NULL; i++ )
 	{
@@ -174,7 +280,7 @@ void AudioPluginGetInfoLine( struct SParameter* param )
  */
 BOOL LoadAudioModule( char* path, char* name )
 {
-	char			tempString[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
+	char			tempString[MXP_PATH_MAX+1];
 	unsigned long	length;
 	static char*	pModule;
 
@@ -257,7 +363,7 @@ struct SAudioPlugin* LookForAudioPlugin( char* path, char* name )
 	int 				i, j;
 	struct SExtension*	ext;
 	char				extension[MXP_FILENAME_MAX+1];
-	char				filePath[MXP_PATH_MAX+MXP_FILENAME_MAX+1];
+	char				filePath[MXP_PATH_MAX+1];
 
 	split_extension( name, NULL, extension );
 	str_toupper( extension );
@@ -346,143 +452,6 @@ void LoadAudioPlugins( void )
 	}
 
 	closedir( pDirStream );
-}
-
-/*
- * Play current module
- */
-int AudioPluginModulePlay( void )
-{
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Set != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		g_pCurrAudioPlugin->inBuffer.value = moduleSongNumber = 0;	// first song
-		int ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Set() : Supexec( g_pCurrAudioPlugin->Set );
-		if( ret == MXP_OK && g_pCurrAudioPlugin->Songs != NULL )
-		{
-			moduleSongs = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Songs() : Supexec( g_pCurrAudioPlugin->Songs );
-		}
-		else
-		{
-			moduleSongs = 1;
-		}
-		return ret;
-#else
-		return MXP_OK;
-#endif
-	}
-
-	return MXP_UNIMPLEMENTED;
-}
-
-/*
- * Update play buffers, if necessary.
- */
-void AudioPluginModuleFeed( void )
-{
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Feed != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Feed() : Supexec( g_pCurrAudioPlugin->Feed );
-#endif
-	}
-}
-
-/*
- * Stop current module playback
- */
-int AudioPluginModuleStop( void )
-{
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Unset != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Unset() : Supexec( g_pCurrAudioPlugin->Unset );
-#else
-		return MXP_OK;
-#endif
-	}
-
-	return MXP_UNIMPLEMENTED;
-}
-
-/*
- * Pause current module playback
- */
-int AudioPluginModulePause( BOOL pause )
-{
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModulePause != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		g_pCurrAudioPlugin->inBuffer.value = pause;
-		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->ModulePause() : Supexec( g_pCurrAudioPlugin->ModulePause );
-#else
-		return MXP_OK;
-#endif
-	}
-
-	return MXP_UNIMPLEMENTED;
-}
-
-/*
- * Mute current module playback
- */
-int AudioPluginModuleMute( BOOL mute )
-{
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->ModulePause != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		g_pCurrAudioPlugin->inBuffer.value = mute;
-		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->ModuleMute() : Supexec( g_pCurrAudioPlugin->ModuleMute );
-#else
-		return MXP_OK;
-#endif
-	}
-
-	return MXP_UNIMPLEMENTED;
-}
-
-/*
- * Next subsong, if available.
- */
-int AudioPluginModuleNextSubSong( void )
-{
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Set != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		if( moduleSongNumber + 1 < moduleSongs )
-		{
-			AudioPluginModuleStop();
-			g_pCurrAudioPlugin->inBuffer.value = ++moduleSongNumber;
-			return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Set() : Supexec( g_pCurrAudioPlugin->Set );
-		}
-#else
-		return MXP_OK;
-#endif
-	}
-
-	return MXP_UNIMPLEMENTED;
-}
-
-/*
- * Previous subsong, if available.
- */
-int AudioPluginModulePrevSubSong( void )
-{
-	if( g_pCurrAudioPlugin != NULL && g_pCurrAudioPlugin->Set != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		if( moduleSongNumber - 1 >= 0 )
-		{
-			AudioPluginModuleStop();
-			g_pCurrAudioPlugin->inBuffer.value = --moduleSongNumber;
-			return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->Set() : Supexec( g_pCurrAudioPlugin->Set );
-		}
-#else
-		return MXP_OK;
-#endif
-	}
-
-	return MXP_UNIMPLEMENTED;
 }
 
 BOOL AudioPluginLockResources( void )
@@ -614,23 +583,6 @@ void AudioPluginGetBaseInfo( struct SAudioPlugin* plugin,
 }
 
 /*
- * Get playtime of current module
- */
-unsigned long AudioPluginGetPlayTime( void )
-{
-	if( g_pCurrAudioPlugin != NULL )
-	{
-#ifndef DISABLE_PLUGINS
-		return AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? g_pCurrAudioPlugin->PlayTime() : Supexec( g_pCurrAudioPlugin->PlayTime );
-#else
-		return 300;
-#endif
-	}
-
-	return 0;
-}
-
-/*
  * Get parameter pointer for the given name
  */
 struct SParameter* AudioPluginGetParam( struct SAudioPlugin* plugin, char* name )
@@ -647,37 +599,4 @@ struct SParameter* AudioPluginGetParam( struct SAudioPlugin* plugin, char* name 
 	}
 
 	return NULL;
-}
-
-/*
- * Set given parameter to value on input
- */
-int AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long value )
-{
-#ifndef DISABLE_PLUGINS
-	int ret;
-
-	plugin->inBuffer.value = value;
-	ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? param->Set() : Supexec( param->Set );
-	AudioPluginGetInfoLine( plugin->pSParameter );	/* start from the first parameter */
-	return ret;
-#else
-	return MXP_OK;
-#endif
-}
-
-/*
- * Get given parameter's value
- */
-int AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long* value )
-{
-#ifndef DISABLE_PLUGINS
-	int ret;
-
-	ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? param->Get() : Supexec( param->Get );
-	*value = plugin->inBuffer.value;
-	return ret;
-#else
-	return MXP_ERROR;
-#endif
 }

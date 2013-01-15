@@ -212,12 +212,21 @@ int asap_register_module( void )
 int asap_get_playtime( void )
 {
 	int time = ASAPInfo_GetDuration( info, moduleSong );
-	return time != -1 ? time / 1000 : 300;	// return value is in seconds
+	if( time == -1 )
+	{
+		return MXP_ERROR;
+	}
+	else
+	{
+		asap_parameter.value = time / 1000;	// return value is in seconds
+		return MXP_OK;
+	}
 }
 
 int asap_get_songs( void )
 {
-	return ASAPInfo_GetSongs( info );
+	asap_parameter.value = ASAPInfo_GetSongs( info );
+	return MXP_OK;
 }
 
 int asap_init( void )
@@ -308,7 +317,7 @@ int asap_set( void )
 	return MXP_OK;
 }
 
-void asap_feed( void )
+int asap_feed( void )
 {
 	if( loadNewSample )
 	{
@@ -316,6 +325,8 @@ void asap_feed( void )
 
 		loadNewSample = 0;
 	}
+
+	return MXP_OK;
 }
 
 int asap_unset( void )

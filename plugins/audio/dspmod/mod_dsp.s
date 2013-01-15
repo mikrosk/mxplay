@@ -43,10 +43,8 @@ dspmod_register_module:
 
 dspmod_get_playtime:
 		;bsr.w	dspmod_calc_playtime		; result in d0.l
-		move.l	dspmod_custom_playtime,d0
-		bne.b	.ok
-		move.l	#2*60,d0
-.ok:		move.l	d0,dspmod_header+MXP_PLUGIN_PARAMETER	; for calling from settings structure
+		move.l	dspmod_custom_playtime,dspmod_header+MXP_PLUGIN_PARAMETER	; for calling from settings structure
+		moveq	#MXP_OK,d0
 		rts
 
 dspmod_set_playtime:
@@ -179,13 +177,8 @@ dspmod_extensions_mod_name:
 		dc.b	"4/6/8 channel MODs",0
 
 		even
-
-; ------------------------------------------------------
-		SECTION	BSS
-; ------------------------------------------------------
-
 dspmod_custom_playtime:
-		ds.l	1
+		dc.l	2*60
 
 ; ------------------------------------------------------
 		SECTION	TEXT

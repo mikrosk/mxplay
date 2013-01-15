@@ -17,16 +17,17 @@ FLAGS			= ${prefix}flags -l -r -a -S
 UPX			= upx
 MAKE			= make
 
-DEBUG_FLAGS		= -g -DDEBUG
-OPT_FLAGS		= -O2 -fomit-frame-pointer
+DEBUG_FLAGS		= -g -DDEBUG -Wno-shadow
+OPT_FLAGS		= -O2 -fomit-frame-pointer -g
 CFLAGS			= -Wall -Wshadow $(CPU_FLAGS)
+ASFLAGS			= $(CPU_FLAGS)
 
-SOBJS			= dsp_fix.S
+SOBJS			= dsp_fix.S asm_regs.S
 COBJS			= main.c audio_plugins.c dialogs.c panel.c filelist.c misc.c av.c \
 			  dd.c playlist.c file_select.c plugin_info.c timer.c module_info.c \
 			  info_dialogs.c debug.c
 
-OBJS			= $(COBJS:.c=.o) $(SOBJS:.s=.o)
+OBJS			= $(COBJS:.c=.o) $(SOBJS:.S=.o)
 
 LIBS			= -lcflib -lgem
 CPU_FLAGS		= -m68020-60		# use 020+ and FPU code

@@ -635,7 +635,10 @@ int main( int argc, char* argv[] )
 			}
 		}
 
-		AudioPluginModuleFeed();
+		if( g_pCurrAudioPlugin != NULL )
+		{
+			AudioPluginModuleFeed( g_pCurrAudioPlugin );
+		}
 	}
 
 	if( g_playlistNotActual == TRUE )

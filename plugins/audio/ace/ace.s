@@ -79,10 +79,8 @@ ace_check_module:
 
 ;---Get play time:-----------------------------------
 ace_get_playtime:
-		move.l	ace_custom_playtime,d0
-		bne.b	.ok
-		move.l	#3*60,d0				; 03'00"
-.ok:		move.l	d0,ace_header+MXP_PLUGIN_PARAMETER	; for calling from settings structure
+		move.l	ace_custom_playtime,ace_header+MXP_PLUGIN_PARAMETER	; for calling from settings structure
+		moveq	#MXP_OK,d0
 		rts
 
 
@@ -189,6 +187,7 @@ ace_get_module_title:
 		clr.b	(a1)
 
 		move.l	a2,ace_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 
@@ -204,6 +203,7 @@ ace_get_module_artist:
 		clr.b	(a1)
 
 		move.l	a2,ace_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 
@@ -323,15 +323,13 @@ ace_formats_AM01_name:
 		dc.b	"AM (ACE Tracker)",0
 
 		even
-
+ace_custom_playtime:
+		dc.l	3*60
 
 ;====================================================
 		section	bss
 stop_flag	ds.l	1
 filebuffer	ds.l	1
-
-ace_custom_playtime:
-		ds.l	1
 
 ;ace_replayer_version:
 ;		ds.b	5

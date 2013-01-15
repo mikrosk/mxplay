@@ -255,7 +255,8 @@ mp2_get_playtime:
 			move.l	mp2_bitrate,d2
 		mulu.w	#125,d2
 		divu.w	d2,d1
-		move.w	d1,d0
+		move.w	d1,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 
@@ -328,6 +329,7 @@ mp2_id3v2_get_module_id3v2:
 		bne.s	.end
 		lea.l	mp2_module_yes,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_title:
@@ -336,6 +338,7 @@ mp2_id3v2_get_module_title:
 		bne.s	.end
 		lea.l	id3v2_TIT2,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_artist:
@@ -344,6 +347,7 @@ mp2_id3v2_get_module_artist:
 		bne.s	.end
 		lea.l	id3v2_TPE1,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_album:
@@ -352,6 +356,7 @@ mp2_id3v2_get_module_album:
 		bne.s	.end
 		lea.l	id3v2_TALB,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_year:
@@ -360,6 +365,7 @@ mp2_id3v2_get_module_year:
 		bne.s	.end
 		lea.l	id3v2_TYER,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_comment:
@@ -369,6 +375,7 @@ mp2_id3v2_get_module_comment:
 		lea.l	id3v2_COMM,a2
 		adda.l	#4,a2			;skip 1+3 = Text encoding + Language
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_composer:
@@ -377,6 +384,7 @@ mp2_id3v2_get_module_composer:
 		bne.s	.end
 		lea.l	id3v2_TCOM,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_oriartist:
@@ -385,6 +393,7 @@ mp2_id3v2_get_module_oriartist:
 		bne.s	.end
 		lea.l	id3v2_TOPE,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_copyright:
@@ -393,6 +402,7 @@ mp2_id3v2_get_module_copyright:
 		bne.s	.end
 		lea.l	id3v2_TCOP,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_url:
@@ -402,6 +412,7 @@ mp2_id3v2_get_module_url:
 		lea.l	id3v2_WXXX,a2
 		adda.l	#1,a2			;skip Text encoding
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_encodedby:
@@ -410,6 +421,7 @@ mp2_id3v2_get_module_encodedby:
 		bne.s	.end
 		lea.l	id3v2_TENC,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v2_get_module_track:
@@ -418,6 +430,7 @@ mp2_id3v2_get_module_track:
 		bne.s	.end
 		lea.l	id3v2_TRCK,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 
@@ -427,6 +440,7 @@ mp2_id3v1_get_module_id3v1:
 		bne.s	.end
 		lea.l	mp2_module_yes,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v1_get_module_title:
@@ -435,6 +449,7 @@ mp2_id3v1_get_module_title:
 		bne.s	.end
 		lea.l	id3v1_title,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v1_get_module_artist:
@@ -443,6 +458,7 @@ mp2_id3v1_get_module_artist:
 		bne.s	.end
 		lea.l	id3v1_artist,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v1_get_module_album:
@@ -451,6 +467,7 @@ mp2_id3v1_get_module_album:
 		bne.s	.end
 		lea.l	id3v1_album,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v1_get_module_year:
@@ -459,6 +476,7 @@ mp2_id3v1_get_module_year:
 		bne.s	.end
 		lea.l	id3v1_year,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v1_get_module_comment:
@@ -467,6 +485,7 @@ mp2_id3v1_get_module_comment:
 		bne.s	.end
 		lea.l	id3v1_comment,a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 mp2_id3v1_get_module_track:
@@ -480,12 +499,14 @@ mp2_id3v1_get_module_track:
 		lea.l	id3v1_track,a1
 		movea.l	(a1),a2
 .end		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 
 mp2_get_module_file:
 		lea.l	mp2_module_filename,a2
 		move.l	a2,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 
@@ -720,9 +741,11 @@ mp2_get_extclock:
 		beq.s	.off
 
 .on:		move.l	#0,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 .off:		move.l	#1,mp2_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
 		rts
 
 
@@ -732,10 +755,12 @@ mp2_set_extclock:
 
 .set:		move.l	#1,mp2_flg_extclock
 		move.l	#44100,mp2player+MP2_EXTERNAL
+		moveq	#MXP_OK,d0
 		rts
 
 .unset:		clr.l	mp2_flg_extclock
 		move.l	#0,mp2player+MP2_EXTERNAL
+		moveq	#MXP_OK,d0
 		rts
 
 

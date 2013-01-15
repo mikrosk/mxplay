@@ -67,7 +67,7 @@ mxp_struct_extensions_name:
 MXP_PLUGIN_ID		EQU	0*4
 
 ; Name:    Parameter for input.
-; Purpose: Here you have to write value/pointer for the routine you call.
+; Purpose: Here you write a value/pointer for the routine you call.
 ; Input:   -
 ; Output:  -
 MXP_PLUGIN_PARAMETER	EQU	1*4
@@ -75,7 +75,7 @@ MXP_PLUGIN_PARAMETER	EQU	1*4
 ; Name:	   Module registration & validation.
 ; Purpose: Let the plugin know where can find music module.
 ; Input:   Music module address and length (pointer to an 8-byte couple).
-; Output:  Return code; if MXP_OK plugin is able to replay given module else MXP_ERROR.
+; Output:  -
 MXP_PLUGIN_REGISTER_MOD	EQU	2*4
 
 ; Name:	   Get module play time.
@@ -93,13 +93,13 @@ MXP_PLUGIN_SONGS	EQU	4*4
 ; Name:	   Plugin initialization.
 ; Purpose: Alloc buffers, generate tables, etc.
 ; Input:   -
-; Output:  Return code.
+; Output:  -
 MXP_PLUGIN_INIT		EQU	5*4
 
 ; Name:    Plugin set.
 ; Purpose: Set up hw registers & play music.
 ; Input:   Number of song, can be ignored if n/a.
-; Output:  Return code.
+; Output:  -
 MXP_PLUGIN_SET		EQU	6*4
 
 ; Name:    Plugin feed.
@@ -111,25 +111,25 @@ MXP_PLUGIN_FEED		EQU	7*4
 ; Name:    Plugin unset.
 ; Purpose: Stop music & restore registers
 ; Input:   -
-; Output:  Return code.
+; Output:  -
 MXP_PLUGIN_UNSET	EQU	8*4
 
 ; Name:    Plugin deinitialization.
 ; Purpose: Free buffers.
 ; Input:   -
-; Output:  Return code.
+; Output:  -
 MXP_PLUGIN_DEINIT	EQU	9*4
 
 ; Name:    Music pause.
 ; Purpose: Pause music.
 ; Input:   0: unpause, 1: pause
-; Output:  Return code.
+; Output:  -
 MXP_PLUGIN_MUSIC_PAUSE	EQU	10*4
 
 ; Name:    Music mute.
 ; Purpose: Mute music.
 ; Input:   0: unmute, 1: mute
-; Output:  Return code.
+; Output:  -
 MXP_PLUGIN_MUSIC_MUTE	EQU	11*4
 
 ; Name:    Plugin information.

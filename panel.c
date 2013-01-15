@@ -278,10 +278,10 @@ void PanelPlay( void )
 		{
 			if( AudioPluginLockResources() == TRUE )
 			{
-				if( ( ret = AudioPluginModulePlay() ) == MXP_OK )
+				if( ( ret = AudioPluginModulePlay( g_pCurrAudioPlugin ) ) == MXP_OK )
 				{
 					g_modulePlaying = TRUE;
-					TimerReset( AudioPluginGetPlayTime() );	/* get playtime */
+					TimerReset( AudioPluginGetPlayTime( g_pCurrAudioPlugin ) );	/* get playtime */
 				}
 				else
 				{
@@ -313,7 +313,7 @@ void PanelStop( void )
 
 	if( g_modulePlaying == TRUE )
 	{
-		if( ( ret = AudioPluginModuleStop() ) != MXP_OK )
+		if( ( ret = AudioPluginModuleStop(g_pCurrAudioPlugin ) ) != MXP_OK )
 		{
 			ShowPluginErrorDialog( ret );
 		}
@@ -329,7 +329,7 @@ void PanelPause( void )
 {
 	if( g_modulePlaying == TRUE )
 	{
-		if( AudioPluginModulePause( !g_modulePaused ) == MXP_OK )
+		if( AudioPluginModulePause( g_pCurrAudioPlugin, !g_modulePaused ) == MXP_OK )
 		{
 			g_modulePaused = !g_modulePaused;
 		}
@@ -345,13 +345,13 @@ void PanelNextSubSong( void )
 	{
 		PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_FWD );
 
-		if( AudioPluginModuleNextSubSong() != MXP_OK )
+		if( AudioPluginModuleNextSubSong( g_pCurrAudioPlugin ) != MXP_OK )
 		{
 			PanelStop();
 		}
 		else
 		{
-			TimerReset( AudioPluginGetPlayTime() );
+			TimerReset( AudioPluginGetPlayTime(g_pCurrAudioPlugin ) );
 			AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
 			ModuleInfoUpdate();
 			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
@@ -367,13 +367,13 @@ void PanelPrevSubSong( void )
 	{
 		PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_RWD );
 
-		if( AudioPluginModulePrevSubSong() != MXP_OK )
+		if( AudioPluginModulePrevSubSong( g_pCurrAudioPlugin ) != MXP_OK )
 		{
 			PanelStop();
 		}
 		else
 		{
-			TimerReset( AudioPluginGetPlayTime() );
+			TimerReset( AudioPluginGetPlayTime( g_pCurrAudioPlugin ) );
 			AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
 			ModuleInfoUpdate();
 			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
@@ -491,9 +491,12 @@ void PanelPlayList( void )
 
 void PanelMute( void )
 {
-	if( AudioPluginModuleMute( !g_mute ) == MXP_OK )
+	if( g_modulePlaying == TRUE )
 	{
-		g_mute = !g_mute;
+		if( AudioPluginModuleMute( g_pCurrAudioPlugin, !g_mute ) == MXP_OK )
+		{
+			g_mute = !g_mute;
+		}
 	}
 
 	g_mute ? SelectObject( g_winDialogs[WD_PANEL], PANEL_MUTE )

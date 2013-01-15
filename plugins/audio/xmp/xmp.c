@@ -244,7 +244,8 @@ int xmp_get_playtime( void )
 {
 	struct xmp_frame_info fi;
 	xmp_get_frame_info( c, &fi );
-	return fi.total_time / 1000;	// return value is in seconds
+	xmp_parameter.value = fi.total_time / 1000;	// return value is in seconds
+	return MXP_OK;
 }
 
 int xmp_init( void )
@@ -328,7 +329,7 @@ int xmp_set( void )
 	return MXP_OK;
 }
 
-void xmp_feed( void )
+int xmp_feed( void )
 {
 	if( loadNewSample )
 	{
@@ -336,6 +337,8 @@ void xmp_feed( void )
 
 		loadNewSample = 0;
 	}
+
+	return MXP_OK;
 }
 
 int xmp_unset( void )
