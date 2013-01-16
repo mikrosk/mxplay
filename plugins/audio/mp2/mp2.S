@@ -5,14 +5,11 @@
 
 		opt	d-
 		comment	HEAD=%0111			;MinimalHeap,MallocInTT-RAM,LoadInTT-RAM,Fastload
-		opt	p=68030
-		OUTPUT	.MXP
 
-		include	"..\mxplay.inc"
+		include	"../mxplay.inc"
 
 
 ;====================================================
-		section text
 
 ;---Plugin header:-----------------------------------
 mp2_header:	dc.l	"MXP2"
@@ -1095,9 +1092,3 @@ id3v2_TOPE	ds.b	256+1	;Orig.Artist
 id3v2_TCOP	ds.b	256+1	;Copyright
 id3v2_WXXX	ds.b	256+1	;URL
 id3v2_TENC	ds.b	256+1	;Encoded by
-
-		even
-
-
-;====================================================
-		section text
