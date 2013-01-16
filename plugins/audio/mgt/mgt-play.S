@@ -14,7 +14,7 @@
 ***********										***********
 ***********************************************************************
 
-CPU_Time		equ		1		; Display CPU-Time taken by the Replay
+CPU_Time		equ		0		; Display CPU-Time taken by the Replay
 DSP_Buffer	equ		2048		; DSP Sample Buffer Size
 
 		XDef		_MGTK_Init_Module_Samples,_MGTK_Init_DSP

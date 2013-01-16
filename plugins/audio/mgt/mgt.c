@@ -1,156 +1,112 @@
-// kate: indent-mode C Style; tab-width 5; indent-width 5;
-
-/************************************************************/
-/*												*/
-/*		De l'utilisation du Replay DSP MegaTracker		*/
-/*												*/
-/*		Of Use of the MegaTracker DSP Replay			*/
-/*												*/
-/*		Par Simplet / FATAL DESIGN					*/
-/*												*/
-/************************************************************/
-
 #include <mint/osbind.h>
 #include <mint/ostruct.h>
+#include <mint/falcon.h>
 #include <stdio.h>
 
-#include "unpack.h"
+#include "../plugin.h"
 #include "mgt-play.h"
 
 #define MAXSIZE 1200000
 
-int main( int argc, char* argv[] )
+extern union UParameterBuffer mgt_parameter;
+
+static char* moduleBuffer;
+static size_t moduleLength;
+
+struct SInfo			mgt_info =
 {
-	char*	adr;
-	long		length;
- 	int		dummy,handle,freq_div = 1;
- 	char		tch;
-	_DTA		*buf;
-	char*	packers[] =
-	{"Unpacked...","Atomik 3.5...",
-	"Speedpacker 3...","Pack Ice 2.4...",
-	"Powerpacker 2...","Sentry 2.0..."};
+	"MiKRO / Mystic Bytes",
+	"1.0",
+	"DSP-Replay MegaTracker",
+	"Simplet / Fatal Design",
+	"1.1 16/09/1995",
+	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
+};
 
-	Cconws("MegaTracker¿ v1.1 DSP-Replay Routine by Simplet / FATAL DESIGN\r\n");
-	Cconws("--------------------------------------------------------------\r\n\n");
+struct SExtension		mgt_extensions[] =
+{
+	{ "MGT", "MegaTracker module" },
+	{ NULL, NULL }
+};
 
-	Cconws("Allocating Memory...");
+struct SParameter		mgt_settings[] =
+{
+	//{ "Song name", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongName },
+	//{ "Channels", MXP_PAR_TYPE_INT|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getChannels },
+	{ NULL, 0, NULL, NULL }
+};
 
-	adr=(char*)Mxalloc(MAXSIZE, MX_STRAM);
-	if (adr==NULL)
-		{
-		Cconws("Error!\r\n");
-		Cconws("Not enough Memory!\r\n");
-		Cconws("Press any key...");
-		Crawcin();return 1;
-		}
+int mgt_register_module( void )
+{
+	moduleBuffer = (char*)Mxalloc( MAXSIZE, MX_STRAM );
+	if( moduleBuffer == NULL )
+	{
+		return MXP_ERROR;
+	}
 
-	Cconws("Ok!\r\nLoading Module...");
+	FILE *fp = fopen( mgt_parameter.pModule->p, "rb" );
+	if( fp == NULL )
+	{
+		return MXP_ERROR;
+	}
 
-	dummy=Fsfirst(argv[1],0);
-	buf=Fgetdta();
-	length=buf->dta_size;
+	moduleLength = fread( moduleBuffer, 1, MAXSIZE, fp );
+	fclose( fp );
 
-	if ((dummy!=0) || (length > MAXSIZE))
-		{
-		if (dummy!=0) Cconws("Disk Error!\r\n");
-		else	Cconws("Not enough Memory to load!\r\n");
-		Cconws("Press any key...");
-		Crawcin();return 1;
-		}
+	if( MGTK_Init_Module_Samples( moduleBuffer, moduleBuffer+MAXSIZE ) != 0 )
+	{
+		/*
+		 *	case -1:	Cconws("This is not a MegaTracker module!\r\n");break;
+		 *	case -2:	Cconws("Not enough workspace to depack tracks!\r\n");break;
+		 *	case -3:	Cconws("Not enough workspace to prepare samples!\r\n");break;
+		 *	case -4:	Cconws("No samples in this module!\r\n");break;
+		 */
+		Mfree( moduleBuffer );
+		moduleBuffer = NULL;
+		return MXP_ERROR;
+	}
 
-	handle=Fopen(argv[1],FO_READ);
+ 	return MXP_OK;
+}
 
-  	dummy=Unpack_Detect_Disk(handle,MAXSIZE);
-	if (dummy<0)
-		{
-		Fclose(handle);
-		switch (dummy)
-			{
-			case -1:	Cconws("Unavailable packer!\r\n");break;
-			case -2:	Cconws("Not enough Memory to unpack!\r\n");break;
-			}
-			Cconws("Press any key...");
-			Crawcin();return 1;
-		}
-	else	{
-		Fread(handle,length,adr);
-		Fread(handle,MAXSIZE,adr);
-		Fclose(handle);
-		if (dummy==0) Cconws("Unpacked!");
-		else {
-			Cconws("Ok!\r\nUnpacking ");
-			Cconws(packers[dummy]);
-			Unpack_All(adr,length);
-			Cconws("Ok!");
-			}
-		}
+int mgt_get_playtime( void )
+{
+	mgt_parameter.value = 5 * 60;	// TODO
+	return MXP_OK;
+}
 
-	Cconws("\r\nInitialising Module and Samples...");
+int mgt_init( void )
+{
+	return MXP_OK;
+}
 
-	dummy=MGTK_Init_Module_Samples(adr,adr+MAXSIZE);
-	if (dummy!=0)
-		{
-		Cconws("Error!\r\n");
-		switch (dummy)
-			{
-			case -1:	Cconws("This is not a MegaTracker module!\r\n");break;
-			case -2:	Cconws("Not enough workspace to depack tracks!\r\n");break;
-			case -3:	Cconws("Not enough workspace to prepare samples!\r\n");break;
-			case -4:	Cconws("No samples in this module!\r\n");break;
-			}
-		Cconws("Press any key...");
-		Crawcin();return 1;
-		}
-
-	Cconws("Ok!\r\nInitialising DSP Program...");
-
-	dummy=MGTK_Init_DSP();
-	if (dummy!=0)
-		{
-		Cconws("Error!\r\n");
-		Cconws("DSP Program couldn't be loaded!\r\n");
-		Cconws("Press any key...");
-		Crawcin();return 1;
-		}
-
-	Cconws("Ok!\r\n\n");
+int mgt_set( void )
+{
+	if( MGTK_Init_DSP() != 0 )
+	{
+		return MXP_ERROR;
+	}
 
 	MGTK_Save_Sound();
 	MGTK_Init_Sound();
-	MGTK_Set_Replay_Frequency(freq_div);
-	MGTK_Restart_Loop=-1;
-	MGTK_Play_Music(0);
+	MGTK_Set_Replay_Frequency( 1 );	// 49170 Hz
+	MGTK_Restart_Loop= -1;	// no loop
+	MGTK_Play_Music( 0 );	// song 0
 
-	Cconws("You can use the following keys :\r\n");
-	Cconws("  - or + for previous or next music\r\n");
-	Cconws("  ( or ) for previous or next music position\r\n");
-	Cconws("  / or * for previous or next replay frequency\r\n");
-	Cconws("  L for play, P for pause, S for stop\r\n");
-	Cconws("  Space to quit\r\n");
+	return MXP_OK;
+}
 
-	do
-		{
-		tch=Crawcin();
-		switch ( tch-32*((97<=tch) && (tch<=122)) )
-			{
-			case	'-':	MGTK_Previous_Music();break;
-			case '+':	MGTK_Next_Music();break;
-			case	'(':	MGTK_Previous_Position();break;
-			case ')':	MGTK_Next_Position();break;
-			case '/':	if (freq_div>1)
-					MGTK_Set_Replay_Frequency(--freq_div);break;
-			case '*':	if (freq_div<5)
-					MGTK_Set_Replay_Frequency(++freq_div);break;
-			case	'L':	MGTK_Play_Music(0);break;
-			case	'P':	MGTK_Pause_Music();break;
-			case	'S':	MGTK_Stop_Music();break;
-			}
-		}
-	while (tch!=' ');
-
+int mgt_unset( void )
+{
 	MGTK_Stop_Music();
 	MGTK_Restore_Sound();
+	Mfree( moduleBuffer );
+	moduleBuffer = NULL;
 
-	return 0;
+	return MXP_OK;
+}
+
+int mgt_deinit( void )
+{
+	return MXP_OK;
 }
