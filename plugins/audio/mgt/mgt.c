@@ -161,6 +161,19 @@ int mgt_set( void )
 	return MXP_OK;
 }
 
+int mgt_pause( void )
+{
+	static int paused;
+
+	if( paused != (int)mgt_parameter.value )
+	{
+		MGTK_Pause_Music();
+		paused = !paused;
+	}
+
+	return MXP_OK;
+}
+
 int mgt_unset( void )
 {
 	MGTK_Stop_Music();

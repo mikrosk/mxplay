@@ -14,7 +14,7 @@
 		;XREF	_mgt_feed
 		XREF	_mgt_unset
 		XREF	_mgt_deinit
-		;XREF	_mgt_pause
+		XREF	_mgt_pause
 		;XREF	_mgt_mute
 
 		XREF	_mgt_info
@@ -36,7 +36,7 @@ _mgt_parameter:	ds.l	1
 		dc.l	0			; _mgt_feed
 		dc.l	_mgt_unset
 		dc.l	_mgt_deinit
-		dc.l	0			; _mgt_pause
+		dc.l	_mgt_pause
 		dc.l	0			; _mgt_mute
 		dc.l	_mgt_info
 		dc.l	_mgt_extensions
