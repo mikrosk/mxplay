@@ -1,15 +1,9 @@
 ; High-level manager for DSPMOD player
 
-		OPT	p=68030				; 68030 code allowed
 		OPT	D-
 		COMMENT HEAD=%101			; fastload on/loadalt off/mallocalt on
-		OUTPUT	.MXP
 
-		include	"..\mxplay.inc"
-
-; ------------------------------------------------------
-		SECTION	TEXT
-; ------------------------------------------------------
+		include	"../mxplay.inc"
 
 ; Plugin header
 
@@ -83,6 +77,8 @@ dspmod_deinit:	pea	dma_pointer			; Mfree()
 
 		moveq	#MXP_OK,d0
 		rts
+
+		include	"dspmod.s"
 
 ; ------------------------------------------------------
 		SECTION	DATA
@@ -159,8 +155,144 @@ dspmod_extensions_mod_name:
 
 		even
 
-; ------------------------------------------------------
-		SECTION	TEXT
-; ------------------------------------------------------
+dspmod_voltab4:
+		dc.w $7fff,$7fff,$7fff,$7fff
+		dc.w 0,0,0,0
+		even
 
-		include	"dspmod.s"
+dspmod_voltab8:
+		dc.w $3fff,$3fff,$3fff,$3fff
+		dc.w $3fff,$3fff,$3fff,$3fff
+		even
+
+dspmod_formats:	dc.l	dspmod_formats_mk1
+		dc.l	dspmod_formats_mk1_name
+
+		dc.l	dspmod_formats_mk2
+		dc.l	dspmod_formats_mk2_name
+
+		dc.l	dspmod_formats_mk3
+		dc.l	dspmod_formats_mk3_name
+
+		dc.l	dspmod_formats_flt4
+		dc.l	dspmod_formats_flt4_name
+
+		dc.l	dspmod_formats_rasp
+		dc.l	dspmod_formats_rasp_name
+
+		dc.l	dspmod_formats_fa04
+		dc.l	dspmod_formats_fa04_name
+
+		dc.l	dspmod_formats_6chn
+		dc.l	dspmod_formats_6chn_name
+
+		dc.l	dspmod_formats_cd61
+		dc.l	dspmod_formats_cd61_name
+
+		dc.l	dspmod_formats_06ch
+		dc.l	dspmod_formats_06ch_name
+
+		dc.l	dspmod_formats_fa06
+		dc.l	dspmod_formats_fa06_name
+
+		dc.l	dspmod_formats_8chn
+		dc.l	dspmod_formats_8chn_name
+
+		dc.l	dspmod_formats_cd81
+		dc.l	dspmod_formats_cd81_name
+
+		dc.l	dspmod_formats_flt8
+		dc.l	dspmod_formats_flt8_name
+
+		dc.l	dspmod_formats_08ch
+		dc.l	dspmod_formats_08ch_name
+
+		dc.l	dspmod_formats_octa
+		dc.l	dspmod_formats_octa_name
+
+		dc.l	dspmod_formats_fa08
+		dc.l	dspmod_formats_fa08_name
+
+		dc.l	0
+
+dspmod_formats_mk1:
+		dc.b	"M.K.",0
+dspmod_formats_mk1_name:
+		dc.b	"MOD (NoiseTracker or compatible)",0
+dspmod_formats_mk2:
+		dc.b	"M!K!",0
+dspmod_formats_mk2_name:
+		dc.b	"MOD (NoiseTracker or compatible)",0
+dspmod_formats_mk3:
+		dc.b	"M&K&",0
+dspmod_formats_mk3_name:
+		dc.b	"MOD (NoiseTracker or compatible)",0
+dspmod_formats_flt4:
+		dc.b	"FLT4",0
+dspmod_formats_flt4_name:
+		dc.b	"MOD (StarTrekker)",0
+dspmod_formats_rasp:
+		dc.b	"RASP",0
+dspmod_formats_rasp_name:
+		dc.b	"MOD (StarTrekker)",0
+dspmod_formats_fa04:
+		dc.b	"FA04",0
+dspmod_formats_fa04_name:
+		dc.b	"MOD (Digital Tracker [old version])",0
+dspmod_formats_6chn:
+		dc.b	"6CHN",0
+dspmod_formats_6chn_name:
+		dc.b	"MOD (FastTracker)",0
+dspmod_formats_cd61:
+		dc.b	"CD61",0
+dspmod_formats_cd61_name:
+		dc.b	"MOD (Octalyser STe or compatible)",0
+dspmod_formats_06ch:
+		dc.b	"06CH",0
+dspmod_formats_06ch_name:
+		dc.b	"MOD (FastTracker or compatible)",0
+dspmod_formats_fa06:
+		dc.b	"FA06",0
+dspmod_formats_fa06_name:
+		dc.b	"MOD (Digital Tracker [old version])",0
+dspmod_formats_8chn:
+		dc.b	"8CHN",0
+dspmod_formats_8chn_name:
+		dc.b	"MOD (Fast Tracker or compatible)",0
+dspmod_formats_cd81:
+		dc.b	"CD81",0
+dspmod_formats_cd81_name:
+		dc.b	"MOD (Octalyser STe or compatible)",0
+dspmod_formats_flt8:
+		dc.b	"FLT8",0
+dspmod_formats_flt8_name:
+		dc.b	"MOD (StarTrekker)",0
+dspmod_formats_08ch:
+		dc.b	"08CH",0
+dspmod_formats_08ch_name:
+		dc.b	"MOD (FastTracker or compatible)",0
+dspmod_formats_octa:
+		dc.b	"OCTA",0
+dspmod_formats_octa_name:
+		dc.b	"MOD (Octalyser STe [old version])",0
+dspmod_formats_fa08:
+		dc.b	"FA08",0
+dspmod_formats_fa08_name:
+		dc.b	"MOD (Digital Tracker [old version])",0
+		even
+
+dspmod_player:
+		incbin 'dspmod.tce'
+
+		section	bss
+
+		even
+
+saveaudiobuf:	ds.w	10
+dma_pointer:	ds.l	1
+dspmod_buffer:	ds.l	1
+dspmod_length:	ds.l	1
+dspmod_version:	ds.l	1
+dspmod_channels:ds.b	1+1
+dspmod_module_name:
+		ds.b	20+1
