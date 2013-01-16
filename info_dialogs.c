@@ -73,7 +73,13 @@ void ConvertMxpParamTypes( struct SAudioPlugin* plugin, struct SParameter* param
 {
 	long	value;
 
-	AudioPluginGet( plugin, param, &value );	/* call param->Get() */
+	int ret = AudioPluginGet( plugin, param, &value );	/* call param->Get() */
+	if( ret != MXP_OK )
+	{
+		// set a default value
+		sprintf( text, "n/a" );
+		return;
+	}
 
 	switch( param->type & 0x7fff )
 	{
