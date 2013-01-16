@@ -77,6 +77,8 @@ ntk_extensions_ntk:
 ntk_extensions_ntk_name:
 		dc.b	"Nullos Tracker Module",0
 
+		even
+
 ; ----------------------------------------------
 		section bss
 ; ----------------------------------------------

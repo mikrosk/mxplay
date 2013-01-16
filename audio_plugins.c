@@ -143,6 +143,7 @@ static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module,
 
 static int AudioPluginInit( struct SAudioPlugin* plugin )
 {
+        g_pCurrAudioPlugin = plugin;	// LookForAudioPlugin hasn't been called yet
 	return AudioPluginCallFunction( plugin->Init );
 }
 
@@ -452,6 +453,8 @@ void LoadAudioPlugins( void )
 	}
 
 	closedir( pDirStream );
+	
+	g_pCurrAudioPlugin = NULL;	// none
 }
 
 BOOL AudioPluginLockResources( void )
