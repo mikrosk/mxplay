@@ -37,7 +37,7 @@ int main(void)
 
 	Cconws("Allocating Memory...");
 
-	adr=(char*)Malloc(MAXSIZE);
+	adr=(char*)Mxalloc(MAXSIZE, MX_STRAM);
 	if (adr==NULL)
 		{
 		Cconws("Error!\r\n");

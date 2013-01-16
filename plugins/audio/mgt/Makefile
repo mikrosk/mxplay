@@ -7,8 +7,8 @@ STRIP	= m68k-atari-mint-strip -s
 
 CPU	= -m68020-60
 ASFLAGS	= -Faout -m68030 -quiet
-CFLAGS	= $(CPU) -Wall -O2 -fomit-frame-pointer -std=c99 -mshort -Wno-unused-value
-LDFLAGS	= $(CPU) #-nostartfiles
+CFLAGS	= $(CPU) -Wall -O2 -fomit-frame-pointer -std=c99 -mshort -Wno-unused-value -g
+LDFLAGS	= $(CPU) -g -Wl,--traditional-format #-nostartfiles
 
 default: $(TARGET)
 
