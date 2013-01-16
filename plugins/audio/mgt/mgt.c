@@ -44,7 +44,7 @@ int main(void)
 		Cconws("Not enough Memory!\r\n");
 		Cconws("Press any key...");
 		Crawcin();return 1;
-		}*/
+		}
 
 	Cconws("Ok!\r\nLoading Module...");
 
