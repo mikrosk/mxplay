@@ -21,7 +21,7 @@ COMMENTS_COUNT	EQU	48
 aon_header:	dc.l	"MXP2"
 		ds.l	1
 		dc.l	aon_register_module
-		dc.l	aon_get_playtime
+		dc.l	0			; aon_get_playtime
 		dc.l	0			; aon_get_songs
 		dc.l	aon_initt
 		dc.l	aon_set
@@ -115,20 +115,6 @@ ok		moveq	#MXP_OK,d0
 		rts
 
 no_AON:		moveq	#MXP_ERROR,d0
-		rts
-
-
-;---Get play time:-----------------------------------
-aon_get_playtime:
-		move.l	aon_custom_playtime,aon_header+MXP_PLUGIN_PARAMETER	; for calling from settings structure
-		moveq	#MXP_OK,d0
-		rts
-
-
-;---Set play time:-----------------------------------
-aon_set_playtime:
-		move.l	aon_header+MXP_PLUGIN_PARAMETER,aon_custom_playtime
-		moveq	#MXP_OK,d0
 		rts
 
 
@@ -738,11 +724,6 @@ aon_set_info	dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_PLG_PARAM|MXP_FLG_M
 		dc.l	0
 		dc.l	aon_get_module_info
 
-		dc.l	aon_settings_playtime
-aon_set_getptim	dc.l	MXP_PAR_TYPE_INT|MXP_FLG_PLG_PARAM
-		dc.l	aon_set_playtime
-		dc.l	aon_get_playtime
-
 		dc.l	0
 
 		; Comment
@@ -1033,9 +1014,6 @@ aon_settings_module_comment:
 aon_settings_module_info:
 		dc.b	"Info",0
 
-aon_settings_playtime:
-		dc.b	"Playtime",0
-
 
 aon_info_plugin_author:
 		dc.b	"-XI-/Satantronic",0
@@ -1195,9 +1173,6 @@ aon_tags	dc.b	"NAME"
 		dc.b	0
 
 		even
-
-aon_custom_playtime:
-		dc.l	3*60
 
 ;====================================================
 		section	bss

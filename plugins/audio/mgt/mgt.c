@@ -134,12 +134,6 @@ int mgt_register_module( void )
  	return MXP_OK;
 }
 
-int mgt_get_playtime( void )
-{
-	mgt_parameter.value = 5 * 60;	// TODO
-	return MXP_OK;
-}
-
 int mgt_init( void )
 {
 	return MXP_OK;

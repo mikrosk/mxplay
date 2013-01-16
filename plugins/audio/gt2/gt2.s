@@ -13,7 +13,7 @@
 gt2_header:	dc.l	"MXP2"
 		ds.l	1
 		dc.l	gt2_register_module
-		dc.l	gt2_read_playtime
+		dc.l	0			; gt2_get_playtime
 		dc.l	0			; gt2_get_songs
 		dc.l	gt2_init
 		dc.l	gt2_start_playback
@@ -57,11 +57,6 @@ gt2_register_module:
 		rts
 
 .err:		moveq	#MXP_ERROR,d0
-		rts
-
-gt2_read_playtime:
-		move.l	gt2_custom_playtime,gt2_header+MXP_PLUGIN_PARAMETER
-		moveq	#MXP_OK,d0
 		rts
 
 gt2_init:	move.l	#98340,d0		; calculate new replayfreq data
@@ -198,16 +193,6 @@ gt2_settings_module_type_get:
 		moveq	#MXP_OK,d0
 		rts
 
-gt2_get_playtime:
-		move.l	gt2_custom_playtime,gt2_header+MXP_PLUGIN_PARAMETER
-		moveq	#MXP_OK,d0
-		rts
-
-gt2_set_playtime:
-		move.l	gt2_header+MXP_PLUGIN_PARAMETER,gt2_custom_playtime
-		moveq	#MXP_OK,d0
-		rts
-
 ; ----------------------------------------------
 		section data
 ; ----------------------------------------------
@@ -244,11 +229,6 @@ gt2_settings:	dc.l	gt2_settings_module_name
 		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM
 		dc.l	0
 		dc.l	gt2_settings_module_type_get
-
-		dc.l	gt2_settings_playtime
-		dc.l	MXP_PAR_TYPE_INT|MXP_FLG_PLG_PARAM
-		dc.l	gt2_set_playtime
-		dc.l	gt2_get_playtime
 
 		dc.l	0
 
@@ -288,12 +268,7 @@ gt2_format_0877:
 gt2_format_08xx:
 		dc.b	"GT2 v0.8xx",0
 
-gt2_settings_playtime:
-		dc.b	"Playtime",0
-
 		even
-gt2_custom_playtime:
-		dc.l	3*60			; 3 seconds
 
 ; ----------------------------------------------
 		section bss

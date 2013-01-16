@@ -43,6 +43,7 @@
 
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
 char						g_currModuleFilePath[MXP_PATH_MAX+1] = "-";
+time_t						g_defaultPlayTime = 3 * 60;	// 3 minutes by default
 
 static struct SAudioPlugin*	pSAudioPlugin[MAX_AUDIO_PLUGINS];
 static int					audioPluginsCount;
@@ -147,8 +148,7 @@ static int AudioPluginInit( struct SAudioPlugin* plugin )
 
 time_t AudioPluginGetPlayTime( struct SAudioPlugin* plugin )
 {
-	// TODO: maybe if a plugin can't tell, do it for him?
-	plugin->inBuffer.value = 5 * 60;	// 5 minutes by default
+	plugin->inBuffer.value = g_defaultPlayTime;
 	AudioPluginCallFunction( plugin->PlayTime );
 	return plugin->inBuffer.value;
 }

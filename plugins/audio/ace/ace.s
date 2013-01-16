@@ -17,7 +17,7 @@
 ace_header:	dc.l	"MXP2"
 		ds.l	1
 		dc.l	ace_register_module
-		dc.l	ace_get_playtime
+		dc.l	0			; ace_get_playtime
 		dc.l	0			; ace_get_songs
 		dc.l	ace_init
 		dc.l	ace_set
@@ -74,19 +74,6 @@ ace_register_module:
 ;---Check:-------------------------------------------
 ace_check_module:
 		bsr.w	ace_get_module_type		; d0 will contain return code
-		rts
-
-
-;---Get play time:-----------------------------------
-ace_get_playtime:
-		move.l	ace_custom_playtime,ace_header+MXP_PLUGIN_PARAMETER	; for calling from settings structure
-		moveq	#MXP_OK,d0
-		rts
-
-
-;---Set play time:-----------------------------------
-ace_set_playtime:
-		move.l	ace_header+MXP_PLUGIN_PARAMETER,ace_custom_playtime
 		rts
 
 
@@ -266,11 +253,6 @@ ace_set_artist	dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_PLG_PARAM|MXP_FLG
 		dc.l	0
 		dc.l	ace_get_module_artist
 
-		dc.l	ace_settings_playtime
-ace_set_getptim	dc.l	MXP_PAR_TYPE_INT|MXP_FLG_PLG_PARAM
-		dc.l	ace_set_playtime
-		dc.l	ace_get_playtime
-
 		dc.l	0
 
 
@@ -294,8 +276,6 @@ ace_settings_module_type:
 		dc.b	"Module type",0
 ace_settings_module_artist:
 		dc.b	"Artist",0
-ace_settings_playtime:
-		dc.b	"Playtime",0
 
 ace_info_plugin_author:
 		dc.b	"-XI-/Satantronic",0
@@ -323,8 +303,6 @@ ace_formats_AM01_name:
 		dc.b	"AM (ACE Tracker)",0
 
 		even
-ace_custom_playtime:
-		dc.l	3*60
 
 ;====================================================
 		section	bss

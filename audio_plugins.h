@@ -33,6 +33,7 @@
 
 extern struct SAudioPlugin*	g_pCurrAudioPlugin;
 extern char					g_currModuleFilePath[MXP_PATH_MAX+1];
+extern time_t				g_defaultPlayTime;
 
 extern void					LoadAudioPlugins( void );
 extern struct SAudioPlugin*	LookForAudioPlugin( char* path, char* name );

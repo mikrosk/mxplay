@@ -38,6 +38,7 @@
 #include "skins/skin.h"
 #include "file_select.h"
 #include "panel.h"
+#include "audio_plugins.h"
 
 char	g_homePath[MXP_PATH_MAX+1];
 char	g_rscName[MXP_FILENAME_MAX+1];
@@ -539,6 +540,10 @@ void ReadConfigFile( void )
 			{
 				fscanf( fs, "%d", &g_openPlayList );
 			}
+			else if( strcmp( temp, "defaultPlayTime" ) == 0 )
+			{
+				fscanf( fs, "%d", &g_defaultPlayTime );
+			}
 		}
 
 		fclose( fs );
@@ -621,6 +626,12 @@ void WriteConfigFile( void )
 	fprintf( fs, "%s", "openPlayList" );
 	fprintf( fs, "%s", "\t" );
 	fprintf( fs, "%d", ( g_winDialogs[WD_PLAYLIST]->mode & WD_OPEN ) ? TRUE : FALSE );
+	fprintf( fs, "%s", "\n" );
+
+	/* default playtime */
+	fprintf( fs, "%s", "defaultPlayTime" );
+	fprintf( fs, "%s", "\t" );
+	fprintf( fs, "%d", g_defaultPlayTime );
 	fprintf( fs, "%s", "\n" );
 
 	fclose( fs );

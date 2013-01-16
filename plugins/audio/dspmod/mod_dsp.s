@@ -16,7 +16,7 @@
 dspmod_header:	dc.l	"MXP2"
 		ds.l	1
 		dc.l	dspmod_register_module
-		dc.l	dspmod_get_playtime
+		dc.l	0			; dspmod_get_playtime
 		dc.l	0			; dspmod_get_songs
 		dc.l	dspmod_init
 		dc.l	dspmod_set
@@ -37,18 +37,6 @@ dspmod_register_module:
 		move.l	(a0),dspmod_length
 
 		bsr.w	dspmod_get_module_type		; d0 will contain return code
-		rts
-
-; Get play time
-
-dspmod_get_playtime:
-		;bsr.w	dspmod_calc_playtime		; result in d0.l
-		move.l	dspmod_custom_playtime,dspmod_header+MXP_PLUGIN_PARAMETER	; for calling from settings structure
-		moveq	#MXP_OK,d0
-		rts
-
-dspmod_set_playtime:
-		move.l	dspmod_header+MXP_PLUGIN_PARAMETER,dspmod_custom_playtime
 		rts
 
 ; Init
@@ -133,11 +121,6 @@ dspmod_settings:
 		dc.l	dspmod_set_surround
 		dc.l	dspmod_get_surround
 
-		dc.l	dspmod_settings_playtime
-		dc.l	MXP_PAR_TYPE_INT|MXP_FLG_PLG_PARAM
-		dc.l	dspmod_set_playtime
-		dc.l	dspmod_get_playtime
-
 		dc.l	0
 
 dspmod_extensions:
@@ -168,8 +151,6 @@ dspmod_settings_interpolation:
 		dc.b	"Interpolation",0
 dspmod_settings_surround:
 		dc.b	"Surround sound",0
-dspmod_settings_playtime:
-		dc.b	"Playtime",0
 
 dspmod_extensions_mod:
 		dc.b	"MOD",0
@@ -177,8 +158,6 @@ dspmod_extensions_mod_name:
 		dc.b	"4/6/8 channel MODs",0
 
 		even
-dspmod_custom_playtime:
-		dc.l	2*60
 
 ; ------------------------------------------------------
 		SECTION	TEXT

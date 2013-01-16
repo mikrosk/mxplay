@@ -7,7 +7,7 @@
 		XDEF	_mgt_parameter
 
 		XREF	_mgt_register_module
-		XREF	_mgt_get_playtime
+		;XREF	_mgt_get_playtime
 		;XREF	_mgt_get_songs
 		XREF	_mgt_init
 		XREF	_mgt_set
@@ -29,7 +29,7 @@
 		dc.l	"MXP2"
 _mgt_parameter:	ds.l	1
 		dc.l	_mgt_register_module
-		dc.l	_mgt_get_playtime
+		dc.l	0			; _mgt_get_playtime
 		dc.l	0			; _mgt_get_songs
 		dc.l	_mgt_init
 		dc.l	_mgt_set

@@ -20,7 +20,7 @@
 amigamod_header:dc.l	"MXP2"
 		ds.l	1
 		dc.l	amigamod_register_module
-		dc.l	amigamod_get_playtime
+		dc.l	0			; amigamod_get_playtime
 		dc.l	0			; amigamod_get_songs
 		dc.l	amigamod_init
 		dc.l	amigamod_set
@@ -75,18 +75,6 @@ amigamod_register_module:
 		rts
 
 .error:		moveq	#MXP_ERROR,d0
-		rts
-
-; Get play time
-
-amigamod_get_playtime:
-		move.l	amigamod_custom_playtime,amigamod_header+MXP_PLUGIN_PARAMETER	; for calling from settings structure
-		moveq	#MXP_OK,d0
-		rts
-
-amigamod_set_playtime:
-		move.l	amigamod_header+MXP_PLUGIN_PARAMETER,amigamod_custom_playtime
-		moveq	#MXP_OK,d0
 		rts
 
 ; Init
@@ -537,11 +525,6 @@ amigamod_settings:
 		dc.l	0
 		dc.l	amigamod_get_module_sample31
 
-		dc.l	amigamod_settings_playtime
-		dc.l	MXP_PAR_TYPE_INT|MXP_FLG_PLG_PARAM
-		dc.l	amigamod_set_playtime
-		dc.l	amigamod_get_playtime
-
 		dc.l	0
 
 amigamod_extensions:
@@ -629,9 +612,6 @@ amigamod_info_replay_author:
 		dc.b	"Simplet / Fatal Design",0
 amigamod_info_replay_version:
 		dc.b	"09/16/1995",0
-
-amigamod_settings_playtime:
-		dc.b	"Playtime",0
 
 amigamod_extensions_mod:
 		dc.b	"MOD",0
@@ -756,8 +736,6 @@ amigamod_formats_fa08:
 amigamod_formats_fa08_name:
 		dc.b	"MOD (Digital Tracker [old version])",0
 		even
-amigamod_custom_playtime:
-		dc.l	3*60
 
 ; ------------------------------------------------------
 		SECTION	BSS
