@@ -6,12 +6,10 @@
 		opt	d-
 		comment	HEAD=%0111			;MinimalHeap,MallocInTT-RAM,LoadInTT-RAM,Fastload
 		opt	p=68030
-		output	.MXP
 
-		include	"..\mxplay.inc"
+		include	"../mxplay.inc"
 
 ;====================================================
-		section text
 
 ;---Plugin header:-----------------------------------
 ace_header:	dc.l	"MXP2"
@@ -315,7 +313,3 @@ ace_module_title:
 		ds.b	21
 ace_module_composer:
 		ds.b	21
-
-
-;====================================================
-		section text
