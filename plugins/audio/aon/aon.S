@@ -51,7 +51,6 @@ start_tests:	;jsr	aon_test_param
 		and.l	d0,aon_set_channels
 		and.l	d0,aon_set_date
 		and.l	d0,aon_set_info
-		and.l	d0,aon_set_getptim
 
 		;ori.l	#MXP_FLG_INFOLINE,aon_set_file
 		ori.l	#MXP_FLG_INFOLINE,aon_set_type
@@ -72,7 +71,6 @@ start_tests:	;jsr	aon_test_param
 		and.l	d0,aon_set_channels
 		and.l	d0,aon_set_date
 		and.l	d0,aon_set_info
-		;and.l	d0,aon_set_getptim
 
 		;ori.l	#MXP_FLG_MOD_PARAM,aon_set_file
 		;ori.l	#MXP_FLG_MOD_PARAM,aon_set_type
@@ -81,7 +79,6 @@ start_tests:	;jsr	aon_test_param
 		;ori.l	#MXP_FLG_MOD_PARAM,aon_set_channels
 		;ori.l	#MXP_FLG_MOD_PARAM,aon_set_date
 		;ori.l	#MXP_FLG_MOD_PARAM,aon_set_info
-		ori.l	#MXP_FLG_MOD_PARAM,aon_set_getptim
 
 
 		move.l	#MXP_FLG_MOD_PARAM,d0
@@ -93,7 +90,6 @@ start_tests:	;jsr	aon_test_param
 		;and.l	d0,aon_set_channels
 		;and.l	d0,aon_set_date
 		and.l	d0,aon_set_info
-		and.l	d0,aon_set_getptim
 
 		;ori.l	#MXP_FLG_MOD_PARAM,aon_set_file
 		ori.l	#MXP_FLG_MOD_PARAM,aon_set_type

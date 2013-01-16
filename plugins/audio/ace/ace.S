@@ -38,33 +38,27 @@ ace_register_module:
 		;and.l	d0,ace_set_title
 		;and.l	d0,ace_set_artist
 		;and.l	d0,ace_set_type
-		and.l	d0,ace_set_getptim
 		ori.l	#MXP_FLG_INFOLINE,ace_set_title
 		ori.l	#MXP_FLG_INFOLINE,ace_set_artist
 		ori.l	#MXP_FLG_INFOLINE,ace_set_type
-		;ori.l	#MXP_FLG_MOD_PARAM,ace_set_getptim
 
 		move.l	#MXP_FLG_PLG_PARAM,d0
 		not.l	d0
 		and.l	d0,ace_set_title
 		and.l	d0,ace_set_artist
 		and.l	d0,ace_set_type
-		;and.l	d0,ace_set_getptim
 		;ori.l	#MXP_FLG_INFOLINE,ace_set_title
 		;ori.l	#MXP_FLG_INFOLINE,ace_set_artist
 		;ori.l	#MXP_FLG_MOD_PARAM,ace_set_type
-		ori.l	#MXP_FLG_MOD_PARAM,ace_set_getptim
 
 		move.l	#MXP_FLG_MOD_PARAM,d0
 		not.l	d0
 		;and.l	d0,ace_set_title
 		;and.l	d0,ace_set_artist
 		;and.l	d0,ace_set_type
-		and.l	d0,ace_set_getptim
 		ori.l	#MXP_FLG_INFOLINE,ace_set_title
 		ori.l	#MXP_FLG_INFOLINE,ace_set_artist
 		ori.l	#MXP_FLG_MOD_PARAM,ace_set_type
-		;ori.l	#MXP_FLG_MOD_PARAM,ace_set_getptim
 
 		bra	ace_get_module_type
 
