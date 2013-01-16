@@ -186,6 +186,7 @@ _MGTK_Set_Replay_Frequency
 
 _MGTK_Play_Music
 		move.w	4(sp),d0
+MGTK_Play_Music
 		movem.l	d2-d7/a2-a6,-(sp)
 		tst.w	d0
 		bpl.s	MGTK_Play_Music_1
@@ -323,14 +324,14 @@ MGTK_Next_Position_Skip
 _MGTK_Previous_Music
 		move.w	MGTK_Music(pc),d0
 		subq.w	#1,d0
-		bra		_MGTK_Play_Music
+		bra		MGTK_Play_Music
 ;
 ; Musique suivante
 ;
 _MGTK_Next_Music
 		move.w	MGTK_Music(pc),d0
 		addq.w	#1,d0
-		bra		_MGTK_Play_Music
+		bra		MGTK_Play_Music
 
 ;
 ; Remet les voies … z‚ro
@@ -844,7 +845,7 @@ MGTK_Old_Sound_System
 ; Connecte le DSP … la matrice sonore
 
 MGTK_Init_IT
-		pea.l	(a2)
+		movem.l	d2/a2,-(sp)
 		pea.l	MGTK_Replay_Timer(pc)		; Adresse Vecteur
 		moveq.l	#0,d0
 		move.b	MGTK_IT_Timer_Data(pc),d0
@@ -859,7 +860,7 @@ MGTK_Init_IT
 		move.w	#38,-(sp)					; Supexec
 		trap		#14						; XBios
 		addq.l	#6,sp
-		movea.l	(sp)+,a2
+		movem.l	(sp)+,d2/a2
 		rts
 MGTKDSPSoundOn
 		bset.b	#7,$ffff8931.w				; DSP Enabled
@@ -869,7 +870,7 @@ MGTKDSPSoundOn
 ; D‚connecte le DSP de la matrice sonore
 
 MGTK_Stop_IT
-		pea.l	(a2)
+		movem.l	d2/a2,-(sp)
 		clr.l	-(sp)
 		clr.l	-(sp)					; Stoppe le
 		clr.w	-(sp)					; Timer A
@@ -880,7 +881,7 @@ MGTK_Stop_IT
 		move.w	#38,-(sp)					; Supexec
 		trap		#14						; XBios
 		addq.l	#6,sp
-		movea.l	(sp)+,a2
+		movem.l	(sp)+,d2/a2
 		rts
 MGTKDSPSoundOff
 		bclr.b	#7,$ffff8931.w				; DSP Tristated

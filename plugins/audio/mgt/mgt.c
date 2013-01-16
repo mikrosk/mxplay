@@ -24,10 +24,10 @@ int main(void)
 {
 	char*	adr;
 	long		length;
-	int		dummy,handle,freq_div = 1;
-	char		tch;
+ 	int		dummy,handle,freq_div = 1;
+ 	char		tch;
 	_DTA		*buf;
-	char		packers[6][17]	=
+	char*	packers[] =
 	{"Unpacked...","Atomik 3.5...",
 	"Speedpacker 3...","Pack Ice 2.4...",
 	"Powerpacker 2...","Sentry 2.0..."};
@@ -44,7 +44,7 @@ int main(void)
 		Cconws("Not enough Memory!\r\n");
 		Cconws("Press any key...");
 		Crawcin();return 1;
-		}
+		}*/
 
 	Cconws("Ok!\r\nLoading Module...");
 
@@ -62,8 +62,7 @@ int main(void)
 
 	handle=Fopen(MODNAME,FO_READ);
 
-	dummy=Unpack_Detect_Disk(handle,MAXSIZE);
-
+  	dummy=Unpack_Detect_Disk(handle,MAXSIZE);
 	if (dummy<0)
 		{
 		Fclose(handle);
@@ -77,6 +76,7 @@ int main(void)
 		}
 	else	{
 		Fread(handle,length,adr);
+		Fread(handle,MAXSIZE,adr);
 		Fclose(handle);
 		if (dummy==0) Cconws("Unpacked!");
 		else {
@@ -148,7 +148,7 @@ int main(void)
 			case	'S':	MGTK_Stop_Music();break;
 			}
 		}
-	while (tch!=*" ");
+	while (tch!=' ');
 
 	MGTK_Stop_Music();
 	MGTK_Restore_Sound();
