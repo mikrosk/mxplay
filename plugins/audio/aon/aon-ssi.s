@@ -9,7 +9,6 @@
 
 
 
-	section	text
 ; --------------------------------------------------------------
 ; ------------- START music  -----------------------------------
 ; --------------------------------------------------------------
@@ -32,7 +31,7 @@ music_off:	jsr	aonfalc_stop				;stop music
 ; v1.0
 
 ;####################################################################
-		SECTION	text
+
 PLAYERSTART
 ; Jumptable
 		bra	aonfalc_start		; + 0 initialize
@@ -636,10 +635,3 @@ dsp_routine:		incbin	'ssi_aon2.dsb'
 			even
 aonfalc_dummy_sample
 			dcb.w	100,$0
-
-			section bss
-
-
-dummy_buffer		ds.l 49170/50*2
-
-			section	text

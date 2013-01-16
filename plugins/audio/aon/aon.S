@@ -6,16 +6,14 @@
 
 		OPT	D-,NOCASE
 		OPT	P=68030				; 68030 code allowed
-		COMMENT	HEAD=%100111			; Super,MallocInTT-RAM,LoadInTT-RAM,Fastload
-		OUTPUT	.MXP
+		COMMENT	HEAD=%111			; MallocInTT-RAM,LoadInTT-RAM,Fastload
 
-		INCLUDE	"..\mxplay.inc"
+		INCLUDE	"../mxplay.inc"
 
 COMMENTS_COUNT	EQU	48
 
 
 ;====================================================
-		section text
 
 ;---Plugin header:-----------------------------------
 aon_header:	dc.l	"MXP2"
@@ -1244,7 +1242,4 @@ aon_comment48:	ds.l	1
 aon_delimiter:	ds.b	255+1
 
 		even
-
-
-;====================================================
-		section text
+dummy_buffer		ds.l 49170/50*2
