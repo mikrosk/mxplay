@@ -172,7 +172,7 @@ Voice_Size				rs.b		0
 ;	5 : 16380 Hz, 7 : 12292 Hz, 9 : 9834 Hz, 11 : 8195 Hz
 
 _MGTK_Set_Replay_Frequency
-		move.w	4(sp),d0
+		move.l	4(sp),d0
 		move.w	d0,MGTK_Frequency_Divider
 		move.l	#25175000/256+1,d1
 		addq.w	#1,d0
@@ -185,7 +185,7 @@ _MGTK_Set_Replay_Frequency
 ; d0.w = Num‚ro de la musique … jouer
 
 _MGTK_Play_Music
-		move.w	4(sp),d0
+		move.l	4(sp),d0
 MGTK_Play_Music
 		movem.l	d2-d7/a2-a6,-(sp)
 		tst.w	d0
@@ -280,7 +280,7 @@ _MGTK_Stop_Music
 ; d0.w = Num‚ro de la position
 
 _MGTK_Play_Position
-		move.w	4(sp),d0
+		move.l	4(sp),d0
 		cmp.w	MGTK_Music_Length(pc),d0
 		blo.s	MGTK_Play_Position_Ok
 		moveq.l	#0,d0

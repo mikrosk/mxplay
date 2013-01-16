@@ -24,8 +24,8 @@
 ; d1 - place m‚moire disponible
 
 _Unpack_Detect_Disk
-	       move.w	4(sp),d0
-	       move.l	6(sp),d1
+	       move.l	4(sp),d0
+	       move.l	8(sp),d1
 	       movem.l d1-d3/a2,-(sp)
 
 	       move.w	d0,d3

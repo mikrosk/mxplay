@@ -1,4 +1,4 @@
-// kate: kate: indent-mode C Style; tab-width 5; indent-width 5;
+// kate: indent-mode C Style; tab-width 5; indent-width 5;
 
 /**************************************************/
 /******								******/

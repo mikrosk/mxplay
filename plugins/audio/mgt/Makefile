@@ -1,5 +1,5 @@
 #TARGET	= mgt.mxp
-TARGET	= mgt.prg
+TARGET	= mgt.ttp
 
 AS	= vasm
 CC	= m68k-atari-mint-gcc
@@ -7,7 +7,7 @@ STRIP	= m68k-atari-mint-strip -s
 
 CPU	= -m68020-60
 ASFLAGS	= -Faout -m68030 -quiet
-CFLAGS	= $(CPU) -Wall -O2 -fomit-frame-pointer -std=c99 -mshort -Wno-unused-value -g
+CFLAGS	= $(CPU) -Wall -O2 -fomit-frame-pointer -std=c99 -Wno-unused-value -g
 LDFLAGS	= $(CPU) -g -Wl,--traditional-format #-nostartfiles
 
 default: $(TARGET)

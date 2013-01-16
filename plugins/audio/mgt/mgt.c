@@ -1,4 +1,4 @@
-// kate: kate: indent-mode C Style; tab-width 5; indent-width 5;
+// kate: indent-mode C Style; tab-width 5; indent-width 5;
 
 /************************************************************/
 /*												*/
@@ -17,10 +17,9 @@
 #include "unpack.h"
 #include "mgt-play.h"
 
-#define MAXSIZE 1000000
-#define MODNAME "codeine.mgt"
+#define MAXSIZE 1200000
 
-int main(void)
+int main( int argc, char* argv[] )
 {
 	char*	adr;
 	long		length;
@@ -48,7 +47,7 @@ int main(void)
 
 	Cconws("Ok!\r\nLoading Module...");
 
-	dummy=Fsfirst(MODNAME,0);
+	dummy=Fsfirst(argv[1],0);
 	buf=Fgetdta();
 	length=buf->dta_size;
 
@@ -60,7 +59,7 @@ int main(void)
 		Crawcin();return 1;
 		}
 
-	handle=Fopen(MODNAME,FO_READ);
+	handle=Fopen(argv[1],FO_READ);
 
   	dummy=Unpack_Detect_Disk(handle,MAXSIZE);
 	if (dummy<0)
