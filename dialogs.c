@@ -354,14 +354,16 @@ int ShowCommErrorDialog( void )
 	return do_walert( 1, TRUE, "[3][Application <-> AES communication failed.][Report it]", "Error" );
 }
 
-int Show020RequiredDialog()
+int ShowFastCpuRequiredDialog()
 {
-	return do_walert( 1, TRUE, "[3][Plugin requires at least 68020 CPU!][Falcon?]", "Message" );
+	return do_walert( 1, TRUE, "[3][Plugin requires a fast CPU, expect slow replay!][CT60]", "Message" );
 }
 
-int ShowFpuRequiredDialog()
+int ShowTosCloneDialog( int ignoredCount )
 {
-	return do_walert( 1, TRUE, "[3][Plugin requires at least 68881 FPU!][CT60!]", "Message" );
+	char tempString[100];
+	sprintf( tempString, "[3][Disabled %d plugins not compatible with your machine.][Real hardware!]", ignoredCount );
+	return do_walert( 1, TRUE, tempString, "Message" );
 }
 
 int ShowDspRequiredDialog()

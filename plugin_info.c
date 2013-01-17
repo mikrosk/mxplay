@@ -533,13 +533,13 @@ static void PluginInfoCheckBaseInfo( void )
 		set_string( tree, PLUGIN_REP_VERSION, "n/a" );
 	}
 
-	if( ( flags & MXP_FLG_USE_020 ) != 0 )
+	if( ( flags & MXP_FLG_FAST_CPU ) != 0 )
 	{
-		set_string( tree, PLUGIN_CPU020, "Yes" );
+		set_string( tree, PLUGIN_FASTCPU, "Yes" );
 	}
 	else
 	{
-		set_string( tree, PLUGIN_CPU020, "No" );
+		set_string( tree, PLUGIN_FASTCPU, "No" );
 	}
 
 	if( ( flags & MXP_FLG_USE_DSP ) != 0 )
@@ -560,13 +560,13 @@ static void PluginInfoCheckBaseInfo( void )
 		set_string( tree, PLUGIN_DMA, "No" );
 	}
 
-	if( ( flags & MXP_FLG_USE_FPU ) != 0 )
+	if( ( flags & MXP_FLG_XBIOS ) != 0 )
 	{
-		set_string( tree, PLUGIN_FPU, "Yes" );
+		set_string( tree, PLUGIN_XBIOS, "Yes" );
 	}
 	else
 	{
-		set_string( tree, PLUGIN_FPU, "No" );
+		set_string( tree, PLUGIN_XBIOS, "No" );
 	}
 }
 

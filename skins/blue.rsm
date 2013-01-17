@@ -3,7 +3,7 @@ ResourceMaster v3.65
 #N 99@32@AZAaza___  _@AZAaza090___  _@@_@
 #FoC-Header@rsm2out@C-Header@rsh@@@[C-Header@0@
 #R 0@0@2@1@2@1@
-#M 20010100@0@7728@683@
+#M 20010100@0@7728@684@
 #T 0@2@WICON@@2@@
 #T 1@2@PANEL@@22@@
 #O 1@33@BACKGROUND@@
@@ -35,10 +35,10 @@ ResourceMaster v3.65
 #O 5@21@REP_AUTHOR@@
 #O 6@21@REP_VERSION@@
 #O 7@26@OK@@
-#O 12@21@CPU020@@
+#O 12@21@FASTCPU@@
 #O 13@21@DSP@@
 #O 14@21@DMA@@
-#O 15@21@FPU@@
+#O 15@21@XBIOS@@
 #O 18@21@PLG_VERSION@@
 #O 19@21@PLG_AUTHOR@@
 #O 25@22@POS_FIRST@@
@@ -86,4 +86,4 @@ ResourceMaster v3.65
 #O 24@20@BOX_DOWN@@
 #O 27@33@ICON_DOWN_LEFT@@
 #O 28@20@BOX_LEFT@@
-#c 7089@
+#c 7248@

@@ -1,4 +1,4 @@
- /*  Resource C-Header-File v1.97 fÅr ResourceMaster ab v2.06 by ARDISOFT  */
+ /*  Resource C-Header-file v1.95 for ResourceMaster v2.06&up by ARDISOFT  */
 
 #define WICON 0  /* form/dial */
 
@@ -34,10 +34,10 @@
 #define PLUGIN_REP_AUTHOR 5  /* TEXT in tree PLUGIN */
 #define PLUGIN_REP_VERSION 6  /* TEXT in tree PLUGIN */
 #define PLUGIN_OK 7  /* BUTTON in tree PLUGIN */
-#define PLUGIN_CPU020 12  /* TEXT in tree PLUGIN */
+#define PLUGIN_FASTCPU 12  /* TEXT in tree PLUGIN */
 #define PLUGIN_DSP 13  /* TEXT in tree PLUGIN */
 #define PLUGIN_DMA 14  /* TEXT in tree PLUGIN */
-#define PLUGIN_FPU 15  /* TEXT in tree PLUGIN */
+#define PLUGIN_XBIOS 15  /* TEXT in tree PLUGIN */
 #define PLUGIN_PLG_VERSION 18  /* TEXT in tree PLUGIN */
 #define PLUGIN_PLG_AUTHOR 19  /* TEXT in tree PLUGIN */
 #define PLUGIN_POS_FIRST 25  /* BOXTEXT in tree PLUGIN */

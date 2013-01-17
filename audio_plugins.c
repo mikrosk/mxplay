@@ -409,6 +409,7 @@ void LoadAudioPlugins( void )
 	struct dirent*	pDirEntry;
 	char			tempString[MXP_PATH_MAX+1];
 	char			ext[MXP_FILENAME_MAX+1];
+	int				leftOut = 0;
 
 	pDirStream = opendir( AUDIO_PLUGINS_PATH );
 	if( pDirStream != NULL )
@@ -427,6 +428,13 @@ void LoadAudioPlugins( void )
 					pSAudioPlugin[audioPluginsCount] = AudioPluginLoad( tempString );
 					if( pSAudioPlugin[audioPluginsCount] != NULL )
 					{
+						g_pCurrAudioPlugin = pSAudioPlugin[audioPluginsCount];
+						if( !AudioPluginIsFlagSet( MXP_FLG_XBIOS ) && g_tosClone )
+						{
+							leftOut++;
+							continue;
+						}
+
 						if( AudioPluginInit( pSAudioPlugin[audioPluginsCount] ) != MXP_OK )
 						{
 							ShowAudioInitErrorDialog( pDirEntry->d_name );
@@ -444,6 +452,10 @@ void LoadAudioPlugins( void )
 		if( audioPluginsCount == 0 )
 		{
 			ShowNoAudioFoundDialog();
+		}
+		if( leftOut > 0 )
+		{
+			ShowTosCloneDialog( leftOut );
 		}
 	}
 	else
@@ -521,23 +533,10 @@ BOOL AudioPluginLockResources( void )
 				return FALSE;
 			}
 		}
-/*		if( AudioPluginIsFlagSet( MXP_FLG_USE_020 ) )
+		if( AudioPluginIsFlagSet( MXP_FLG_FAST_CPU ) && !g_fastCpu )
 		{
-			if( g_cpu < 20 )
-			{
-				Show020RequiredDialog();
-				return FALSE;
-			}
+			ShowFastCpuRequiredDialog();
 		}
-		if( AudioPluginIsFlagSet( MXP_FLG_USE_FPU ) )
-		{
-			if( g_fpu == 0 )
-			{
-				ShowFpuRequiredDialog();
-				return FALSE;
-			}
-		}*/
-
 	}
 	return TRUE;
 }

@@ -36,8 +36,8 @@
 
 #define MXP_FLG_USE_DSP			(1<<0)			/* plugin uses DSP */
 #define MXP_FLG_USE_DMA			(1<<1)			/* plugin uses DMA sound system */
-#define MXP_FLG_USE_020			(1<<2)			/* plugin uses 020+ CPU */
-#define MXP_FLG_USE_FPU			(1<<3)			/* plugin uses FPU */
+#define MXP_FLG_FAST_CPU		(1<<2)			/* plugin needs a fast CPU */
+#define MXP_FLG_XBIOS			(1<<3)			/* plugin uses XBIOS calls only (no direct hw access) */
 #define MXP_FLG_DONT_LOAD_MODULE	(1<<4)			/* plugins loads modules by itself */
 #define MXP_FLG_USER_CODE 		(1<<5)			/* plugin handles supervisor calls by itself */
 
