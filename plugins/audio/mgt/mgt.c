@@ -20,7 +20,7 @@ struct SInfo			mgt_info =
 	"DSP-Replay MegaTracker",
 	"Simplet / Fatal Design",
 	"1.1 16/09/1995",
-	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
+	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
 };
 
 struct SExtension		mgt_extensions[] =

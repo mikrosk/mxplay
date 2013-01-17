@@ -680,7 +680,7 @@ aon_info:	dc.l	aon_info_plugin_author
 		dc.l	aon_info_replay_name
 		dc.l	aon_info_replay_author
 		dc.l	aon_info_replay_version
-		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_PLG_PARAM|MXP_FLG_USE_020
+		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA
 
 
 aon_settings:	dc.l	aon_settings_module_file

@@ -44,7 +44,7 @@ struct SInfo			asap_info =
 	"Another Slight Atari Player",
 	"Piotr Fusik",
 	ASAPInfo_VERSION,
-	MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_USE_FPU|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
+	MXP_FLG_USE_DMA|MXP_FLG_FAST_CPU|MXP_FLG_XBIOS|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
 };
 
 struct SExtension		asap_extensions[] =

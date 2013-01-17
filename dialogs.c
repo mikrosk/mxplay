@@ -260,7 +260,6 @@ void DeleteDialogs( void )
 /*
  * Application dialogs and alerts
  */
-
 int ShowRsrcAddrFailedDialog( void )
 {
 	return do_walert( 1, TRUE, "[3][rsrc_gaddr() failed.][Bug!]", "Fatal Error" );
@@ -284,6 +283,7 @@ int ShowNoReplayFoundDialog( void )
 int ShowLoadErrorDialog( char* filename )
 {
 	char tempString[MXP_FILENAME_MAX+1];
+
 	sprintf( tempString, "[3][Failed to load file|%s|File is probably in use.][WTF?!]", filename );
 	return do_walert( 1, TRUE, tempString, "Error" );
 }
@@ -356,13 +356,14 @@ int ShowCommErrorDialog( void )
 
 int ShowFastCpuRequiredDialog()
 {
-	return do_walert( 1, TRUE, "[3][Plugin requires a fast CPU, expect slow replay!][CT60]", "Message" );
+
+	return do_walert( 1, TRUE, "[3][Plugin requires a fast CPU,|expect slow replay!][CT60]", "Message" );
 }
 
 int ShowTosCloneDialog( int ignoredCount )
 {
-	char tempString[100];
-	sprintf( tempString, "[3][Disabled %d plugins not compatible with your machine.][Real hardware!]", ignoredCount );
+	char tempString[255+1];
+	sprintf( tempString, "[3][Disabled %d plugins which are|not compatible with your machine.][Real hardware!]", ignoredCount );
 	return do_walert( 1, TRUE, tempString, "Message" );
 }
 

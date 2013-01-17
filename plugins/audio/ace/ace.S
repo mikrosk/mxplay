@@ -227,7 +227,7 @@ ace_info:	dc.l	ace_info_plugin_author
 		dc.l	ace_info_replay_name
 		dc.l	ace_info_replay_author
 		dc.l	ace_info_replay_version
-		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_USE_020
+		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA
 
 
 ace_settings:	dc.l	ace_settings_module_type

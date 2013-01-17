@@ -199,7 +199,7 @@ gt2_info:	dc.l	gt2_info_plugin_author
 		dc.l	gt2_info_replay_name
 		dc.l	gt2_info_replay_author
 		dc.l	gt2_info_replay_version
-		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_DONT_LOAD_MODULE
+		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_DONT_LOAD_MODULE
 
 gt2_extensions:
 		dc.l	gt2_extensions_gt2

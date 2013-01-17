@@ -45,7 +45,7 @@ struct SInfo			xmp_info =
 	"Extended Module Player",
 	"C.Matsuoka & H.Carraro Jr",
 	XMP_VERSION,
-	MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_USE_FPU|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
+	MXP_FLG_USE_DMA|MXP_FLG_FAST_CPU|MXP_FLG_XBIOS|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
 };
 
 struct SExtension		xmp_extensions[] =

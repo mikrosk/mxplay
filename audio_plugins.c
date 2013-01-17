@@ -41,6 +41,7 @@
 #include "misc.h"
 #include "info_dialogs.h"
 #include "system.h"
+#include "debug.h"
 
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
 char						g_currModuleFilePath[MXP_PATH_MAX+1] = "-";
@@ -431,6 +432,8 @@ void LoadAudioPlugins( void )
 						g_pCurrAudioPlugin = pSAudioPlugin[audioPluginsCount];
 						if( !AudioPluginIsFlagSet( MXP_FLG_XBIOS ) && g_tosClone )
 						{
+							debug( "Leaving out %s", pDirEntry->d_name );
+							Mfree( pSAudioPlugin[audioPluginsCount] );
 							leftOut++;
 							continue;
 						}
