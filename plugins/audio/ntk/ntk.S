@@ -22,9 +22,17 @@ ntk_header:	dc.l	"MXP2"
 		dc.l	ntk_settings
 
 ntk_register_module:
-		move.l	ntk_header+MXP_PLUGIN_REGISTER_MOD,a0
-		move.l	(a0),filebuffer
-		moveq	#MXP_OK,d0
+		move.l	ntk_header+MXP_PLUGIN_PARAMETER,a0
+		movea.l	(a0),a0
+		move.l	a0,filebuffer
+
+		cmpi.l	#'NTK4',($b0,a0)
+		beq.b	.ok
+
+		moveq	#MXP_ERROR,d0
+		rts
+
+.ok:		moveq	#MXP_OK,d0
 		rts
 
 ntk_init:	moveq	#MXP_OK,d0
@@ -52,7 +60,7 @@ ntk_info:	dc.l	ntk_info_plugin_author
 		dc.l	ntk_info_replay_name
 		dc.l	ntk_info_replay_author
 		dc.l	ntk_info_replay_version
-		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_USE_020|MXP_FLG_USER_CODE
+		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_USE_020
 
 ntk_extensions:
 		dc.l	ntk_extensions_ntk

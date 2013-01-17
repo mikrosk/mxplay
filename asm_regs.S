@@ -21,20 +21,21 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-	.globl	_asm_save_regs
-	.globl	_asm_restore_regs
+	.globl	_asm_safe_call
+	.globl	_asm_safe_pointer
 
 // d0-d1 / a0-a1 are scratch registers, no need to save them
 // (and d0 is used for the return value)
 
 	.text
 
-_asm_save_regs:
+_asm_safe_call:
 	lea	regs,a0
 	movem.l	d2-d7/a2-a6,(a0)
-	rts
 
-_asm_restore_regs:
+	movea.l	_asm_safe_pointer,a0
+	jsr	(a0)				// return value in d0
+
 	lea	regs,a0
 	movem.l	(a0),d2-d7/a2-a6
 	rts
@@ -42,3 +43,5 @@ _asm_restore_regs:
 	.bss
 
 regs:	ds.l	11
+_asm_safe_pointer:
+	ds.l	1

@@ -110,16 +110,15 @@ inline static BOOL AudioPluginIsFlagSet( int flag )
 
 inline static int AudioPluginCallFunction( int (*f)( void ) )
 {
-	extern void asm_save_regs( void );
-	extern void asm_restore_regs( void );
+	extern long asm_safe_pointer;
+	extern int asm_safe_call( void );
 
 	int ret = MXP_UNIMPLEMENTED;
 #ifndef DISABLE_PLUGINS
 	if( f != NULL )
 	{
-		asm_save_regs();
-		ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? f() : Supexec( f );
-		asm_restore_regs();
+		asm_safe_pointer = (long)f;
+		ret = AudioPluginIsFlagSet( MXP_FLG_USER_CODE ) ? asm_safe_call() : Supexec( asm_safe_call );
 	}
 #else
 	ret = MXP_OK;
@@ -143,7 +142,7 @@ static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module,
 
 static int AudioPluginInit( struct SAudioPlugin* plugin )
 {
-        g_pCurrAudioPlugin = plugin;	// LookForAudioPlugin hasn't been called yet
+	g_pCurrAudioPlugin = plugin;	// LookForAudioPlugin hasn't been called yet
 	return AudioPluginCallFunction( plugin->Init );
 }
 
@@ -453,7 +452,7 @@ void LoadAudioPlugins( void )
 	}
 
 	closedir( pDirStream );
-	
+
 	g_pCurrAudioPlugin = NULL;	// none
 }
 
