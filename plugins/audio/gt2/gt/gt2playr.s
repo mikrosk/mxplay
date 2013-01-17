@@ -3622,17 +3622,17 @@ gtkpl_square_table:			; Table d'onde carr‚e de 64 ‚l‚ments
 		Dcb.w	32,$ff
 		Dcb.w	32,-$ff
 gtkpl_rampdown_table:			; Table d'onde triangulaire de 64 ‚l‚ments
-	variable1:	Set	$ff
+variable1:	Set	$ff
 		Rept	64
 		Dc.w	variable1
-	variable1:	Set	variable1-8
+variable1:	Set	variable1-8
 		EndR
 
-gtkpl_per_tab_load:	IncBin	'gt\pertable.bin'	; Table de p‚riodes pour les notes (8 finetunes par note)
+gtkpl_per_tab_load:	IncBin	'gt/pertable.bin'	; Table de p‚riodes pour les notes (8 finetunes par note)
 gtkpl_per_table:	Equ	gtkpl_per_tab_load+24*2	; D‚calage de 24 finetunes avant le C-0
-gtkpl_vexp_2_lin:	IncBin	'gt\vexp2lin.bin'	; Les correspondances de volume pour instrument
-gtkpl_vlin_2_exp:	IncBin	'gt\vlin2exp.bin'
-gtkpl_vexp_2_lin_mst:	IncBin	'gt\v_e2l_m.bin'	; Pareil, pour le master
+gtkpl_vexp_2_lin:	IncBin	'gt/vexp2lin.bin'	; Les correspondances de volume pour instrument
+gtkpl_vlin_2_exp:	IncBin	'gt/vlin2exp.bin'
+gtkpl_vexp_2_lin_mst:	IncBin	'gt/v_e2l_m.bin'	; Pareil, pour le master
 
 ;... Nom des chunks dans un module GT2 .......................................
 gtkpl_gt2_chunknames:	Dc.l	'XCOM','TCN1','SONG','PATS'

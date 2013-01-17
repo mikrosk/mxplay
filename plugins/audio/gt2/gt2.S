@@ -2,10 +2,6 @@
 ; MiKRO / Mystic Bytes
 ; (c) 2012-2013
 
-		comment HEAD=%111
-		output	.mxp
-		opt	p=68030,NOCASE,D-
-
 ; ----------------------------------------------
 		section text
 ; ----------------------------------------------
@@ -30,14 +26,14 @@ gt2_header:	dc.l	"MXP2"
 
 resident_ker:	equ	0
 
-		include	'gt\sndkernl.s'
-		include	'gt\gt2playr.s'
+		include	'gt/sndkernl.s'
+		include	'gt/gt2playr.s'
 
 		section text
 
 ; ----------------------------------------------
 
-		include	'..\mxplay.inc'
+		include	'../mxplay.inc'
 
 gt2_register_module:
 		movea.l	gt2_header+MXP_PLUGIN_PARAMETER,a0

@@ -1721,13 +1721,13 @@ gtkr_replay_prediv:	Dc.w	1		; Pr‚diviseur de l'horloge
 *gtkr_replay_freq:	Dc.w	REPLAY_FREQ	; Fr‚quence de restitution
 gtkr_replay_freq:	Dc.w	98340/2		; Fr‚quence de restitution
 gtkr_replay_freq_tab:	Dc.w	50033		; Table des fr‚quence du CoDec,
-	variable1:	Set	2		; selon les pr‚diviseurs de
+variable1:	Set	2		; selon les pr‚diviseurs de
 		Rept	15		; l'horloge.
 		Dc.w	98340/variable1
-	variable1:	Set	variable1+1
+variable1:	Set	variable1+1
 		EndR
 
-gtkr_routine_dsp:	IncBin	'gt\playdsp.p56'	; Prog DSP
+gtkr_routine_dsp:	IncBin	'gt/playdsp.p56'	; Prog DSP
 gtkr_routine_dsp_lon:
 		Even
 
