@@ -40,6 +40,7 @@
 #include "skins/skin.h"
 #include "misc.h"
 #include "info_dialogs.h"
+#include "system.h"
 
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
 char						g_currModuleFilePath[MXP_PATH_MAX+1] = "-";
@@ -235,7 +236,6 @@ int AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long*
 {
 	int ret = MXP_UNIMPLEMENTED;
 
-	// TODO: maybe to cache these values? it's horribly slow,,,
 	if( param->Get != NULL && ( ret = param->Get() ) == MXP_OK )
 	{
 		*value = plugin->inBuffer.value;
@@ -521,7 +521,7 @@ BOOL AudioPluginLockResources( void )
 				return FALSE;
 			}
 		}
-		if( AudioPluginIsFlagSet( MXP_FLG_USE_020 ) )
+/*		if( AudioPluginIsFlagSet( MXP_FLG_USE_020 ) )
 		{
 			if( g_cpu < 20 )
 			{
@@ -536,7 +536,7 @@ BOOL AudioPluginLockResources( void )
 				ShowFpuRequiredDialog();
 				return FALSE;
 			}
-		}
+		}*/
 
 	}
 	return TRUE;

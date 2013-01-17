@@ -40,13 +40,10 @@
 #include "dd.h"
 #include "timer.h"
 #include "module_info.h"
+#include "system.h"
 
 BOOL	g_quitApp = FALSE;
 short	g_msgBuffer[8];
-long	g_cpu = 0x00;
-long	g_fpu = 0x00;
-BOOL	g_hasDma = FALSE;
-BOOL	g_hasDsp = FALSE;
 
 static short	currMouseX;
 static short	currMouseY;
@@ -278,18 +275,9 @@ int main( int argc, char* argv[] )
 		menu_register( gl_apid, "  mxPlay" );
 	}
 
-	/* get cookies & set flags */
-	getcookie( "_CPU", &g_cpu );
-	getcookie( "_FPU", &g_fpu );
-	getcookie( "_SND", &temp );
-	if( ( temp & SND_8BIT ) != 0 )	/* DMA presence */
-	{
-		g_hasDma = TRUE;
-	}
-	if( ( temp & SND_DSP ) != 0 )	/* DSP presence */
-	{
-		g_hasDsp = TRUE;
-	}
+	/* machine, cpu and sound hardware */
+	CheckSystem();
+	debug( "past CheckSystem" );
 
 	/* find AV server etc */
 	AVInit();

@@ -79,10 +79,6 @@ struct timeval
 
 extern BOOL		g_quitApp;
 extern short	g_msgBuffer[8];
-extern long		g_cpu;
-extern long		g_fpu;
-extern BOOL		g_hasDma;
-extern BOOL		g_hasDsp;
 
 extern void	HandleMessage( short msg[8] );
 extern int	SendMessage( short recipientId );
