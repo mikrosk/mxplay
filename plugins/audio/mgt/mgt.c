@@ -112,6 +112,8 @@ int mgt_register_module( void )
 	FILE *fp = fopen( mgt_parameter.pModule->p, "rb" );
 	if( fp == NULL )
 	{
+		Mfree( g_moduleBuffer );
+		g_moduleBuffer = NULL;
 		return MXP_ERROR;
 	}
 
