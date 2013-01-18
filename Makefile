@@ -51,6 +51,7 @@ debug:
 	$(FLAGS) $(TARGET)
 
 release:
+	$(MAKE) -C plugins/audio release
 	$(MAKE) $(TARGET) CONFIG="Release"
 	$(STRIP) $(TARGET)
 	$(UPX) $(TARGET)
@@ -58,7 +59,4 @@ release:
 
 clean:
 	rm -f *.o *.bak *~ *.app
-	rm -f plugins/audio/*~ #plugins/audio/*.mxp
-	make -C plugins/audio/xmp clean
-	make -C plugins/audio/asap clean
-	#make -C plugins/audio/gt clean
+	$(MAKE) -C plugins/audio clean

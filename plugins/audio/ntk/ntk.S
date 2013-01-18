@@ -1,6 +1,8 @@
 ; ntk plugin
 ; MiKRO / Mystic Bytes
 ; (c) 2012-2013
+		opt	ow-
+
 		include	'../mxplay.inc'
 
 ntk_header:	dc.l	"MXP2"
