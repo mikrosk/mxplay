@@ -413,7 +413,7 @@ struct SAudioPlugin* LookForAudioPlugin( char* path, char* name )
 				// TODO: now we pass only file path!
 				if( AudioPluginRegisterModule( pSAudioPlugin[i], filePath, strlen( filePath ) ) == MXP_OK )
 				{
-					moduleExtName = ext[j].ext;
+					moduleExtName = ext[j].name;
 					return pSAudioPlugin[i];
 				}
 			}
