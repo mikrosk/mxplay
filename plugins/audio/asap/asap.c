@@ -131,13 +131,11 @@ static int getSongType( void )
 		if( desc != NULL && strlen( desc ) > 0 )
 		{
 			asap_parameter.value = (long)desc;
-		}
-		else
-		{
-			asap_parameter.value = (long)na;
+			return MXP_OK;
 		}
 	}
 
+	asap_parameter.value = (long)na;
 	return MXP_OK;
 }
 
