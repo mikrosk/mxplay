@@ -8,7 +8,7 @@ sndh_header:	dc.l	"MXP2"
 		ds.l	1
 		dc.l	sndh_register_module
 		dc.l	0			; sndh_get_playtime
-		dc.l	0			; sndh_get_songs
+		dc.l	sndh_get_songs
 		dc.l	sndh_init
 		dc.l	sndh_set
 		dc.l	0			; sndh_feed
@@ -21,7 +21,7 @@ sndh_header:	dc.l	"MXP2"
 		dc.l	sndh_settings
 
 sndh_register_module:
-		move.l	sndh_header+MXP_PLUGIN_PARAMETER,a0
+		movea.l	sndh_header+MXP_PLUGIN_PARAMETER,a0
 		move.l	(a0),song_address
 
 		clr.l	d0
@@ -51,6 +51,9 @@ sndh_register_module:
 		movea.l	d0,a0
 .not_packed:	cmpi.l	#'SNDH',(12,a0)
 		bne.b	.error
+
+		bsr	get_songinfo
+
 		moveq	#MXP_OK,d0
 		rts
 
@@ -65,12 +68,19 @@ sndh_register_module:
 .no_malloc:	moveq	#MXP_ERROR,d0
 		rts
 
+sndh_get_songs:	clr.l	d0
+		move.w	songs,d0
+		move.l	d0,sndh_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
+		rts
+
 sndh_init:	moveq	#MXP_OK,d0
 		rts
 
 sndh_deinit:	moveq	#MXP_OK,d0
 		rts
 
+		; TODO: memory leak if we play another plugin and then register again!!!
 sndh_set:	bsr	start_play
 		moveq	#MXP_OK,d0
 		rts
@@ -78,6 +88,33 @@ sndh_set:	bsr	start_play
 sndh_unset:	bsr	stop_play
 		moveq	#MXP_OK,d0
 		rts
+
+sndh_settings_song_get:
+		move.l	songs_txt,sndh_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
+		rts
+sndh_settings_title_get:
+		move.l	title_txt,sndh_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
+		rts
+sndh_settings_composer_get:
+		move.l	composer_txt,sndh_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
+		rts
+sndh_settings_ripped_get:
+		move.l	ripper_txt,sndh_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
+		rts
+sndh_settings_conversion_get:
+		move.l	conversion_txt,sndh_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
+		rts
+sndh_settings_method_get:
+		move.l	method_txt,sndh_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
+		rts
+
+; ----------------------------------------------
 
 MAX_HEADER:	equ     200
 
@@ -103,7 +140,37 @@ sndh_extensions:
 		dc.l	sndh_extensions_sndh_name
 		dc.l	0
 
-sndh_settings:	dc.l	0
+sndh_settings:	dc.l	sndh_settings_song
+		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM
+		dc.l	0
+		dc.l	sndh_settings_song_get
+
+		dc.l	sndh_settings_title
+		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM
+		dc.l	0
+		dc.l	sndh_settings_title_get
+
+		dc.l	sndh_settings_composer
+		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM
+		dc.l	0
+		dc.l	sndh_settings_composer_get
+
+		dc.l	sndh_settings_ripped
+		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM
+		dc.l	0
+		dc.l	sndh_settings_ripped_get
+
+		dc.l	sndh_settings_conversion
+		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM
+		dc.l	0
+		dc.l	sndh_settings_conversion_get
+
+		dc.l	sndh_settings_method
+		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM
+		dc.l	0
+		dc.l	sndh_settings_method_get
+
+		dc.l	0
 
 sndh_info_plugin_author:
 		dc.b	"MiKRO / Mystic Bytes",0
@@ -122,6 +189,19 @@ sndh_extensions_sndh:
 		dc.b	"SNDH",0
 sndh_extensions_sndh_name:
 		dc.b	"SNDH",0
+
+sndh_settings_song:
+		dc.b	'Songs',0
+sndh_settings_title:
+		dc.b	'Title',0
+sndh_settings_composer:
+		dc.b	'Composer',0
+sndh_settings_ripped:
+		dc.b	'Ripped by',0
+sndh_settings_conversion:
+		dc.b	'Conversion',0
+sndh_settings_method:
+		dc.b	'Method',0
 
 t_timer:	dc.b	'Timer ',0
 t_no_inf:	dc.b	'?',0
