@@ -2,7 +2,7 @@ TARGET	= ntk.mxp
 
 AS	= vasm
 
-ASFLAGS	= -Ftos -m68030 -quiet -devpac -nocase -nosym -tos-flags=7
+ASFLAGS	= -Ftos -m68030 -quiet -devpac -nocase -nosym
 
 default: $(TARGET)
 

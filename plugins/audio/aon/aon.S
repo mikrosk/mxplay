@@ -6,7 +6,6 @@
 
 		OPT	D-,NOCASE
 		OPT	P=68030				; 68030 code allowed
-		COMMENT	HEAD=%111			; MallocInTT-RAM,LoadInTT-RAM,Fastload
 
 		INCLUDE	"../mxplay.inc"
 

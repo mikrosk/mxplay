@@ -4,7 +4,6 @@
 *		version 1   save:0.10   date:19.12.2005   time:21:57
 
 		opt	d-
-		comment	HEAD=%0111			;MinimalHeap,MallocInTT-RAM,LoadInTT-RAM,Fastload
 
 		include	"../mxplay.inc"
 

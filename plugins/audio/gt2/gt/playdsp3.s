@@ -28,10 +28,8 @@
 ******************************************************************************
 
 
-	comment head=%111
-	output	e:\gtk08770.dmo\sys\gtplay.pgt
 	Opt	p=68030,x-,d-,e-,s-
-	
+
 	;Output	f:\dev.gtk\sys\gtplay.pgt
 
 
@@ -347,7 +345,7 @@ songrecord_routine_no_realtime1:
 ;	Fournir l'adresse du PRG charg‚ en 4(sp), renvoie l'adresse de
 ;	de adr_labels dans d0
 ;-----------------------------------------------------------------------------
-relocation:   
+relocation:
 	movem.l	d1/a0-a2,-(sp)
 	move.l	16+4(sp),a0	; 4(sp) : adresse du PRG
 	move.l	2(a0),d0
@@ -1946,7 +1944,7 @@ premvbl_loop:			; Boucle de test si c'est la premiŠre vbl
 	tst.w	c_v_t(a3)
 	beq	fx_fin1		; Pas de volume on se tire
 	bra	effets1
-	
+
 instrum:	move.w	d2,d3
 	and.w	#$FF00,d3		; d3 = num‚ro de l'effet 2 chiffres
 	cmp.w	#$900,d3		; Note delay, on s'en va directos

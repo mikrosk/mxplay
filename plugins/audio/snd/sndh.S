@@ -35,10 +35,11 @@ sndh_register_module:
 		; D4 = Size of file - from ice header, we don't use this.
 		; D5 = Size of unpacked file
 
+		move.w	#3,-(sp)		; prefer TT RAM
 		move.l	d5,-(sp)
-		move.w	#$48,-(sp)		; Malloc()
+		move.w	#$44,-(sp)		; Mxalloc()
 		trap	#1
-		addq.l	#6,sp
+		addq.l	#8,sp
 		tst.l	d0
 		beq.b	.error
 

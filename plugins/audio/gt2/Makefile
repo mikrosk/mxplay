@@ -2,7 +2,7 @@ TARGET	= gt2.mxp
 
 AS	= vasm
 
-ASFLAGS	= -Ftos -m68030 -quiet -devpac -unnamed-sections -nosym -nocase -tos-flags=7
+ASFLAGS	= -Ftos -m68030 -quiet -devpac -unnamed-sections -nosym -nocase
 
 default: $(TARGET)
 

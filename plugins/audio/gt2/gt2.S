@@ -43,7 +43,7 @@ gt2_register_module:
 
 		include	'loader.s'
 
-		move.l	filebuffer,a0				; Check if the file is a Graoumf Tracker file
+		move.l	filebuffer,a0		; Check if the file is a Graoumf Tracker file
 
 		cmp.w	#"GT",(a0)+
 		bne.s	.err
