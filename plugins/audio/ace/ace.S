@@ -249,7 +249,7 @@ ace_set_artist	dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_PLG_PARAM|MXP_FLG
 
 
 ace_extensions:	dc.l	ace_extensions_mod
-		dc.l	ace_extensions_mod_name
+		dc.l	0
 
 		dc.l	0
 
@@ -285,8 +285,6 @@ ace_info_replay_version:
 
 ace_extensions_mod:
 		dc.b	"AM",0
-ace_extensions_mod_name:
-		dc.b	"ACE module",0
 
 
 ace_formats_AM01:

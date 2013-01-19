@@ -55,6 +55,7 @@ static struct SModuleParameter moduleParameter;
 
 static int					moduleSongNumber;
 static int					moduleSongs;
+static char*				moduleExtName;
 
 static struct SAudioPlugin* AudioPluginLoad( char* filename )
 {
@@ -227,7 +228,7 @@ int AudioPluginSet( struct SAudioPlugin* plugin, struct SParameter* param, long 
 	// always user mode (changes are supposed to take effect on the next playback) TODO (why info line then?)
 	if( param->Set != NULL && ( ret = param->Set() ) == MXP_OK )
 	{
-		AudioPluginGetInfoLine( plugin->pSParameter );	/* start from the first parameter */
+		AudioPluginGetInfoLine( plugin );	/* start from the first parameter */
 	}
 
 	return ret;
@@ -250,27 +251,52 @@ int AudioPluginGet( struct SAudioPlugin* plugin, struct SParameter* param, long*
 /*
  * Fill scrollable infoline in the main panel.
  */
-void AudioPluginGetInfoLine( struct SParameter* param )
+void AudioPluginGetInfoLine( struct SAudioPlugin* plugin )
 {
 	char	infoLine[1023+1];
 	int		i;
 	char	tempString[255+1];
+	struct SParameter* param = plugin->pSParameter;
 
+	// this function is called after AudioPluginModulePlay()
 	strcpy( infoLine, "" );
-	// TODO: what about the empty param? module filename?
 
-	for( i = 0; param[i].pName != NULL; i++ )
+	if( moduleSongs > 1 )
 	{
-		if( ( param[i].type & MXP_FLG_INFOLINE ) != 0 )
+		sprintf( tempString, "# %d / %d  ", moduleSongNumber + 1, moduleSongs );
+		strcat( infoLine, tempString );
+	}
+
+	if( param == NULL )
+	{
+		// no params, fill in at least a fake title
+		split_filename( g_currModuleFilePath, NULL, tempString );
+		strcat( infoLine, "Name: " );
+		strcat( infoLine, tempString );
+		strcat( infoLine, "  " );
+	}
+	else
+	{
+		for( i = 0; param[i].pName != NULL; i++ )
 		{
-			strcat( infoLine, param[i].pName );	/* i.e. "Songname" */
-			strcat( infoLine, ": " );
+			if( ( param[i].type & MXP_FLG_INFOLINE ) != 0 )
+			{
+				strcat( infoLine, param[i].pName );	/* i.e. "Songname" */
+				strcat( infoLine, ": " );
 
-			ConvertMxpParamTypes( g_pCurrAudioPlugin, &param[i], tempString );
-			strcat( infoLine, tempString );
+				ConvertMxpParamTypes( plugin, &param[i], tempString );
+				strcat( infoLine, tempString );
 
-			strcat( infoLine, "  " );	/* delimiter */
+				strcat( infoLine, "  " );	/* delimiter */
+			}
 		}
+	}
+
+	if( moduleExtName != NULL )
+	{
+		strcat( infoLine, "Type: " );
+		strcat( infoLine, moduleExtName );
+		strcat( infoLine, "  " );
 	}
 
 	strcpy( g_panelInfoLine, infoLine );	/* update the real one */
@@ -387,11 +413,13 @@ struct SAudioPlugin* LookForAudioPlugin( char* path, char* name )
 				// TODO: now we pass only file path!
 				if( AudioPluginRegisterModule( pSAudioPlugin[i], filePath, strlen( filePath ) ) == MXP_OK )
 				{
+					moduleExtName = ext[j].ext;
 					return pSAudioPlugin[i];
 				}
 			}
 			else if( strcmp( ext[j].ext, extension ) == 0 )
 			{
+				moduleExtName = ext[j].ext;
 				return pSAudioPlugin[i];
 			}
 		}

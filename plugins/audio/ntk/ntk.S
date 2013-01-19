@@ -19,7 +19,7 @@ ntk_header:	dc.l	"MXP2"
 		dc.l	0			; ntk_mute
 		dc.l	ntk_info
 		dc.l	ntk_extensions
-		dc.l	ntk_settings
+		dc.l	0			; ntk_settings
 
 ntk_register_module:
 		move.l	ntk_header+MXP_PLUGIN_PARAMETER,a0
@@ -66,8 +66,6 @@ ntk_extensions:
 		dc.l	ntk_extensions_ntk
 		dc.l	ntk_extensions_ntk_name
 		dc.l	0
-
-ntk_settings:	dc.l	0
 
 ntk_info_plugin_author:
 		dc.b	"MiKRO / Mystic Bytes",0

@@ -352,7 +352,7 @@ void PanelNextSubSong( void )
 		else
 		{
 			TimerReset( AudioPluginGetPlayTime(g_pCurrAudioPlugin ) );
-			AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
+			AudioPluginGetInfoLine( g_pCurrAudioPlugin );
 			ModuleInfoUpdate();
 			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 		}
@@ -374,7 +374,7 @@ void PanelPrevSubSong( void )
 		else
 		{
 			TimerReset( AudioPluginGetPlayTime( g_pCurrAudioPlugin ) );
-			AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
+			AudioPluginGetInfoLine( g_pCurrAudioPlugin );
 			ModuleInfoUpdate();
 			PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 		}
@@ -745,7 +745,7 @@ void LoadAndPlay( void )
 			{
 				PanelPlay();
 
-				AudioPluginGetInfoLine( g_pCurrAudioPlugin->pSParameter );
+				AudioPluginGetInfoLine( g_pCurrAudioPlugin );
 
 				PluginInfoUpdate();
 

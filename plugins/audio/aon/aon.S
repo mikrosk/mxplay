@@ -972,16 +972,16 @@ aon_module_comments:
 
 
 aon_extensions:	dc.l	aon_extensions_mod
-		dc.l	aon_extensions_mod_name
+		dc.l	0
 
 		dc.l	ao4_extensions_mod
-		dc.l	ao4_extensions_mod_name
+		dc.l	0
 
 		dc.l	ao6_extensions_mod
-		dc.l	ao6_extensions_mod_name
+		dc.l	0
 
 		dc.l	ao8_extensions_mod
-		dc.l	ao8_extensions_mod_name
+		dc.l	0
 
 		dc.l	0
 
@@ -1023,30 +1023,22 @@ aon_info_replay_version:
 
 aon_extensions_mod:
 		dc.b	"AON",0
-aon_extensions_mod_name:
-		dc.b	"AON module",0
 ao4_extensions_mod:
 		dc.b	"AO4",0
-ao4_extensions_mod_name:
-		dc.b	"AON4 module",0
 ao6_extensions_mod:
 		dc.b	"AO6",0
-ao6_extensions_mod_name:
-		dc.b	"AON6 module",0
 ao8_extensions_mod:
 		dc.b	"AO8",0
-ao8_extensions_mod_name:
-		dc.b	"AON8 module",0
 
 
 aon_formats_AON4_name:
-		dc.b	"AON4 (ArtOfNoiseTracker)",0
+		dc.b	"AON4 (Art Of Noise/Chorus Tracker)",0
 
 aon_formats_AON6_name:
-		dc.b	"AON6 (ArtOfNoiseTracker)",0
+		dc.b	"AON6 (Art Of Noise/Chorus Tracker)",0
 
 aon_formats_AON8_name:
-		dc.b	"AON8 (ArtOfNoiseTracker)",0
+		dc.b	"AON8 (Art Of Noise/Chorus Tracker)",0
 
 aon_module_comment1:
 		dc.b	"Comment #1",0

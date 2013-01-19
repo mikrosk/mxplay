@@ -50,7 +50,7 @@ struct SInfo			xmp_info =
 
 struct SExtension		xmp_extensions[] =
 {
-	{ "*", "Module" },
+	{ "*", NULL },
 	{ NULL, NULL }
 };
 

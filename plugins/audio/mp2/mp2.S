@@ -900,7 +900,7 @@ aon_set_getptim		dc.l	MXP_PAR_TYPE_BOOL|MXP_FLG_PLG_PARAM
 
 
 mp2_extensions:	dc.l	mp2_extensions_mod
-		dc.l	mp2_extensions_mod_name
+		dc.l	0
 
 		dc.l	0
 
@@ -971,9 +971,6 @@ mp2_info_replay_version:
 
 mp2_extensions_mod:
 		dc.b	"MP2",0
-mp2_extensions_mod_name:
-		dc.b	"MP2 module",0
-
 
 mp2_formats_MP2_name:
 		dc.b	"MP2 (MPEG 1 Audio Layer II)",0

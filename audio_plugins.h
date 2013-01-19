@@ -54,6 +54,6 @@ extern BOOL					AudioPluginLockResources( void );
 extern BOOL					AudioPluginFreeResources( void );
 extern void					AudioPluginGetBaseInfo( struct SAudioPlugin* plugin, char** pluginAuthor, char** pluginVersion, char** replayName, char** replayAuthor, char** replayVersion, long* flags );
 extern struct SParameter*	AudioPluginGetParam( struct SAudioPlugin* plugin, char* name );
-extern void					AudioPluginGetInfoLine( struct SParameter* param );
+extern void					AudioPluginGetInfoLine( struct SAudioPlugin* plugin );
 
 #endif

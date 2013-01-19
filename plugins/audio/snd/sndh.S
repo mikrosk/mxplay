@@ -89,10 +89,6 @@ sndh_unset:	bsr	stop_play
 		moveq	#MXP_OK,d0
 		rts
 
-sndh_settings_song_get:
-		move.l	songs_txt,sndh_header+MXP_PLUGIN_PARAMETER
-		moveq	#MXP_OK,d0
-		rts
 sndh_settings_title_get:
 		move.l	title_txt,sndh_header+MXP_PLUGIN_PARAMETER
 		moveq	#MXP_OK,d0
@@ -140,12 +136,7 @@ sndh_extensions:
 		dc.l	sndh_extensions_sndh_name
 		dc.l	0
 
-sndh_settings:	dc.l	sndh_settings_song
-		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM
-		dc.l	0
-		dc.l	sndh_settings_song_get
-
-		dc.l	sndh_settings_title
+sndh_settings:	dc.l	sndh_settings_title
 		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM
 		dc.l	0
 		dc.l	sndh_settings_title_get

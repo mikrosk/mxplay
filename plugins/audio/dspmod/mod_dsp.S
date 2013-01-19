@@ -121,7 +121,7 @@ dspmod_settings:
 
 dspmod_extensions:
 		dc.l	dspmod_extensions_mod
-		dc.l	dspmod_extensions_mod_name
+		dc.l	0
 
 		dc.l	0
 
@@ -150,8 +150,6 @@ dspmod_settings_surround:
 
 dspmod_extensions_mod:
 		dc.b	"MOD",0
-dspmod_extensions_mod_name:
-		dc.b	"4/6/8 channel MODs",0
 
 		even
 

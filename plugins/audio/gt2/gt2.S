@@ -205,7 +205,7 @@ gt2_info:	dc.l	gt2_info_plugin_author
 
 gt2_extensions:
 		dc.l	gt2_extensions_gt2
-		dc.l	gt2_extensions_gt2_name
+		dc.l	0
 		dc.l	0
 
 gt2_settings:	dc.l	gt2_settings_module_name
@@ -243,8 +243,6 @@ gt2_info_replay_version:
 
 gt2_extensions_gt2:
 		dc.b	"GT2",0
-gt2_extensions_gt2_name:
-		dc.b	"Graoumf Tracker Module",0
 
 gt2_settings_module_name:
 		dc.b	"Module name",0

@@ -49,20 +49,20 @@ struct SInfo			asap_info =
 
 struct SExtension		asap_extensions[] =
 {
-	{ "SAP", "Slight Atari Player" },
-	{ "CMC", "Chaos Music Composer" },
-	{ "CM3", "Chaos Music Composer \"3/4\"" },
-	{ "CMR", "Chaos Music Composer \"Rzog\"" },
-	{ "CMS", "Stereo Double Chaos Music Composer" },
-	{ "DMC", "DoublePlay Chaos Music Composer" },
-	{ "DLT", "Delta Music Composer" },
-	{ "FC", "Future Composer" },
-	{ "MPT", "Music ProTracker" },
-	{ "MPD", "Music ProTracker DoublePlay" },
-	{ "RMT", "Raster Music Tracker" },
-	{ "TMC", "Theta Music Composer 1.x" },
-	{ "TM8", "Theta Music Composer 1.x" },
-	{ "TM2", "Theta Music Composer 2.x" },
+	{ "SAP", NULL },
+	{ "CMC", NULL },
+	{ "CM3", NULL },
+	{ "CMR", NULL },
+	{ "CMS", NULL },
+	{ "DMC", NULL },
+	{ "DLT", NULL },
+	{ "FC", NULL },
+	{ "MPT", NULL },
+	{ "MPD", NULL },
+	{ "RMT", NULL },
+	{ "TMC", NULL },
+	{ "TM8", NULL },
+	{ "TM2", NULL },
 	{ NULL, NULL }
 };
 
@@ -124,6 +124,7 @@ static int getSongAuthor( void )
 
 static int getSongType( void )
 {
+	static char* sap = "Slight Atari Player";
 	const char* ext = ASAPInfo_GetOriginalModuleExt( info, moduleBuffer, moduleLength );
 	if( ext != NULL && strlen( ext ) > 0 )
 	{
@@ -135,23 +136,12 @@ static int getSongType( void )
 		}
 	}
 
-	asap_parameter.value = (long)na;
-	return MXP_OK;
-}
-
-static int getSongs( void )
-{
-	static char buff[64];
-
-	sprintf( buff, "%d / %d", moduleSong + 1, ASAPInfo_GetSongs( info ) );
-	asap_parameter.value = (long)buff;
-
+	asap_parameter.value = (long)sap;
 	return MXP_OK;
 }
 
 struct SParameter		asap_settings[] =
 {
-	{ "Song", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongs },
 	{ "Name", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongName },
 	{ "Author", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongAuthor },
 	{ "Type", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongType },
