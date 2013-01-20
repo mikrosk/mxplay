@@ -419,7 +419,7 @@ struct SAudioPlugin* LookForAudioPlugin( char* path, char* name )
 			}
 			else if( strcmp( ext[j].ext, extension ) == 0 )
 			{
-				moduleExtName = ext[j].ext;
+				moduleExtName = ext[j].name;
 				return pSAudioPlugin[i];
 			}
 		}
