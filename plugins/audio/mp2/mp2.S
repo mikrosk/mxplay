@@ -248,10 +248,11 @@ mp2_check_module:
 mp2_get_playtime:
 		clr.l	d0
 		move.l	mp2_filelenght,d1
-			move.l	mp2_bitrate,d2
+		move.l	mp2_bitrate,d2
 		mulu.w	#125,d2
 		divu.w	d2,d1
-		move.w	d1,mp2_header+MXP_PLUGIN_PARAMETER
+		move.w	d1,d0
+		move.l	d0,mp2_header+MXP_PLUGIN_PARAMETER
 		moveq	#MXP_OK,d0
 		rts
 
