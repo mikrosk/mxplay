@@ -244,7 +244,6 @@ int main( int argc, char* argv[] )
 	short	key, kstate;
 	short	mx, my, mb, mc;
 	short	obj;
-	long	temp;
 	BOOL	inVolume = FALSE;
 
 	/* register MiNT domain */
@@ -344,6 +343,11 @@ int main( int argc, char* argv[] )
 	/* Application mainloop */
 	while( g_quitApp == FALSE )
 	{
+		if( g_pCurrAudioPlugin != NULL )
+		{
+			AudioPluginModuleFeed( g_pCurrAudioPlugin );
+		}
+
 		event = evnt_multi_fast( &evmultIn, g_msgBuffer, &evmultOut );
 
 		mx		= evmultOut.emo_mouse.p_x;	/* mouse x */
@@ -621,11 +625,6 @@ int main( int argc, char* argv[] )
 					PanelMute();
 				break;
 			}
-		}
-
-		if( g_pCurrAudioPlugin != NULL )
-		{
-			AudioPluginModuleFeed( g_pCurrAudioPlugin );
 		}
 	}
 

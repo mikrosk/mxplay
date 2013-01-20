@@ -40,9 +40,9 @@ void TimerReset( unsigned long seconds )
 	pauseConst = 0;
 }
 
-void TimerPause( void )
+void TimerPause( BOOL pause )
 {
-	if( g_modulePaused == TRUE )
+	if( pause )
 	{
 		/* module is paused just since now */
 		pausedTime = clock();

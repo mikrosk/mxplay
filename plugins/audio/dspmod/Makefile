@@ -2,7 +2,7 @@ TARGET	= dspmod.mxp
 
 AS	= vasm
 
-ASFLAGS	= -Ftos -m68030 -quiet -devpac
+ASFLAGS	= -Ftos -m68030 -quiet -devpac -nosym -tos-flags=37	# super, fastload, altalloc
 
 default: $(TARGET)
 

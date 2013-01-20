@@ -245,13 +245,13 @@ gt2_extensions_gt2:
 		dc.b	"GT2",0
 
 gt2_settings_module_name:
-		dc.b	"Module name",0
+		dc.b	"Title",0
 gt2_settings_channels:
 		dc.b	"Channels",0
 gt2_settings_tracker_name:
 		dc.b	"Tracker",0
 gt2_settings_module_type:
-		dc.b	"Module type",0
+		dc.b	"Type",0
 
 gt2_format_0700:
 		dc.b	"GT2 v0.700",0

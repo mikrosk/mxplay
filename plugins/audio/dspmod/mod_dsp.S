@@ -1,9 +1,5 @@
 ; High-level manager for DSPMOD player
 
-		OPT	D-
-		;file header is ignored for plugins...
-		;COMMENT HEAD=%101			; fastload on/loadalt off/mallocalt on
-
 		include	"../mxplay.inc"
 
 ; Plugin header

@@ -1,16 +1,14 @@
-*		High-level manager for ACE player
-*		ACE plugin for mxPlay - Main()
-*		by -XI-/Satantronic
-*		version 1-noFPU   save:0.14   date:19.12.2005   time:22:19
+; ace plugin
+; MiKRO / Mystic Bytes
+; (c) 2012-2013
 
-		opt	d-
-		opt	p=68030
+		include	'../mxplay.inc'
+		include	'replace.def'
 
-		include	"../mxplay.inc"
+; ----------------------------------------------
+		section text
+; ----------------------------------------------
 
-;====================================================
-
-;---Plugin header:-----------------------------------
 ace_header:	dc.l	"MXP2"
 		ds.l	1
 		dc.l	ace_register_module
@@ -27,199 +25,184 @@ ace_header:	dc.l	"MXP2"
 		dc.l	ace_extensions
 		dc.l	ace_settings
 
-;---Register:----------------------------------------
+
 ace_register_module:
 		movea.l	ace_header+MXP_PLUGIN_PARAMETER,a0
-		move.l	(a0)+,filebuffer
+		move.l	(a0),filebuffer
+		movea.l	(a0),a0
+		cmpi.l	#'AM01',(a0)
+		bne.b	.error
 
-		move.l	#MXP_FLG_INFOLINE,d0
-		not.l	d0
-		;and.l	d0,ace_set_title
-		;and.l	d0,ace_set_artist
-		;and.l	d0,ace_set_type
-		ori.l	#MXP_FLG_INFOLINE,ace_set_title
-		ori.l	#MXP_FLG_INFOLINE,ace_set_artist
-		ori.l	#MXP_FLG_INFOLINE,ace_set_type
-
-		move.l	#MXP_FLG_PLG_PARAM,d0
-		not.l	d0
-		and.l	d0,ace_set_title
-		and.l	d0,ace_set_artist
-		and.l	d0,ace_set_type
-		;ori.l	#MXP_FLG_INFOLINE,ace_set_title
-		;ori.l	#MXP_FLG_INFOLINE,ace_set_artist
-		;ori.l	#MXP_FLG_MOD_PARAM,ace_set_type
-
-		move.l	#MXP_FLG_MOD_PARAM,d0
-		not.l	d0
-		;and.l	d0,ace_set_title
-		;and.l	d0,ace_set_artist
-		;and.l	d0,ace_set_type
-		ori.l	#MXP_FLG_INFOLINE,ace_set_title
-		ori.l	#MXP_FLG_INFOLINE,ace_set_artist
-		ori.l	#MXP_FLG_MOD_PARAM,ace_set_type
-
-		bra	ace_get_module_type
-
-
-;---Check:-------------------------------------------
-ace_check_module:
-		bsr.w	ace_get_module_type		; d0 will contain return code
+		moveq	#MXP_OK,d0
 		rts
 
-
-;---Init:--------------------------------------------
-ace_init:	moveq	#MXP_OK,d0
+.error:		moveq	#MXP_ERROR,d0
 		rts
 
-
-;---Set:---------------------------------------------
-ace_set:	clr.l	stop_flag
-
-		lea	_filter_table,a0
+ace_init:	suba.l	a0,a0			; FPU version
 		move.l	#REPLACE_INITIALIZE,d0
 		jsr	replace
 		cmp.w	#REPLACE_OK,d0
-		bne.s	.exit
+		bne.b	.error
 
-		move.l	filebuffer,a0
+		moveq	#MXP_OK,d0
+		rts
+
+.error:		moveq	#MXP_ERROR,d0
+		rts
+
+ace_set:	movea.l	filebuffer,a0
 		move.l	#REPLACE_INITIALIZE_MODULE,d0
 		jsr	replace
 		cmp.w	#REPLACE_OK,d0
-		bne.s	.exit
+		bne.b	.error
 
-;		move.l	#25,d1
-;		move.l	#REPLACE_SET_VOLUME,d0
-;		jsr	replace
-;		cmp.w	#REPLACE_OK,d0
-;		bne.s	.exit
+		move.l	#REPLACE_DELAY_ENABLE,d0
+		jsr	replace
+		cmp.w	#REPLACE_OK,d0
+		bne.b	.error
 
 		move.l	#REPLACE_START_INTERRUPT,d0
 		jsr	replace
 		cmp.w	#REPLACE_OK,d0
-		bne.s	.exit
+		bne.b	.error
+
+		;move.l	#127,d1
+		;move.l	#REPLACE_SET_VOLUME,d0
+		;jsr	replace
+		;cmp.w	#REPLACE_OK,d0
+		;bne.b	.error
 
 		move.l	#REPLACE_PLAY_SONG,d0
 		jsr	replace
 		cmp.w	#REPLACE_OK,d0
-		bne.s	.exit
+		bne.b	.error
 
 		moveq	#MXP_OK,d0
 		rts
 
-.exit		moveq	#MXP_ERROR,d0
+.error:		moveq	#MXP_ERROR,d0
 		rts
 
-
-;---Unset:-------------------------------------------
-ace_unset:
-		move.l	#REPLACE_STOP_SONG,d0
+ace_unset:	move.l	#REPLACE_STOP_SONG,d0
 		jsr	replace
 		cmp.w	#REPLACE_OK,d0
-		bne.s	.exit
+		bne.b	.error
 
 		move.l	#REPLACE_REMOVE_MODULE,d0
 		jsr	replace
 		cmp.w	#REPLACE_OK,d0
-		bne.s	.exit
+		bne.b	.error
 
-		move.l	#REPLACE_EXIT,d0
+		moveq	#MXP_OK,d0
+		rts
+
+.error:		moveq	#MXP_ERROR,d0
+		rts
+
+ace_deinit:	move.l	#REPLACE_EXIT,d0
 		jsr	replace
 
 		moveq	#MXP_OK,d0
 		rts
 
-.exit		moveq	#MXP_ERROR,d0
-		rts
+ace_pause:	move.l	ace_header+MXP_PLUGIN_PARAMETER,d0
+		bne.b	.pause
 
-
-;---Deinit:------------------------------------------
-ace_deinit:	moveq	#MXP_OK,d0
-		rts
-
-
-;---Module pause:------------------------------------
-ace_pause:	tst.l	stop_flag
-		beq.s	.stop
-		clr.l	stop_flag
 		move.l	#REPLACE_START_INTERRUPT,d0
-		bra.s	.start
+		bra.b	.set_interrupt
 
-.stop		move.l	#1,stop_flag
-		move.l	#REPLACE_STOP_INTERRUPT,d0
-.start		jsr	replace
+.pause:		move.l	#REPLACE_STOP_INTERRUPT,d0
+
+.set_interrupt:	jsr	replace
+		cmp.w	#REPLACE_OK,d0
+		bne.b	.error
+
 		moveq	#MXP_OK,d0
 		rts
 
+.error:		moveq	#MXP_ERROR,d0
+		rts
 
-;---Subrouts:----------------------------------------
-ace_get_module_title:
-		move.l	#REPLACE_GET_MODULE_TITLE,d0	;song title
+; ----------------------------------------------
+
+ace_settings_title_get:
+		move.l	#REPLACE_GET_MODULE_TITLE,d0
 		jsr	replace
+		cmp.w	#REPLACE_OK,d0
+		bne.b	.error
 
-		lea.l	ace_module_title,a1
-		movea.l	a1,a2
-		move.w	#5-1,d7
-.loop		move.l	(a0)+,(a1)+
-		dbra.w	d7,.loop
-		clr.b	(a1)
+		lea	title,a1
+		moveq	#20-1,d0
+.loop:		move.b	(a0)+,(a1)+
+		dbra	d0,.loop
+		move.l	#title,ace_header+MXP_PLUGIN_PARAMETER
 
-		move.l	a2,ace_header+MXP_PLUGIN_PARAMETER
 		moveq	#MXP_OK,d0
 		rts
 
+.error:		moveq	#MXP_ERROR,d0
+		rts
 
-ace_get_module_artist:
-		move.l	#REPLACE_GET_MODULE_COMPOSER,d0	;song composer
+ace_settings_composer_get:
+		move.l	#REPLACE_GET_MODULE_COMPOSER,d0
 		jsr	replace
+		cmp.w	#REPLACE_OK,d0
+		bne.b	.error
 
-		lea.l	ace_module_composer,a1
-		movea.l	a1,a2
-		move.w	#5-1,d7
-.loop		move.l	(a0)+,(a1)+
-		dbra.w	d7,.loop
-		clr.b	(a1)
+		lea	composer,a1
+		moveq	#20-1,d0
+.loop:		move.b	(a0)+,(a1)+
+		dbra	d0,.loop
+		move.l	#composer,ace_header+MXP_PLUGIN_PARAMETER
 
-		move.l	a2,ace_header+MXP_PLUGIN_PARAMETER
 		moveq	#MXP_OK,d0
 		rts
 
+.error:		moveq	#MXP_ERROR,d0
+		rts
 
-ace_get_module_type:
-		move.l	filebuffer,a0
-		move.w	(a0),d0
-		lea	ace_formats,a0
+ace_settings_channels_get:
+		move.l	#REPLACE_GET_NUMBER_OF_VOICES,d0
+		jsr	replace
+		move.l	d0,ace_header+MXP_PLUGIN_PARAMETER
 
-.loop:		movea.l	(a0)+,a1			; 'format' address
-		tst.l	a1				; NULL?
-		beq.b	.not_found
-		cmp.w	(a1),d0
-		beq.b	.found
-		addq.l	#4,a0				; skip 'name' address
-		bra.b	.loop
-
-.found:		move.l	(a0),ace_header+MXP_PLUGIN_PARAMETER
 		moveq	#MXP_OK,d0
 		rts
 
-.not_found:	moveq	#MXP_ERROR,d0
+ace_settings_delay_set:
+		move.l	ace_header+MXP_PLUGIN_PARAMETER,d0
+		move.l	d0,delay
+		beq.b	.disable
+
+		move.l	#REPLACE_DELAY_ENABLE,d0
+		bra.b	.set_delay
+
+.disable:	move.l	#REPLACE_DELAY_DISABLE,d0
+
+.set_delay:	jsr	replace
+		cmp.w	#REPLACE_OK,d0
+		bne.b	.error
+
+		moveq	#MXP_OK,d0
 		rts
 
+.error:		moveq	#MXP_ERROR,d0
+		rts
 
-;----------------------------------------------------
-		include	"replace.def"
+ace_settings_delay_get:
+		move.l	delay,ace_header+MXP_PLUGIN_PARAMETER
+		moveq	#MXP_OK,d0
+		rts
 
+; ----------------------------------------------
+		section data
+; ----------------------------------------------
 
-;====================================================
-		section	data
-
-.r:		incbin	"replace.bin"
-replace:	equ	.r+28
-
-
-_filter_table:	incbin	"f32.dat"
 		even
 
+.r:		incbin	'replace.bin'
+replace:	equ	.r+28
 
 ace_info:	dc.l	ace_info_plugin_author
 		dc.l	ace_info_plugin_version
@@ -228,79 +211,70 @@ ace_info:	dc.l	ace_info_plugin_author
 		dc.l	ace_info_replay_version
 		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA
 
-
-ace_settings:	dc.l	ace_settings_module_type
-ace_set_type	dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_PLG_PARAM|MXP_FLG_MOD_PARAM
-		dc.l	0
-		dc.l	ace_get_module_type
-
-		dc.l	ace_settings_module_title
-ace_set_title	dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_PLG_PARAM|MXP_FLG_MOD_PARAM
-		dc.l	0
-		dc.l	ace_get_module_title
-
-		dc.l	ace_settings_module_artist
-ace_set_artist	dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_PLG_PARAM|MXP_FLG_MOD_PARAM
-		dc.l	0
-		dc.l	ace_get_module_artist
-
+ace_extensions:	dc.l	ace_extensions_am
+		dc.l	ace_extensions_am_name
 		dc.l	0
 
-
-ace_extensions:	dc.l	ace_extensions_mod
+ace_settings:	dc.l	ace_settings_title
+		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM
 		dc.l	0
+		dc.l	ace_settings_title_get
+
+		dc.l	ace_settings_composer
+		dc.l	MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM|MXP_FLG_MOD_PARAM
+		dc.l	0
+		dc.l	ace_settings_composer_get
+
+		dc.l	ace_settings_channels
+		dc.l	MXP_PAR_TYPE_INT|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM
+		dc.l	0
+		dc.l	ace_settings_channels_get
+
+		dc.l	ace_settings_delay
+		dc.l	MXP_PAR_TYPE_BOOL|MXP_FLG_PLG_PARAM
+		dc.l	ace_settings_delay_set
+		dc.l	ace_settings_delay_get
 
 		dc.l	0
-
-
-ace_formats:	dc.l	ace_formats_AM01
-		dc.l	ace_formats_AM01_name
-
-		dc.l	0
-		dc.l	0
-
-ace_settings_module_title:
-		dc.b	"Title",0
-ace_settings_module_channels:
-		dc.b	"Channels",0
-ace_settings_module_type:
-		dc.b	"Module type",0
-ace_settings_module_artist:
-		dc.b	"Artist",0
 
 ace_info_plugin_author:
-		dc.b	"-XI-/Satantronic",0
+		dc.b	"MiKRO / Mystic Bytes",0
 ace_info_plugin_version:
-		dc.b	"0.14 19.12.2005 ",0
+		dc.b	"1.0",0
 ace_info_replay_name:
-		dc.b	"ACE - Replace",0
-		even
+		dc.b	"ACE Tracker Replay",0
 ace_info_replay_author:
-		dc.b	"New Beat",0
-		even
+		dc.b	"Thomas Bergstrom / New Beat",0
 ace_info_replay_version:
 		dc.b	"0.37",0
 
-
-ace_extensions_mod:
+ace_extensions_am:
 		dc.b	"AM",0
+ace_extensions_am_name:
+		dc.b	"ACE Tracker (AM01)",0
 
+ace_settings_title:
+		dc.b	"Title",0
+ace_settings_composer:
+		dc.b	"Composer",0
+ace_settings_channels:
+		dc.b	"Channels",0
 
-ace_formats_AM01:
-		dc.b	"AM01",0
-ace_formats_AM01_name:
-		dc.b	"AM (ACE Tracker)",0
+ace_settings_delay:
+		dc.b	"Delay",0
 
 		even
 
-;====================================================
-		section	bss
-stop_flag	ds.l	1
-filebuffer	ds.l	1
+delay:		dc.l	1
 
-;ace_replayer_version:
-;		ds.b	5
-ace_module_title:
-		ds.b	21
-ace_module_composer:
-		ds.b	21
+; ----------------------------------------------
+		section bss
+; ----------------------------------------------
+
+		even
+
+filebuffer:	ds.l	1
+title:		ds.b	21
+composer:	ds.b	21
+
+		even

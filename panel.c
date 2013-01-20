@@ -335,8 +335,8 @@ void PanelPause( void )
 		}
 	}
 
-	g_modulePaused ? PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PAUSE ), TimerPause()
-				   : PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
+	g_modulePaused ? PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PAUSE ), TimerPause( TRUE )
+				   : PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY ), TimerPause( FALSE );
 }
 
 void PanelNextSubSong( void )

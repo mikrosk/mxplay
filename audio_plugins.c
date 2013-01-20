@@ -80,8 +80,6 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 		bp->p_blen +				/* length of BSS segment */
 		64*1024 );					/* length of stack */
 
-		memset( bp->p_bbase, bp->p_blen, 0 );
-
 		// text segment
 		p = (struct SAudioPlugin*)bp->p_tbase;
 		if( strncmp( p->header, "MXP2", 4 ) == 0 )

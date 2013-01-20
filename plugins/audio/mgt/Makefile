@@ -3,6 +3,7 @@ TARGET	= mgt.mxp
 AS	= vasm
 CC	= m68k-atari-mint-gcc
 STRIP	= m68k-atari-mint-strip -s
+FLAGS	= m68k-atari-mint-flags -S
 
 CPU	= -m68020-60
 ASFLAGS	= -Faout -m68030 -quiet
@@ -28,4 +29,5 @@ clean:
 
 release: $(TARGET)
 	$(STRIP) $<
+	$(FLAGS) $<
 	cp $< ..

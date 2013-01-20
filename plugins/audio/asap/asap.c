@@ -272,7 +272,8 @@ int asap_set( void )
 
 	if( Devconnect( DMAPLAY, DAC, CLK25M, CLK50K, NO_SHAKE ) != 0 )
 	{
-		return MXP_ERROR;
+		// for some reason, Devconnect() returns error in memory protection mode...
+		//return MXP_ERROR;
 	}
 
 	if( Setmode( MODE_STEREO16 ) != 0 )

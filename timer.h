@@ -24,8 +24,10 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
+#include "mxplay.h"
+
 extern void TimerReset( unsigned long seconds );
-extern void TimerPause( void );
+extern void TimerPause( BOOL pause );
 
 extern unsigned long TimerGetSubTime( void );
 extern unsigned long TimerGetAddTime( void );

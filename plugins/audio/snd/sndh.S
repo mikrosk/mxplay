@@ -82,7 +82,9 @@ sndh_deinit:	moveq	#MXP_OK,d0
 		rts
 
 		; TODO: memory leak if we play another plugin and then register again!!!
-sndh_set:	bsr	start_play
+sndh_set:	move.l	sndh_header+MXP_PLUGIN_PARAMETER,d0
+		move.w	d0,current_sng
+		bsr	start_play
 		moveq	#MXP_OK,d0
 		rts
 
