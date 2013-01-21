@@ -2,13 +2,13 @@
 *		MP2 plugin for mxPlay - Main()
 *		by -XI-/Satantronic
 *		version 1   save:0.10   date:19.12.2005   time:21:57
-
-		opt	d-
+*		version 2 by MiKRO / Mystic Bytes
 
 		include	"../mxplay.inc"
 
 
 ;====================================================
+		section text
 
 ;---Plugin header:-----------------------------------
 mp2_header:	dc.l	"MXP2"
@@ -263,9 +263,7 @@ mp2_init:	moveq	#MXP_OK,d0
 
 
 ;---Set:---------------------------------------------
-mp2_set:	clr.l	stop_flag
-
-		move.l	mp2_filebuffer,mp2player+MP2_ADDRESS
+mp2_set:	move.l	mp2_filebuffer,mp2player+MP2_ADDRESS
 		move.l	mp2_filelenght,mp2player+MP2_LENGTH
 
 		tst.l	mp2_flg_extclock
@@ -296,9 +294,8 @@ mp2_deinit:	moveq	#MXP_OK,d0
 
 
 ;---Module pause:------------------------------------
-mp2_pause:	tst.l	stop_flag
-		beq.s	.stop
-		clr.l	stop_flag		;unpause
+mp2_pause:	tst.l	mp2_header+MXP_PLUGIN_PARAMETER
+		bne.s	.stop
 
 		move.w	#0,-(sp)
 		move.w	#$77,-(sp)		;$77 - Dsp Hf0() 0-clear 1-set HSR
@@ -308,8 +305,7 @@ mp2_pause:	tst.l	stop_flag
 
 		bra.s	.start
 
-.stop		move.l	#1,stop_flag		;pause
-		move.w	#1,-(sp)
+.stop		move.w	#1,-(sp)
 		move.w	#$77,-(sp)		;$77 - Dsp Hf0() 0-clear 1-set HSR
 						;$78 - Dsp Hf1() 0-clear 1-set
 		trap	#14
@@ -972,6 +968,7 @@ mp2_info_replay_version:
 mp2_extensions_mod:
 		dc.b	"MP2",0
 
+
 mp2_formats_MP2_name:
 		dc.b	"MP2 (MPEG 1 Audio Layer II)",0
 
@@ -1056,7 +1053,6 @@ mp2_flg_extclock:
 ;====================================================
 		section	bss
 		even
-stop_flag	ds.l	1
 id3v1_flag	ds.l	1
 id3v2_flag	ds.l	1
 id3v2_foot_flag	ds.l	1
@@ -1089,3 +1085,9 @@ id3v2_TOPE	ds.b	256+1	;Orig.Artist
 id3v2_TCOP	ds.b	256+1	;Copyright
 id3v2_WXXX	ds.b	256+1	;URL
 id3v2_TENC	ds.b	256+1	;Encoded by
+
+		even
+
+
+;====================================================
+		section text
