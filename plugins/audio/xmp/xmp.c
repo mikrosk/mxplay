@@ -48,6 +48,19 @@ struct SInfo			xmp_info =
 	MXP_FLG_USE_DMA|MXP_FLG_FAST_CPU|MXP_FLG_XBIOS|MXP_FLG_DONT_LOAD_MODULE|MXP_FLG_USER_CODE
 };
 
+/*
+ * .DMF
+ * .DTM
+ * .FLX
+ * .GTK
+ * .IT
+ * .MED
+ * .MGT
+ * .MOD
+ * .MTM
+ * .S3M
+ * .XM
+ */
 struct SExtension		xmp_extensions[] =
 {
 	{ "*", NULL },
