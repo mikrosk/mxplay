@@ -41,6 +41,7 @@
 #include "timer.h"
 #include "module_info.h"
 #include "system.h"
+#include "debug.h"
 
 BOOL	g_quitApp = FALSE;
 short	g_msgBuffer[8];
