@@ -32,6 +32,8 @@ BOOL g_tosClone = FALSE;
 BOOL   g_hasDma = FALSE;
 BOOL   g_hasDsp = FALSE;
 
+int g_cpu = 0;	// for asm_routines.S
+
 void CheckSystem( void )
 {
 	long val;
@@ -41,6 +43,8 @@ void CheckSystem( void )
 
 	if( Getcookie( '_CPU', &val ) == C_FOUND )
 	{
+		g_cpu = val;
+
 		if( val >= 40 )
 		{
 			debug( "040+ CPU" );

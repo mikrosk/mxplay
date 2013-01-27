@@ -80,6 +80,10 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 		bp->p_blen +				/* length of BSS segment */
 		64*1024 );					/* length of stack */
 
+		// CT60 TOS is broken, older FreeMiNT kernels are broken, ...
+		extern void asm_invalidate_cache( void );
+		Supexec( asm_invalidate_cache );
+
 		// text segment
 		p = (struct SAudioPlugin*)bp->p_tbase;
 		if( strncmp( p->header, "MXP2", 4 ) == 0 )
@@ -566,7 +570,14 @@ BOOL AudioPluginLockResources( void )
 		{
 			ShowFastCpuRequiredDialog();
 		}
+
+		if( dmaLocked )
+		{
+			extern void asm_save_audio( void );
+			Supexec( asm_save_audio );
+		}
 	}
+
 	return TRUE;
 }
 
@@ -583,6 +594,10 @@ BOOL AudioPluginFreeResources( void )
 		if( AudioPluginIsFlagSet( MXP_FLG_USE_DMA ) && dmaLocked )
 		{
 			Sndstatus( SND_RESET );
+
+			extern void asm_restore_audio( void );
+			Supexec( asm_restore_audio );
+
 			dmaLocked = FALSE;
 			if( Unlocksnd() == -128 )
 			{

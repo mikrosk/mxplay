@@ -22,7 +22,7 @@ OPT_FLAGS		= -O2 -fomit-frame-pointer -g
 CFLAGS			= -Wall -Wshadow $(CPU_FLAGS) -Wno-multichar
 ASFLAGS			= $(CPU_FLAGS)
 
-SOBJS			= dsp_fix.S asm_regs.S
+SOBJS			= dsp_fix.S asm_routines.S
 COBJS			= main.c audio_plugins.c dialogs.c panel.c filelist.c misc.c av.c \
 			  dd.c playlist.c file_select.c plugin_info.c timer.c module_info.c \
 			  info_dialogs.c debug.c system.c

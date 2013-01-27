@@ -1,5 +1,5 @@
 /*
- * asm_regs.s -- save/restore registers
+ * asm_routines.s -- "private" asm routines
  *
  * Copyright (c) 2012-2013 Miro Kropacek; miro.kropacek@gmail.com
  *
@@ -24,6 +24,11 @@
 	.globl	_asm_safe_call
 	.globl	_asm_safe_pointer
 
+	// supervisor functions
+	.globl	_asm_save_audio
+	.globl	_asm_restore_audio
+	.globl	_asm_invalidate_cache
+
 // d0-d1 / a0-a1 are scratch registers, no need to save them
 // (and d0 is used for the return value)
 
@@ -40,8 +45,61 @@ _asm_safe_call:
 	movem.l	(a0),d2-d7/a2-a6
 	rts
 
+_asm_save_audio:
+	lea	saveaudiobuf(pc),a0
+	move.w	0xffff8930.w,(a0)+
+	move.w	0xffff8932.w,(a0)+
+	move.b	0xffff8934.w,(a0)+
+	move.b	0xffff8935.w,(a0)+
+	move.b	0xffff8936.w,(a0)+
+	move.b	0xffff8937.w,(a0)+
+	move.b	0xffff8938.w,(a0)+
+	move.b	0xffff8939.w,(a0)+
+	move.b	0xffff893a.w,(a0)+
+	move.b	0xffff893c.w,(a0)+
+	move.b	0xffff8900.w,(a0)+
+	move.b	0xffff8901.w,(a0)+
+	move.b	0xffff8920.w,(a0)+
+	move.b	0xffff8921.w,(a0)+
+	rts
+
+_asm_restore_audio:
+	lea	saveaudiobuf(pc),a0
+	move.w	(a0)+,0xffff8930.w
+	move.w	(a0)+,0xffff8932.w
+	move.b	(a0)+,0xffff8934.w
+	move.b	(a0)+,0xffff8935.w
+	move.b	(a0)+,0xffff8936.w
+	move.b	(a0)+,0xffff8937.w
+	move.b	(a0)+,0xffff8938.w
+	move.b	(a0)+,0xffff8939.w
+	move.b	(a0)+,0xffff893a.w
+	move.b	(a0)+,0xffff893c.w
+	move.b	(a0)+,0xffff8900.w
+	move.b	(a0)+,0xffff8901.w
+	move.b	(a0)+,0xffff8920.w
+	move.b	(a0)+,0xffff8921.w
+	rts
+
+	.globl	_g_cpu
+	// note: here I'm not sure whether is OK to clear i-cache only or not
+_asm_invalidate_cache:
+	cmpi.l	#40,_g_cpu
+	bge.b	.cpu040
+
+.cpu030:movec	cacr,d0
+	or.l	#0b100000001000,d0		// cd/ci bit (clear d/i-cache)
+	movec	d0,cacr
+	rts
+
+.cpu040:cpusha	bc				// flush to memory
+	cinva	bc				// invalidate
+	rts
+
 	.bss
 
 regs:	ds.l	11
 _asm_safe_pointer:
 	ds.l	1
+saveaudiobuf:
+	ds.w	8
