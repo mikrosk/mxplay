@@ -1,0 +1,13 @@
+diff --git a/src/load.c b/src/load.c
+index 1f372ad..e037fdc 100644
+--- a/src/load.c
++++ b/src/load.c
+@@ -241,7 +241,7 @@ static int decrunch(struct list_head *head, FILE **f, char **s, int ttl)
+     if (packer == NULL)
+ 	return 0;
+ 
+-#if defined ANDROID || defined __native_client__
++#if defined ANDROID || defined __native_client__ || __MINT__
+     /* Don't use external helpers in android */
+     if (cmd)
+ 	return 0;
