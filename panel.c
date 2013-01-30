@@ -745,13 +745,16 @@ void LoadAndPlay( void )
 			{
 				PanelPlay();
 
-				AudioPluginGetInfoLine( g_pCurrAudioPlugin );
+				if( g_modulePlaying )
+				{
+					AudioPluginGetInfoLine( g_pCurrAudioPlugin );
 
-				PluginInfoUpdate();
+					PluginInfoUpdate();
 
-				ModuleInfoUpdate();
+					ModuleInfoUpdate();
 
-				PlayListDisplayTrackNumber();
+					PlayListDisplayTrackNumber();
+				}
 			}
 		}
 	}

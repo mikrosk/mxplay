@@ -359,7 +359,6 @@ int xmp_unset( void )
 {
 	Buffoper( 0x00 );	// disable playback
 	Jdisint( MFP_TIMERA );
-	Sndstatus( SND_RESET );
 
 	xmp_stop_module( c );
 	xmp_end_player( c );

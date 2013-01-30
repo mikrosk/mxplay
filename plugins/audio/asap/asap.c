@@ -244,11 +244,6 @@ int asap_set( void )
 	channels = ASAPInfo_GetChannels( info );
 
 	moduleSong = (int)asap_parameter.value;
-// 	if( moduleSong == -1 )
-// 	{
-// 		// if played for the first time, set the default one
-// 		moduleSong = ASAPInfo_GetDefaultSong( info );
-// 	}
 
 	if( !ASAP_PlaySong( asap, moduleSong, -1 ) )	// unlimited time
 	{
@@ -322,7 +317,6 @@ int asap_unset( void )
 {
 	Buffoper( 0x00 );	// disable playback
 	Jdisint( MFP_TIMERA );
-	Sndstatus( SND_RESET );
 
 	ASAPInfo_Delete( info );
 
