@@ -174,13 +174,6 @@ static int loadBuffer( char* pBuffer, size_t bufferSize )
 
 static void __attribute__((interrupt)) timerA( void )
 {
-	// swap buffers (makes logical buffer physical)
-	char* tmp = pPhysical;
-	pPhysical = pLogical;
-	pLogical = tmp;
-
-	Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize );
-
 	loadNewSample = 1;
 
 	*( (volatile unsigned char*)0xFFFFFA0FL ) &= ~( 1<<5 );	//	clear in service bit
@@ -261,7 +254,6 @@ int asap_set( void )
 	pLogical = pBuffer + bufferSize;
 
 	loadBuffer( pPhysical, bufferSize );
-	loadBuffer( pLogical, bufferSize );
 
 	Sndstatus( SND_RESET );
 
@@ -298,6 +290,9 @@ int asap_set( void )
 		return MXP_ERROR;
 	}
 
+	// fix for ARAnyM/zmagxsnd -- it doesn't emit Timer A interrupt at the beginning
+	loadNewSample = 1;
+
 	return MXP_OK;
 }
 
@@ -305,7 +300,16 @@ int asap_feed( void )
 {
 	if( loadNewSample )
 	{
+		// fill in logical buffer
 		loadBuffer( pLogical, bufferSize );
+
+		// swap buffers (makes logical buffer physical)
+		char* tmp = pPhysical;
+		pPhysical = pLogical;
+		pLogical = tmp;
+
+		// set physical buffer for the next frame
+		Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize );
 
 		loadNewSample = 0;
 	}
