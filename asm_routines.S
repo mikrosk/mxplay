@@ -82,7 +82,7 @@ _asm_restore_audio:
 	rts
 
 	.globl	_g_cpu
-	// note: here I'm not sure whether is OK to clear i-cache only or not
+// flush both caches as I'm lazy to implement per page/per line flush + cinv
 _asm_invalidate_cache:
 	cmpi.l	#40,_g_cpu
 	bge.b	.cpu040
@@ -92,8 +92,12 @@ _asm_invalidate_cache:
 	movec	d0,cacr
 	rts
 
-.cpu040:cpusha	bc				// flush to memory
+.cpu040:move	sr,d0				// save sr
+	ori	#0x0700,sr			// ints off
+	nop					// fix for some broken 040s
+	cpusha	bc				// flush to memory
 	cinva	bc				// invalidate
+	move	d0,sr				// ints back
 	rts
 
 	.bss
