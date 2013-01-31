@@ -92,9 +92,9 @@ struct SAudioPlugin
 	int (*Set)( void );
 	int (*Feed)( void );
 	int (*Unset)( void );
-	int (*Deinit)( void );
-	int (*ModulePause)( void );
-	int (*ModuleMute)( void );
+	int (*UnregisterModule)( void );
+	int (*Pause)( void );
+	int (*Mute)( void );
 	struct SInfo*		pSInfo;
 	struct SExtension*	pSExtension;
 	struct SParameter*	pSParameter;

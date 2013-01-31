@@ -115,11 +115,11 @@ MXP_PLUGIN_FEED		EQU	7*4
 ; Output:  -
 MXP_PLUGIN_UNSET	EQU	8*4
 
-; Name:    Plugin deinitialization.
+; Name:    Plugin unregistration. Everything allocated in Register() must go away here.
 ; Purpose: Free buffers.
 ; Input:   -
 ; Output:  -
-MXP_PLUGIN_DEINIT	EQU	9*4
+MXP_PLUGIN_UNREGISTER_MOD EQU	9*4
 
 ; Name:    Music pause.
 ; Purpose: Pause music.

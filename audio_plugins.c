@@ -189,13 +189,13 @@ int AudioPluginModuleStop( struct SAudioPlugin* plugin )
 int AudioPluginModulePause( struct SAudioPlugin* plugin, BOOL pause )
 {
 	plugin->inBuffer.value = pause;
-	return AudioPluginCallFunction( plugin->ModulePause );
+	return AudioPluginCallFunction( plugin->Pause );
 }
 
 int AudioPluginModuleMute( struct SAudioPlugin* plugin, BOOL mute )
 {
 	plugin->inBuffer.value = mute;
-	return AudioPluginCallFunction( plugin->ModuleMute );
+	return AudioPluginCallFunction( plugin->Mute );
 }
 
 int AudioPluginModuleNextSubSong( struct SAudioPlugin* plugin )
