@@ -76,7 +76,7 @@ ntk_info_replay_name:
 ntk_info_replay_author:
 		dc.b	"Nullos / DNT-Crew",0
 ntk_info_replay_version:
-		dc.b	"1994",0
+		dc.b	"2.7",0
 
 ntk_extensions_ntk:
 		dc.b	"NTK",0
