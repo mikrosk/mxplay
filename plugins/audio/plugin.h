@@ -40,6 +40,7 @@
 #define MXP_FLG_XBIOS			(1<<3)			/* plugin uses XBIOS calls only (no direct hw access) */
 #define MXP_FLG_DONT_LOAD_MODULE	(1<<4)			/* plugins loads modules by itself */
 #define MXP_FLG_USER_CODE 		(1<<5)			/* plugin handles supervisor calls by itself */
+#define MXP_FLG_ONLY_030		(1<<6)			/* plugin doesn't work correctly on CT60 */
 
 #define MXP_PAR_TYPE_BOOL		0				/* bool value (on/off) */
 #define MXP_PAR_TYPE_CHAR		1				/* character field as string */

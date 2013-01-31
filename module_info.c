@@ -655,7 +655,7 @@ static void ModuleInfoDownCommon( int count )
 	}
 }
 
-static void ModuleInfoResizeObjects( deltaX, deltaY )
+static void ModuleInfoResizeObjects( short deltaX, short deltaY )
 {
 	OBJECT*	tree;
 	short	objects;

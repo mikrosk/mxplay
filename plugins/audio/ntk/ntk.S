@@ -60,7 +60,7 @@ ntk_info:	dc.l	ntk_info_plugin_author
 		dc.l	ntk_info_replay_name
 		dc.l	ntk_info_replay_author
 		dc.l	ntk_info_replay_version
-		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA
+		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_ONLY_030
 
 ntk_extensions:
 		dc.l	ntk_extensions_ntk

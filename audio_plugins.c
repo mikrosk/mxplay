@@ -412,7 +412,8 @@ struct SAudioPlugin* LookForAudioPlugin( char* path, char* name )
 			else if( strcmp( ext[j].ext, "*" ) == 0 )
 			{
 				// ok, a wildcard, let's try to Register() it
-				// TODO: now we pass only file path!
+				// the fact that with '*' we accept only a file path is OK else
+				// loading time of the modules while starting would be super slow!
 				if( AudioPluginRegisterModule( pSAudioPlugin[i], filePath, strlen( filePath ) ) == MXP_OK )
 				{
 					moduleExtName = ext[j].name;
@@ -462,7 +463,14 @@ void LoadAudioPlugins( void )
 						g_pCurrAudioPlugin = pSAudioPlugin[audioPluginsCount];
 						if( !AudioPluginIsFlagSet( MXP_FLG_XBIOS ) && g_tosClone )
 						{
-							debug( "Leaving out %s", pDirEntry->d_name );
+							debug( "Leaving out %s (reason: TOS clone)", pDirEntry->d_name );
+							Mfree( pSAudioPlugin[audioPluginsCount] );
+							leftOut++;
+							continue;
+						}
+						else if( AudioPluginIsFlagSet( MXP_FLG_ONLY_030 ) && g_cpu > 30 )
+						{
+							debug( "Leaving out %s (reason: 040+ CPU)", pDirEntry->d_name );
 							Mfree( pSAudioPlugin[audioPluginsCount] );
 							leftOut++;
 							continue;

@@ -17,9 +17,9 @@ FLAGS			= ${prefix}flags -l -r -a -S
 UPX			= upx
 MAKE			= make
 
-DEBUG_FLAGS		= -g -DDEBUG -Wno-shadow
+DEBUG_FLAGS		= -g -DDEBUG -Wextra -Wno-sign-compare
 OPT_FLAGS		= -O2 -fomit-frame-pointer -g
-CFLAGS			= -Wall -Wshadow $(CPU_FLAGS) -Wno-multichar
+CFLAGS			= -Wall $(CPU_FLAGS) -Wno-multichar
 ASFLAGS			= $(CPU_FLAGS)
 
 SOBJS			= dsp_fix.S asm_routines.S

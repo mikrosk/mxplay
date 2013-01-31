@@ -15,6 +15,7 @@ MXP_FLG_FAST_CPU	EQU	1<<2			; plugin needs a fast CPU
 MXP_FLG_XBIOS		EQU	1<<3			; plugin uses XBIOS calls only (no direct hw access)
 MXP_FLG_DONT_LOAD_MODULE EQU	1<<4			; plugin loads modules by itself
 MXP_FLG_USER_CODE 	EQU	1<<5			; plugin handles supervisor calls by itself
+MXP_FLG_ONLY_030	EQU	1<<6			; plugin doesn't work correctly on CT60
 
 MXP_FLG_INFOLINE	EQU	1<<29			; show on infoline
 MXP_FLG_MOD_PARAM	EQU	1<<30			; module parameter

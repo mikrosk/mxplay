@@ -363,7 +363,7 @@ int ShowFastCpuRequiredDialog()
 int ShowTosCloneDialog( int ignoredCount )
 {
 	char tempString[255+1];
-	sprintf( tempString, "[3][Disabled %d plugins which are|not compatible with your machine.][Real hardware!]", ignoredCount );
+	sprintf( tempString, "[3][Disabled %d plugins which are|not compatible with your machine.][Booh]", ignoredCount );
 	return do_walert( 1, TRUE, tempString, "Message" );
 }
 

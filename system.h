@@ -30,6 +30,7 @@ extern BOOL	g_fastCpu;	// 030/50 MHz, 040, 060
 extern BOOL	g_tosClone;	// Hades, Milan, ARAnyM, ...
 extern BOOL	g_hasDma;	// 16-bit CODEC
 extern BOOL	g_hasDsp;	// DSP56001
+extern int	g_cpu;		// 30/40/60
 
 extern void CheckSystem( void );
 

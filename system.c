@@ -31,8 +31,7 @@ BOOL  g_fastCpu = FALSE;
 BOOL g_tosClone = FALSE;
 BOOL   g_hasDma = FALSE;
 BOOL   g_hasDsp = FALSE;
-
-int g_cpu = 0;	// for asm_routines.S
+int		  g_cpu = 0;
 
 void CheckSystem( void )
 {

@@ -130,7 +130,7 @@ sndh_info:	dc.l	sndh_info_plugin_author
 		dc.l	sndh_info_replay_name
 		dc.l	sndh_info_replay_author
 		dc.l	sndh_info_replay_version
-		dc.l	MXP_FLG_USER_CODE
+		dc.l	MXP_FLG_USER_CODE|MXP_FLG_ONLY_030
 
 sndh_extensions:
 		dc.l	sndh_extensions_snd
