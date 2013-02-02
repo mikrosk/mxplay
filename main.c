@@ -344,7 +344,7 @@ int main( int argc, char* argv[] )
 	/* Application mainloop */
 	while( g_quitApp == FALSE )
 	{
-		if( g_pCurrAudioPlugin != NULL )
+		if( g_pCurrAudioPlugin != NULL && g_modulePlaying )
 		{
 			AudioPluginModuleFeed( g_pCurrAudioPlugin );
 		}
