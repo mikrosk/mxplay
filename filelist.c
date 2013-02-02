@@ -92,6 +92,12 @@ long FileListGetFileNumber( struct SFileListFile* pSFile )
 		pSInputFile = pSFile;
 	}
 
+	if( pSInputFile == NULL )
+	{
+		// current file deleted
+		return -1;
+	}
+
 	pSTempFile = FileListGetFirstEntry();
 
 	while( pSTempFile != NULL )
