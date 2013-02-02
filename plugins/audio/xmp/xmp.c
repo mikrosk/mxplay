@@ -193,6 +193,7 @@ static char* pLogical;
 static size_t bufferSize;	// size of one buffer
 static int loadNewSample;
 static char* moduleFilePath;
+static char* pBuffer;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
@@ -267,7 +268,6 @@ int xmp_init( void )
 
 int xmp_set( void )
 {
-	char* pBuffer;
 	struct xmp_frame_info fi;
 
 	if( xmp_load_module( c, moduleFilePath ) != 0 )
@@ -311,19 +311,19 @@ int xmp_set( void )
 
 	if( Setmode( MODE_STEREO16 ) != 0 )
 	{
-		return MXP_ERROR;
+		goto error;
 	}
 
 	Soundcmd( ADDERIN, MATIN );
 
 	if( Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize ) != 0 )
 	{
-		return MXP_ERROR;
+		goto error;
 	}
 
 	if( Setinterrupt( SI_TIMERA, SI_PLAY ) != 0 )
 	{
-		return MXP_ERROR;
+		goto error;
 	}
 
 	Xbtimer( XB_TIMERA, 1<<3, 1, timerA );	// event count mode, count to '1'
@@ -333,13 +333,19 @@ int xmp_set( void )
 	// start playback!!!
 	if( Buffoper( SB_PLA_ENA | SB_PLA_RPT ) != 0 )
 	{
-		return MXP_ERROR;
+		goto error;
 	}
 
 	// fix for ARAnyM/zmagxsnd -- it doesn't emit Timer A interrupt at the beginning
 	loadNewSample = 1;
 
 	return MXP_OK;
+
+error:
+	Mfree( pBuffer );
+	pBuffer = NULL;
+
+	return MXP_ERROR;
 }
 
 int xmp_feed( void )
@@ -371,6 +377,9 @@ int xmp_unset( void )
 	xmp_stop_module( c );
 	xmp_end_player( c );
 	xmp_release_module( c );        /* unload module */
+
+	Mfree( pBuffer );
+	pBuffer = NULL;
 
 	return MXP_OK;
 }

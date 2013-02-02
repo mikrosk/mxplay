@@ -73,6 +73,7 @@ static unsigned char moduleBuffer[ASAPInfo_MAX_MODULE_LENGTH];
 static int moduleLength;
 static int moduleSong;
 static char* moduleFilePath;
+static char* pBuffer;
 
 static const char* na = "n/a";
 
@@ -245,7 +246,7 @@ int asap_set( void )
 
 	bufferSize = 2 * 2 * ASAP_SAMPLE_RATE * 1;	// 2 channels * 16 bit * 49170 Hz * 1 second
 
-	char* pBuffer = (char*)Mxalloc( 2 * bufferSize, MX_STRAM );
+	pBuffer = (char*)Mxalloc( 2 * bufferSize, MX_STRAM );
 	if( pBuffer == NULL )
 	{
 		return MXP_ERROR;
@@ -265,19 +266,19 @@ int asap_set( void )
 
 	if( Setmode( MODE_STEREO16 ) != 0 )
 	{
-		return MXP_ERROR;
+		goto error;
 	}
 
 	Soundcmd( ADDERIN, MATIN );
 
 	if( Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize ) != 0 )
 	{
-		return MXP_ERROR;
+		goto error;
 	}
 
 	if( Setinterrupt( SI_TIMERA, SI_PLAY ) != 0 )
 	{
-		return MXP_ERROR;
+		goto error;
 	}
 
 	Xbtimer( XB_TIMERA, 1<<3, 1, timerA );	// event count mode, count to '1'
@@ -287,13 +288,19 @@ int asap_set( void )
 	// start playback!!!
 	if( Buffoper( SB_PLA_ENA | SB_PLA_RPT ) != 0 )
 	{
-		return MXP_ERROR;
+		goto error;
 	}
 
 	// fix for ARAnyM/zmagxsnd -- it doesn't emit Timer A interrupt at the beginning
 	loadNewSample = 1;
 
 	return MXP_OK;
+
+error:
+	Mfree( pBuffer );
+	pBuffer = NULL;
+
+	return MXP_ERROR;
 }
 
 int asap_feed( void )
@@ -323,6 +330,9 @@ int asap_unset( void )
 	Jdisint( MFP_TIMERA );
 
 	ASAPInfo_Delete( info );
+
+	Mfree( pBuffer );
+	pBuffer = NULL;
 
 	return MXP_OK;
 }
