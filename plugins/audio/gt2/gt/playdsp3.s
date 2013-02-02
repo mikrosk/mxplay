@@ -1,3 +1,4 @@
+* kate: indent-mode Normal; tab-width 11; indent-width 11;
 ******************************************************************************
 *							*
 *		G R A O U M F   T R A C K E R			*

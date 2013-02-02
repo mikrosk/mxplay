@@ -1,3 +1,4 @@
+* kate: indent-mode Normal; tab-width 11; indent-width 11;
 *~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*
 *÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷÷*
 *							*
@@ -1243,7 +1244,7 @@ gtkpl_premvbl_loop:			; Boucle de test si c'est la premiŠre vbl
 	tst.w	c_v_t(a3)
 	beq	fx_fin1		; Pas de volume on se tire
 	bra	gtkpl_effets1
-	
+
 ;--- Instrument d‚tect‚ ------------------------------------------------------
 gtkpl_instrum:
 	move.w	d2,d3
@@ -2777,7 +2778,7 @@ fx_init_autoperiod:
 fx_demo_synchro:
 	move.w	d4,gtkpl_demo_synchro
 	bra	fx_fin1
-	
+
 
 
 ;ððððððððððððððððððððððððððððððððððððððððððððððððððððððððððððððððððððððððððððð
@@ -3699,7 +3700,7 @@ gtkpl_panenv_bidon:	Dc.l	'PENV',34	; Id, longueur
 		RsReset
 
 ;... Partie utilisateur (soundtracker en l'occurence) ........................
-		
+
 		IfNE	CONST_T
 		RsSet	USER_T
 		Else

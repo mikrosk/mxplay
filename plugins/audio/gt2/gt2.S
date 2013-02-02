@@ -51,12 +51,6 @@ gt2_register_module:
 		cmp.b	#"2",(a0)+
 		bne.s	.err
 
-		move.l	filebuffer,-(sp)
-		move.l	filebuffer,-(sp)
-		move.w	#0,-(sp)
-		bsr	gtkpl_convert_module
-		lea	10(sp),sp
-
 		moveq	#MXP_OK,d0
 		rts
 
@@ -85,7 +79,14 @@ gt2_start_playback:
 		move.w	#NBRVOIES_MAXI,-(sp)
 		sndkernel kernel_on
 		addq.l	#6,sp
+
 		bsr	gtkpl_player_on
+
+		move.l	filebuffer,-(sp)
+		move.l	filebuffer,-(sp)
+		move.w	#0,-(sp)
+		bsr	gtkpl_convert_module
+		lea	10(sp),sp
 
 		pea	0.l
 		pea	repeatbuffer
