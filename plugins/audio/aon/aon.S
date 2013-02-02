@@ -20,11 +20,11 @@ aon_header:	dc.l	"MXP2"
 		dc.l	aon_register_module
 		dc.l	0			; aon_get_playtime
 		dc.l	0			; aon_get_songs
-		dc.l	aon_initt
+		dc.l	0			; aon_initt
 		dc.l	aon_set
 		dc.l	0			; aon_feed
 		dc.l	aon_unset
-		dc.l	aon_deinit
+		dc.l	0			; aon_unregister
 		dc.l	aon_pause
 		dc.l	0			; aon_mute
 		dc.l	aon_info
@@ -111,11 +111,6 @@ no_AON:		moveq	#MXP_ERROR,d0
 		rts
 
 
-;---Init:--------------------------------------------
-aon_initt:	moveq	#MXP_OK,d0
-.exit:		rts
-
-
 ;---Set:---------------------------------------------
 aon_set:	clr.l	stop_flag
 		move.l	filebuffer,a0
@@ -128,11 +123,6 @@ aon_set:	clr.l	stop_flag
 ;---Unset:-------------------------------------------
 aon_unset:	bsr	music_off
 		moveq	#MXP_OK,d0
-		rts
-
-
-;---Deinit:------------------------------------------
-aon_deinit:	moveq	#MXP_OK,d0
 		rts
 
 

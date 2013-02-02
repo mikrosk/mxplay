@@ -240,6 +240,10 @@ static void enableTimerASei( void )
 
 int xmp_register_module( void )
 {
+	// TODO: maybe we could load the module right here. now with every play/stop
+	// we load the file again and again...
+	// (but beware, while LookForAudioPlugin(), this register/unregister with malloc/load
+	// would be called many times, too! it's just the play/stop would be fast)
 	moduleFilePath = xmp_parameter.pModule->p;
 
 	struct xmp_test_info ti;
@@ -367,13 +371,6 @@ int xmp_unset( void )
 	xmp_stop_module( c );
 	xmp_end_player( c );
 	xmp_release_module( c );        /* unload module */
-
-	return MXP_OK;
-}
-
-int xmp_deinit( void )
-{
-	xmp_free_context( c );          /* destroy the player context */
 
 	return MXP_OK;
 }

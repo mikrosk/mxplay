@@ -9,11 +9,11 @@ sndh_header:	dc.l	"MXP2"
 		dc.l	sndh_register_module
 		dc.l	0			; sndh_get_playtime
 		dc.l	sndh_get_songs
-		dc.l	sndh_init
+		dc.l	0			; sndh_init
 		dc.l	sndh_set
 		dc.l	0			; sndh_feed
 		dc.l	sndh_unset
-		dc.l	sndh_deinit
+		dc.l	sndh_unregister_module
 		dc.l	0			; sndh_pause
 		dc.l	0			; sndh_mute
 		dc.l	sndh_info
@@ -23,6 +23,7 @@ sndh_header:	dc.l	"MXP2"
 sndh_register_module:
 		movea.l	sndh_header+MXP_PLUGIN_PARAMETER,a0
 		move.l	(a0),song_address
+		clr.w	packed
 
 		clr.l	d0
 		movea.l	song_address,a0
@@ -42,6 +43,8 @@ sndh_register_module:
 		addq.l	#8,sp
 		tst.l	d0
 		beq.b	.error
+
+		move.w	#1,packed
 
 		movea.l	song_address,a0		; src
 		movea.l	d0,a1			; dst
@@ -69,19 +72,24 @@ sndh_register_module:
 .no_malloc:	moveq	#MXP_ERROR,d0
 		rts
 
+sndh_unregister_module:
+		tst.w	packed
+		beq.b	.no_malloc
+
+		move.l	song_address,-(sp)
+		move.w	#$49,-(sp)		; Mfree()
+		trap	#1
+		addq.l	#6,sp
+
+.no_malloc:	moveq	#MXP_OK,d0
+		rts
+
 sndh_get_songs:	clr.l	d0
 		move.w	songs,d0
 		move.l	d0,sndh_header+MXP_PLUGIN_PARAMETER
 		moveq	#MXP_OK,d0
 		rts
 
-sndh_init:	moveq	#MXP_OK,d0
-		rts
-
-sndh_deinit:	moveq	#MXP_OK,d0
-		rts
-
-		; TODO: memory leak if we play another plugin and then register again!!!
 sndh_set:	move.l	sndh_header+MXP_PLUGIN_PARAMETER,d0
 		move.w	d0,current_sng
 		bsr	start_play
@@ -210,3 +218,4 @@ t_vbiovr:	dc.b	', VBL override!',0
 song_address:	ds.l	1
 t_method:	ds.b	40			; 40 char buffer for constructin method info
 t_songs:	ds.b	6
+packed:		ds.w	1

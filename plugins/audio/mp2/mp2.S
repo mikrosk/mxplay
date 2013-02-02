@@ -16,11 +16,11 @@ mp2_header:	dc.l	"MXP2"
 		dc.l	mp2_register_module
 		dc.l	mp2_get_playtime
 		dc.l	0			; mp2_get_songs
-		dc.l	mp2_init
+		dc.l	0			; mp2_init
 		dc.l	mp2_set
 		dc.l	0			; mp2_feed
 		dc.l	mp2_unset
-		dc.l	mp2_deinit
+		dc.l	0			; mp2_unregister_module
 		dc.l	mp2_pause
 		dc.l	0			; mp2_mute
 		dc.l	mp2_info
@@ -257,11 +257,6 @@ mp2_get_playtime:
 		rts
 
 
-;---Init:--------------------------------------------
-mp2_init:	moveq	#MXP_OK,d0
-.exit:		rts
-
-
 ;---Set:---------------------------------------------
 mp2_set:	move.l	mp2_filebuffer,mp2player+MP2_ADDRESS
 		move.l	mp2_filelenght,mp2player+MP2_LENGTH
@@ -285,11 +280,6 @@ mp2_set:	move.l	mp2_filebuffer,mp2player+MP2_ADDRESS
 mp2_unset:	jsr	mp2player+MP2_STOP(pc)
 
 		moveq	#MXP_OK,d0
-		rts
-
-
-;---Deinit:------------------------------------------
-mp2_deinit:	moveq	#MXP_OK,d0
 		rts
 
 

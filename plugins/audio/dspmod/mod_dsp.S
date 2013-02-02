@@ -13,7 +13,7 @@ dspmod_header:	dc.l	"MXP2"
 		dc.l	dspmod_set
 		dc.l	0			; dspmod_feed
 		dc.l	dspmod_unset
-		dc.l	dspmod_deinit
+		dc.l	0			; dspmod_unregister
 		dc.l	0			; dspmod_pause
 		dc.l	0			; dspmod_mute
 		dc.l	dspmod_info
@@ -61,16 +61,6 @@ dspmod_set:	bsr.w	dspmod_begin
 ; Unsetup
 
 dspmod_unset:	bsr.w	dspmod_end
-
-		moveq	#MXP_OK,d0
-		rts
-
-; Deinit
-
-dspmod_deinit:	pea	dma_pointer			; Mfree()
-		move.w	#$49,-(sp)			;
-		trap	#1				;
-		addq.l	#6,sp				;
 
 		moveq	#MXP_OK,d0
 		rts

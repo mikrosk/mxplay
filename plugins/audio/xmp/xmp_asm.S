@@ -10,7 +10,6 @@
 		XREF	_xmp_set
 		XREF	_xmp_feed
 		XREF	_xmp_unset
-		XREF	_xmp_deinit
 		XREF	_xmp_pause
 		XREF	_xmp_mute
 
@@ -27,7 +26,7 @@ _xmp_parameter:	ds.l	1
 		dc.l	_xmp_set
 		dc.l	_xmp_feed
 		dc.l	_xmp_unset
-		dc.l	_xmp_deinit
+		dc.l	0			; _xmp_unregister_module
 		dc.l	_xmp_pause
 		dc.l	_xmp_mute
 		dc.l	_xmp_info

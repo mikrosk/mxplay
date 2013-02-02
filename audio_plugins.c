@@ -145,6 +145,11 @@ static int AudioPluginRegisterModule( struct SAudioPlugin* plugin, char* module,
 	return AudioPluginCallFunction( plugin->RegisterModule );
 }
 
+static int AudioPluginUnregisterModule( struct SAudioPlugin* plugin )
+{
+	return AudioPluginCallFunction( plugin->UnregisterModule );
+}
+
 static int AudioPluginInit( struct SAudioPlugin* plugin )
 {
 	g_pCurrAudioPlugin = plugin;	// LookForAudioPlugin hasn't been called yet
@@ -312,10 +317,16 @@ BOOL LoadAudioModule( char* path, char* name )
 	char			tempString[MXP_PATH_MAX+1];
 	unsigned long	length;
 	static char*	pModule;
+	static struct SAudioPlugin* pLastUsedPlugin;
 
 	/* no more available */
 	if( pModule != NULL )
 	{
+		if( pLastUsedPlugin != NULL )
+		{
+			AudioPluginUnregisterModule( pLastUsedPlugin );
+		}
+
 		free( pModule );
 		pModule = NULL;
 	}
@@ -379,6 +390,9 @@ BOOL LoadAudioModule( char* path, char* name )
 		return FALSE;
 	}
 
+	// no error => it's used
+	pLastUsedPlugin = g_pCurrAudioPlugin;
+
 	strcpy( g_currModuleFilePath, tempString );
 	return TRUE;
 }
@@ -416,6 +430,10 @@ struct SAudioPlugin* LookForAudioPlugin( char* path, char* name )
 				// loading time of the modules while starting would be super slow!
 				if( AudioPluginRegisterModule( pSAudioPlugin[i], filePath, strlen( filePath ) ) == MXP_OK )
 				{
+					// ok, registration successful but now we have to unregister it as we might be in the
+					// middle of playlist populating or so. actually, we hope Unregister is NULL in this case.
+					AudioPluginUnregisterModule( pSAudioPlugin[i] );
+
 					moduleExtName = ext[j].name;
 					return pSAudioPlugin[i];
 				}
@@ -476,7 +494,7 @@ void LoadAudioPlugins( void )
 							continue;
 						}
 
-						if( AudioPluginInit( pSAudioPlugin[audioPluginsCount] ) != MXP_OK )
+						if( AudioPluginInit( pSAudioPlugin[audioPluginsCount] ) == MXP_ERROR )
 						{
 							ShowAudioInitErrorDialog( pDirEntry->d_name );
 							Mfree( pSAudioPlugin[audioPluginsCount] );

@@ -11,7 +11,6 @@
 		XREF	_asap_set
 		XREF	_asap_feed
 		XREF	_asap_unset
-		XREF	_asap_deinit
 		XREF	_asap_pause
 		XREF	_asap_mute
 
@@ -28,7 +27,7 @@ _asap_parameter:	ds.l	1
 		dc.l	_asap_set
 		dc.l	_asap_feed
 		dc.l	_asap_unset
-		dc.l	_asap_deinit
+		dc.l	0				; _asap_unregister
 		dc.l	_asap_pause
 		dc.l	_asap_mute
 		dc.l	_asap_info

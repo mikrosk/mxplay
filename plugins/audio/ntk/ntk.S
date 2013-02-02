@@ -10,11 +10,11 @@ ntk_header:	dc.l	"MXP2"
 		dc.l	ntk_register_module
 		dc.l	0			; ntk_get_playtime
 		dc.l	0			; ntk_get_songs
-		dc.l	ntk_init
+		dc.l	0			; ntk_init
 		dc.l	ntk_set
 		dc.l	0			; ntk_feed
 		dc.l	ntk_unset
-		dc.l	ntk_deinit
+		dc.l	0			; ntk_unregister
 		dc.l	0			; ntk_pause
 		dc.l	0			; ntk_mute
 		dc.l	ntk_info
@@ -33,12 +33,6 @@ ntk_register_module:
 		rts
 
 .ok:		moveq	#MXP_OK,d0
-		rts
-
-ntk_init:	moveq	#MXP_OK,d0
-		rts
-
-ntk_deinit:	moveq	#MXP_OK,d0
 		rts
 
 ntk_set:	bsr	playmodule

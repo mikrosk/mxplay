@@ -136,8 +136,14 @@ int mgt_register_module( void )
  	return MXP_OK;
 }
 
-int mgt_init( void )
+int mgt_unregister_module( void )
 {
+	if( g_moduleBuffer != NULL )
+	{
+		Mfree( g_moduleBuffer );
+		g_moduleBuffer = NULL;
+	}
+
 	return MXP_OK;
 }
 
@@ -177,10 +183,5 @@ int mgt_unset( void )
 	Mfree( g_moduleBuffer );
 	g_moduleBuffer = NULL;
 
-	return MXP_OK;
-}
-
-int mgt_deinit( void )
-{
 	return MXP_OK;
 }

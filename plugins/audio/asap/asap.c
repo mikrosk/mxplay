@@ -71,7 +71,6 @@ static ASAPInfo* info;
 static int channels;
 static unsigned char moduleBuffer[ASAPInfo_MAX_MODULE_LENGTH];
 static int moduleLength;
-static int moduleRegistered;
 static int moduleSong;
 static char* moduleFilePath;
 
@@ -186,6 +185,7 @@ static void enableTimerASei( void )
 
 int asap_register_module( void )
 {
+	// TODO: same as XMP, now we loads it everytime play/stop is issued
 	moduleFilePath = asap_parameter.pModule->p;
 	return ASAPInfo_IsOurFile( moduleFilePath ) == 1 ? MXP_OK : MXP_ERROR;
 }
@@ -323,15 +323,6 @@ int asap_unset( void )
 	Jdisint( MFP_TIMERA );
 
 	ASAPInfo_Delete( info );
-
-	moduleRegistered = 0;
-
-	return MXP_OK;
-}
-
-int asap_deinit( void )
-{
-	ASAP_Delete( asap );
 
 	return MXP_OK;
 }

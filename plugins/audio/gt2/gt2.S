@@ -17,7 +17,7 @@ gt2_header:	dc.l	"MXP2"
 		dc.l	gt2_start_playback
 		dc.l	0			; gt2_feed
 		dc.l	gt2_stop_playback
-		dc.l	gt2_deinit
+		dc.l	gt2_unregister_module
 		dc.l	gt2_pause
 		dc.l	0			; gt2_mute
 		dc.l	gt2_info
@@ -51,6 +51,12 @@ gt2_register_module:
 		cmp.b	#"2",(a0)+
 		bne.s	.err
 
+		move.l	filebuffer,-(sp)
+		move.l	filebuffer,-(sp)
+		move.w	#0,-(sp)
+		bsr	gtkpl_convert_module
+		lea	10(sp),sp
+
 		moveq	#MXP_OK,d0
 		rts
 
@@ -65,18 +71,21 @@ gt2_init:	move.l	#98340,d0		; calculate new replayfreq data
 		moveq	#MXP_OK,d0
 		rts
 
+gt2_unregister_module:
+		move.l	filebuffer,-(sp)	; Mfree()
+		move.w	#$49,-(sp)		;
+		trap	#1			;
+		addq.l	#6,sp			;
+
+		moveq	#MXP_OK,d0
+		rts
+
 gt2_start_playback:
 		move.l	#gtkpl_info_track,-(sp)
 		move.w	#NBRVOIES_MAXI,-(sp)
 		sndkernel kernel_on
 		addq.l	#6,sp
 		bsr	gtkpl_player_on
-
-		move.l	filebuffer,-(sp)
-		move.l	filebuffer,-(sp)
-		move.w	#0,-(sp)
-		bsr	gtkpl_convert_module
-		lea	10(sp),sp
 
 		pea	0.l
 		pea	repeatbuffer
@@ -99,15 +108,7 @@ gt2_stop_playback:
 		bsr	gtkpl_player_off
 		sndkernel kernel_off
 
-		move.l	filebuffer,-(sp)
-		move.w	#73,-(sp)
-		trap	#1
-		addq.l	#6,sp
-
 		moveq	#MXP_OK,d0
-		rts
-
-gt2_deinit:	moveq	#MXP_OK,d0
 		rts
 
 gt2_pause:	move.l	gt2_header+MXP_PLUGIN_PARAMETER,d0

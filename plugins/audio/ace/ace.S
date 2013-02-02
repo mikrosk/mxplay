@@ -18,7 +18,7 @@ ace_header:	dc.l	"MXP2"
 		dc.l	ace_set
 		dc.l	0			; ace_feed
 		dc.l	ace_unset
-		dc.l	ace_deinit
+		dc.l	0			; ace_unregister
 		dc.l	ace_pause
 		dc.l	0			; ace_mute
 		dc.l	ace_info
@@ -94,16 +94,13 @@ ace_unset:	move.l	#REPLACE_STOP_SONG,d0
 		cmp.w	#REPLACE_OK,d0
 		bne.b	.error
 
+		;move.l	#REPLACE_EXIT,d0
+		;jsr	replace
+
 		moveq	#MXP_OK,d0
 		rts
 
 .error:		moveq	#MXP_ERROR,d0
-		rts
-
-ace_deinit:	move.l	#REPLACE_EXIT,d0
-		jsr	replace
-
-		moveq	#MXP_OK,d0
 		rts
 
 ace_pause:	move.l	ace_header+MXP_PLUGIN_PARAMETER,d0
