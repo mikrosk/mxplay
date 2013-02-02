@@ -309,6 +309,8 @@ gtkr_kernel_off:
 .loop:	tst.w	gtkr_flag_the_end	; Attend qu'il se soit d‚sinstall‚
 	bne.s	.loop
 
+	clr.w	gtkr_flag_installed
+
 	moveq	#0,d0
 	bra.s	.fin
 
