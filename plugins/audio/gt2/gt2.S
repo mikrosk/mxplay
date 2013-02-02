@@ -51,6 +51,18 @@ gt2_register_module:
 		cmp.b	#"2",(a0)+
 		bne.s	.err
 
+		move.l	filebuffer,-(sp)
+		move.l	filebuffer,-(sp)
+		move.w	#0,-(sp)
+		bsr	gtkpl_convert_module
+		lea	10(sp),sp
+
+		pea	0.l
+		pea	repeatbuffer
+		move.l	filebuffer,-(sp)
+		bsr	gtkpl_make_rb_module
+		lea	12(sp),sp
+
 		moveq	#MXP_OK,d0
 		rts
 
@@ -81,18 +93,6 @@ gt2_start_playback:
 		addq.l	#6,sp
 
 		bsr	gtkpl_player_on
-
-		move.l	filebuffer,-(sp)
-		move.l	filebuffer,-(sp)
-		move.w	#0,-(sp)
-		bsr	gtkpl_convert_module
-		lea	10(sp),sp
-
-		pea	0.l
-		pea	repeatbuffer
-		move.l	filebuffer,-(sp)
-		bsr	gtkpl_make_rb_module
-		lea	12(sp),sp
 
 		clr.w	-(sp)
 		clr.w	-(sp)
