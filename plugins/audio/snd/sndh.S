@@ -181,7 +181,7 @@ sndh_info_plugin_version:
 sndh_info_replay_name:
 		dc.b	"SNDH",0
 sndh_info_replay_author:
-		dc.b	"Evil / DHS & Odd Skancke",0
+		dc.b	"Evil/DHS & Ozk/AssemSoft",0
 sndh_info_replay_version:
 		dc.b	"May 14 2000",0
 
