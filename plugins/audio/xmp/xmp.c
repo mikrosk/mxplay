@@ -444,7 +444,9 @@ int xmp_pause( void )
 	}
 	else
 	{
+#ifdef TIMER_A_HANDLER
 		Setbuffer( SR_PLAY, ptr.play, pPhysical + bufferSize );
+#endif
 		Buffoper( SB_PLA_ENA | SB_PLA_RPT );
 	}
 
