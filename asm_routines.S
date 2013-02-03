@@ -46,7 +46,7 @@ _asm_safe_call:
 	rts
 
 _asm_save_audio:
-	lea	saveaudiobuf(pc),a0
+	lea	saveaudiobuf,a0
 	move.w	0xffff8930.w,(a0)+
 	move.w	0xffff8932.w,(a0)+
 	move.b	0xffff8934.w,(a0)+
@@ -64,7 +64,7 @@ _asm_save_audio:
 	rts
 
 _asm_restore_audio:
-	lea	saveaudiobuf(pc),a0
+	lea	saveaudiobuf,a0
 	move.w	(a0)+,0xffff8930.w
 	move.w	(a0)+,0xffff8932.w
 	move.b	(a0)+,0xffff8934.w
@@ -84,6 +84,7 @@ _asm_restore_audio:
 	.globl	_g_cpu
 // flush both caches as I'm lazy to implement per page/per line flush + cinv
 _asm_invalidate_cache:
+	#ifndef	__mcoldfire__
 	cmpi.l	#40,_g_cpu
 	bge.b	.cpu040
 
@@ -98,6 +99,7 @@ _asm_invalidate_cache:
 	cpusha	bc				// flush to memory
 	cinva	bc				// invalidate
 	move	d0,sr				// ints back
+	#endif
 	rts
 
 	.bss

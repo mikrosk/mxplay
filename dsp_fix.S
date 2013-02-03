@@ -41,6 +41,10 @@
 		.text
 
 _dsp_load_program:
+		#ifdef __mcoldfire__
+		moveq	#1,d0
+		rts
+		#else
 		move.l	a0,dsp_program
 		move.l	d0,dsp_length
 
@@ -272,4 +276,4 @@ dsp_program:	ds.l	1
 dsp_length:	ds.l	1
 dsp_status:	ds.l	1
 
-		.text
+		#endif	// __mcoldfire__

@@ -51,12 +51,22 @@ debug:
 	$(FLAGS) $(TARGET)
 
 release:
+ifneq ($(TARGET), mxplay_cf.app)
 	$(MAKE) -C plugins/audio release
+endif
 	$(MAKE) $(TARGET) CONFIG="Release"
 	$(STRIP) $(TARGET)
+ifneq ($(TARGET), mxplay_cf.app)
 	$(UPX) $(TARGET)
 	$(FLAGS) $(TARGET)
+endif
 
 clean:
 	rm -f *.o *.bak *~ *.app
 	$(MAKE) -C plugins/audio clean
+
+cf:
+	rm -f *.o
+	$(MAKE) TARGET=mxplay_cf.app CPU_FLAGS='-mcpu=5475' release
+
+all: clean release cf
