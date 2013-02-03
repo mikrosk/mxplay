@@ -10,6 +10,12 @@ ASFLAGS	= -Faout -m68882 -m68030 -quiet
 CFLAGS	= $(CPU) -Wall -O2 -fomit-frame-pointer -std=c99
 LDFLAGS	= $(CPU) -lasap -nostartfiles
 
+TIMER_A	= no
+
+ifeq ($(TIMER_A),yes)
+CFLAGS += -DTIMER_A_HANDLER
+endif
+
 default: $(TARGET)
 
 asap_asm.o: asap_asm.S ../mxplay.inc
@@ -23,5 +29,17 @@ clean:
 
 release: $(TARGET)
 	$(STRIP) $<
+ifeq ($(TIMER_A),yes)
 	$(FLAGS) $<
+endif
 	cp $< ..
+
+aranym:
+	rm -f *.o
+	$(MAKE) TARGET=asap_ara.mxp TIMER_A=yes release
+
+cf:
+	rm -f *.o
+	$(MAKE) TARGET=asap_cf.mxp CPU='-mcpu=5475' release
+
+all: clean release aranym cf

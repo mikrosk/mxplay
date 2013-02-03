@@ -153,7 +153,9 @@ struct SParameter		asap_settings[] =
 static char* pPhysical;
 static char* pLogical;
 static size_t bufferSize;	// size of one buffer
+#ifdef TIMER_A_HANDLER
 static int loadNewSample;
+#endif
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
@@ -172,6 +174,7 @@ static int loadBuffer( char* pBuffer, size_t bufferSize )
 	return bytes == bufferSize ? 0 : 1;
 }
 
+#ifdef TIMER_A_HANDLER
 static void __attribute__((interrupt)) timerA( void )
 {
 	loadNewSample = 1;
@@ -183,6 +186,7 @@ static void enableTimerASei( void )
 {
 	*( (volatile unsigned char*)0xFFFFFA17L ) |= ( 1<<3 );	//	software end-of-interrupt mode
 }
+#endif
 
 int asap_register_module( void )
 {
@@ -270,12 +274,16 @@ int asap_set( void )
 	}
 
 	Soundcmd( ADDERIN, MATIN );
-
+#ifdef TIMER_A_HANDLER
 	if( Setbuffer( SR_PLAY, pPhysical, pPhysical + bufferSize ) != 0 )
+#else
+	if( Setbuffer( SR_PLAY, pBuffer, pBuffer + 2*bufferSize ) != 0 )
+#endif
 	{
 		goto error;
 	}
 
+#ifdef TIMER_A_HANDLER
 	if( Setinterrupt( SI_TIMERA, SI_PLAY ) != 0 )
 	{
 		goto error;
@@ -284,6 +292,7 @@ int asap_set( void )
 	Xbtimer( XB_TIMERA, 1<<3, 1, timerA );	// event count mode, count to '1'
 	Supexec( enableTimerASei );
 	Jenabint( MFP_TIMERA );
+#endif
 
 	// start playback!!!
 	if( Buffoper( SB_PLA_ENA | SB_PLA_RPT ) != 0 )
@@ -291,8 +300,10 @@ int asap_set( void )
 		goto error;
 	}
 
+#ifdef TIMER_A_HANDLER
 	// fix for ARAnyM/zmagxsnd -- it doesn't emit Timer A interrupt at the beginning
 	loadNewSample = 1;
+#endif
 
 	return MXP_OK;
 
@@ -303,6 +314,7 @@ error:
 	return MXP_ERROR;
 }
 
+#ifdef TIMER_A_HANDLER
 int asap_feed( void )
 {
 	if( loadNewSample )
@@ -323,11 +335,46 @@ int asap_feed( void )
 
 	return MXP_OK;
 }
+#else
+int asap_feed( void )
+{
+	static int loadSampleFlag;
+
+	SndBufPtr sPtr;
+	if( Buffptr( &sPtr ) != 0 )
+	{
+		return MXP_ERROR;
+	}
+
+	if( loadSampleFlag == 0 )
+	{
+		// we play from pPhysical (1st buffer)
+		if( sPtr.play < pLogical )
+		{
+			loadBuffer( pLogical, bufferSize );
+			loadSampleFlag = !loadSampleFlag;
+		}
+	}
+	else
+	{
+		// we play from pLogical (2nd buffer)
+		if( sPtr.play >= pLogical )
+		{
+			loadBuffer( pPhysical, bufferSize );
+			loadSampleFlag = !loadSampleFlag;
+		}
+	}
+
+	return MXP_OK;
+}
+#endif
 
 int asap_unset( void )
 {
 	Buffoper( 0x00 );	// disable playback
+#ifdef TIMER_A_HANDLER
 	Jdisint( MFP_TIMERA );
+#endif
 
 	ASAPInfo_Delete( info );
 
@@ -349,7 +396,9 @@ int asap_pause( void )
 	}
 	else
 	{
+#ifdef TIMER_A_HANDLER
 		Setbuffer( SR_PLAY, ptr.play, pPhysical + bufferSize );
+#endif
 		Buffoper( SB_PLA_ENA | SB_PLA_RPT );
 	}
 
