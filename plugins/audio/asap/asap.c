@@ -259,6 +259,9 @@ int asap_set( void )
 	pLogical = pBuffer + bufferSize;
 
 	loadBuffer( pPhysical, bufferSize );
+#ifndef TIMER_A_HANDLER
+	loadBuffer( pLogical, bufferSize );
+#endif
 
 	Sndstatus( SND_RESET );
 
@@ -338,7 +341,7 @@ int asap_feed( void )
 #else
 int asap_feed( void )
 {
-	static int loadSampleFlag;
+	static int loadSampleFlag = 1;
 
 	SndBufPtr sPtr;
 	if( Buffptr( &sPtr ) != 0 )
