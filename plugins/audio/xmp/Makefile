@@ -29,7 +29,9 @@ clean:
 
 release: $(TARGET)
 	$(STRIP) $<
+ifeq ($(TIMER_A),yes)
 	$(FLAGS) $<
+endif
 	cp $< ..
 
 aranym:
