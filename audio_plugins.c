@@ -102,6 +102,25 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 	}
 }
 
+static void SortPlugins( void )
+{
+	int newn;
+	for( int n = audioPluginsCount; n != 0; n = newn )
+	{
+		newn = 0;
+		for( int i = 1; i < n; ++i )
+		{
+			if( strcmp( pSAudioPlugin[i-1]->pSExtension[0].ext, pSAudioPlugin[i]->pSExtension[0].ext ) > 0 )
+			{
+				char* tmp = pSAudioPlugin[i-1]->pSExtension[0].ext;
+				pSAudioPlugin[i-1]->pSExtension[0].ext = pSAudioPlugin[i]->pSExtension[0].ext;
+				pSAudioPlugin[i]->pSExtension[0].ext = tmp;
+				newn = i;
+			}
+		}
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////
 
 inline static BOOL AudioPluginIsFlagSet( int flag )
@@ -413,7 +432,7 @@ struct SAudioPlugin* LookForAudioPlugin( char* path, char* name )
 
 	CombinePath( filePath, path, name );
 
-	for( i = 0; i < audioPluginsCount; i++ )
+	for( i = audioPluginsCount - 1; i >= 0 ; --i )
 	{
 		ext = pSAudioPlugin[i]->pSExtension;
 		for( j = 0; ; j++ )
@@ -508,6 +527,10 @@ void LoadAudioPlugins( void )
 			}
 		}
 
+		SortPlugins();
+
+		closedir( pDirStream );
+
 		if( audioPluginsCount == 0 )
 		{
 			ShowNoAudioFoundDialog();
@@ -521,8 +544,6 @@ void LoadAudioPlugins( void )
 	{
 		ShowNoAudioFoundDialog();
 	}
-
-	closedir( pDirStream );
 
 	g_pCurrAudioPlugin = NULL;	// none
 }
