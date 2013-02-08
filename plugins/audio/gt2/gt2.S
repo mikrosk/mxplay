@@ -87,6 +87,11 @@ gt2_unregister_module:
 		rts
 
 gt2_start_playback:
+		move.w	ct60_cache,-(sp)
+		move.w	#$c60c,-(sp)
+		trap	#14
+		addq.l	#4,sp
+
 		move.l	#gtkpl_info_track,-(sp)
 		move.w	#NBRVOIES_MAXI,-(sp)
 		sndkernel kernel_on
@@ -108,6 +113,11 @@ gt2_stop_playback:
 		bsr	gtkpl_stop_module
 		bsr	gtkpl_player_off
 		sndkernel kernel_off
+
+		move.w	#1,-(sp)		; cache on
+		move.w	#$c60c,-(sp)
+		trap	#14
+		addq.l	#4,sp
 
 		moveq	#MXP_OK,d0
 		rts
@@ -193,6 +203,21 @@ gt2_settings_module_type_get:
 		moveq	#MXP_OK,d0
 		rts
 
+gt2_settings_plugin_cache_get:
+		clr.l	d0
+		move.w	ct60_cache,d0
+		move.l	d0,gt2_header+MXP_PLUGIN_PARAMETER
+
+		moveq	#MXP_OK,d0
+		rts
+
+gt2_settings_plugin_cache_set:
+		move.l	gt2_header+MXP_PLUGIN_PARAMETER,d0
+		move.w	d0,ct60_cache
+
+		moveq	#MXP_OK,d0
+		rts
+
 ; ----------------------------------------------
 		section data
 ; ----------------------------------------------
@@ -230,6 +255,11 @@ gt2_settings:	dc.l	gt2_settings_module_name
 		dc.l	0
 		dc.l	gt2_settings_module_type_get
 
+		dc.l	gt2_settings_plugin_cache
+		dc.l	MXP_PAR_TYPE_BOOL|MXP_FLG_PLG_PARAM
+		dc.l	gt2_settings_plugin_cache_set
+		dc.l	gt2_settings_plugin_cache_get
+
 		dc.l	0
 
 gt2_info_plugin_author:
@@ -254,6 +284,9 @@ gt2_settings_tracker_name:
 		dc.b	"Tracker",0
 gt2_settings_module_type:
 		dc.b	"Type",0
+
+gt2_settings_plugin_cache:
+		dc.b	"CT60 cache",0
 
 gt2_format_0700:
 		dc.b	"GT2 v0.700",0
@@ -283,3 +316,5 @@ dta:		ds.l	11			; new dta buffer
 gtkpl_info_track:
 		ds.b	nbrvoies_maxi*next_t	; maximum channels info
 repeatbuffer:	ds.b	nbrsamples_maxi*1024	; gt repeatbuffer
+
+ct60_cache:	ds.w	1			; off by default
