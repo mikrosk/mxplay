@@ -1095,6 +1095,12 @@ void PlayListResize( GRECT* pNewR )
 
 	tempR = *pNewR;
 
+	if( oldR.g_y != tempR.g_y )
+	{
+		// TODO: make it work...
+		return;
+	}
+
 	deltaX = tempR.g_w - oldR.g_w;
 	deltaY = tempR.g_h - oldR.g_h;
 
