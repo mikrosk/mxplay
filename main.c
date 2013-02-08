@@ -573,7 +573,10 @@ int main( int argc, char* argv[] )
 
 				/* num / */
 				case 0x652f:
-					PanelChangeSkin();
+					if( g_modulePlaying == FALSE )
+					{
+						PanelChangeSkin();
+					}
 				break;
 
 				/* insert */
