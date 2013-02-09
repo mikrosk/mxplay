@@ -557,82 +557,84 @@ void WriteConfigFile( void )
 
 	CombinePath( temp, g_homePath, CNF_FILE );
 	fs = fopen( temp, "w" );
-
-	/* name of resource file */
-	fprintf( fs, "%s", "rsc" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%s", g_rscName );
-	fprintf( fs, "%s", "\n" );
-
-	/* x position of panel */
-	fprintf( fs, "%s", "panelX" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", g_winDialogs[WD_PANEL]->work.g_x );
-	fprintf( fs, "%s", "\n" );
-
-	/* y position of panel */
-	fprintf( fs, "%s", "panelY" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", g_winDialogs[WD_PANEL]->work.g_y );
-	fprintf( fs, "%s", "\n" );
-
-	/* x position of playlist */
-	fprintf( fs, "%s", "playlistX" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", g_winDialogs[WD_PLAYLIST]->work.g_x );
-	fprintf( fs, "%s", "\n" );
-
-	/* y position of playlist */
-	fprintf( fs, "%s", "playlistY" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", g_winDialogs[WD_PLAYLIST]->work.g_y );
-	fprintf( fs, "%s", "\n" );
-
-	/* playlist file */
-	if( strcmp( g_playlistFilePath, "" ) != 0 )
+	if( fs != NULL )
 	{
-		fprintf( fs, "%s", "playlistFile" );
+		/* name of resource file */
+		fprintf( fs, "%s", "rsc" );
 		fprintf( fs, "%s", "\t" );
-		fprintf( fs, "%s", g_playlistFilePath );
+		fprintf( fs, "%s", g_rscName );
 		fprintf( fs, "%s", "\n" );
+
+		/* x position of panel */
+		fprintf( fs, "%s", "panelX" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%d", g_winDialogs[WD_PANEL]->work.g_x );
+		fprintf( fs, "%s", "\n" );
+
+		/* y position of panel */
+		fprintf( fs, "%s", "panelY" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%d", g_winDialogs[WD_PANEL]->work.g_y );
+		fprintf( fs, "%s", "\n" );
+
+		/* x position of playlist */
+		fprintf( fs, "%s", "playlistX" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%d", g_winDialogs[WD_PLAYLIST]->work.g_x );
+		fprintf( fs, "%s", "\n" );
+
+		/* y position of playlist */
+		fprintf( fs, "%s", "playlistY" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%d", g_winDialogs[WD_PLAYLIST]->work.g_y );
+		fprintf( fs, "%s", "\n" );
+
+		/* playlist file */
+		if( strcmp( g_playlistFilePath, "" ) != 0 )
+		{
+			fprintf( fs, "%s", "playlistFile" );
+			fprintf( fs, "%s", "\t" );
+			fprintf( fs, "%s", g_playlistFilePath );
+			fprintf( fs, "%s", "\n" );
+		}
+
+		/* new random seed */
+		randomSeed = random();
+		fprintf( fs, "%s", "randomSeed" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%ld", randomSeed );
+		fprintf( fs, "%s", "\n" );
+
+		/* playtime mode */
+		fprintf( fs, "%s", "timeMode" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%d", g_timeMode );
+		fprintf( fs, "%s", "\n" );
+
+		/* repeat on/off */
+		fprintf( fs, "%s", "repeat" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%d", g_repeat );
+		fprintf( fs, "%s", "\n" );
+
+		/* random on/off */
+		fprintf( fs, "%s", "random" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%d", g_random );
+		fprintf( fs, "%s", "\n" );
+
+		/* opened playlist? */
+		fprintf( fs, "%s", "openPlayList" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%d", ( g_winDialogs[WD_PLAYLIST]->mode & WD_OPEN ) ? TRUE : FALSE );
+		fprintf( fs, "%s", "\n" );
+
+		/* default playtime */
+		fprintf( fs, "%s", "defaultPlayTime" );
+		fprintf( fs, "%s", "\t" );
+		fprintf( fs, "%d", g_defaultPlayTime );
+		fprintf( fs, "%s", "\n" );
+
+		fclose( fs );
 	}
-
-	/* new random seed */
-	randomSeed = random();
-	fprintf( fs, "%s", "randomSeed" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%ld", randomSeed );
-	fprintf( fs, "%s", "\n" );
-
-	/* playtime mode */
-	fprintf( fs, "%s", "timeMode" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", g_timeMode );
-	fprintf( fs, "%s", "\n" );
-
-	/* repeat on/off */
-	fprintf( fs, "%s", "repeat" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", g_repeat );
-	fprintf( fs, "%s", "\n" );
-
-	/* random on/off */
-	fprintf( fs, "%s", "random" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", g_random );
-	fprintf( fs, "%s", "\n" );
-
-	/* opened playlist? */
-	fprintf( fs, "%s", "openPlayList" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", ( g_winDialogs[WD_PLAYLIST]->mode & WD_OPEN ) ? TRUE : FALSE );
-	fprintf( fs, "%s", "\n" );
-
-	/* default playtime */
-	fprintf( fs, "%s", "defaultPlayTime" );
-	fprintf( fs, "%s", "\t" );
-	fprintf( fs, "%d", g_defaultPlayTime );
-	fprintf( fs, "%s", "\n" );
-
-	fclose( fs );
 }
