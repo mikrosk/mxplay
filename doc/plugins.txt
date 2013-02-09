@@ -1,0 +1,37 @@
+Short notes to included plugins:
+
+ace - TODO
+
+aon - seems to be stable on 060, most of the time :)
+
+asap - great ASAP player for Atari 8-bit musics. Comes in three versions:
+asap.mxp (classic Atari), asap_cf.mxp (FireBee build) and asap_ara.mxp
+(ARAnyM build). The reason for Aranym build is that zmagxsnd.prg has some bugs
+in reporting current DMA pointer, so I used Timer A instead. Atari and CF
+versions are 100% system friendly, not a single HW access.
+
+dspmod - marked as 030 only, as I've seen it crash on CT60. It makes no
+sense to use it on 060 anyway, there's XMP.
+
+gt2 - on 060 it switches cache off (by default, you can change it) as some
+modules with more channels crashed the player
+
+mgt - 030 only, if I disable CT60 caches, then it's too slow ;) But don't worry,
+XMP can play MGTs, too!
+
+mp2 - no change against 1.x version. It can play some MP2s which the
+original player can't. No Direct from Disk yet.
+
+ntk - 030 only, not very stable, not very helpful :)
+
+snd - 030 only, dirty, dirty, dirty.
+
+xmp - the ultimate player for all kind of modules. It can play pretty much
+everything. It's supposed to play MTMs and DMFs too but for some reason it
+crashes, so be careful. But these are PC formats, anyway. It comes also in
+three version, see above.
+
+Generally speaking, don't expect too much from the fact mxPlay is a GEM
+application. Most of the plugins rape OS vectors, timers, caches etc so maybe
+except ASAP and XMP, you'll see quite strange side effects when clicking in
+desktop.

@@ -3,9 +3,9 @@ TT030/Falcon030/Falcon060 range of computers.
 
 Read about spreading conditions in doc/COPYING.
 
-Read about plugins included in doc/PLUGINS.
+Read about plugins included in doc/plugins.txt.
 
-Read about application's functions in doc/html/using.htm.
+Read about application's functions in doc/using.txt.
 
 As there was exactly zero interest from other programmers about coding
 plugins, I'm not going to bother with documentation this time, in case you'd
