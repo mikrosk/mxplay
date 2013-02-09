@@ -76,7 +76,7 @@ dspmod_info:	dc.l	dspmod_info_plugin_author
 		dc.l	dspmod_info_replay_name
 		dc.l	dspmod_info_replay_author
 		dc.l	dspmod_info_replay_version
-		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA
+		dc.l	MXP_FLG_USE_DSP|MXP_FLG_USE_DMA|MXP_FLG_ONLY_030
 
 dspmod_settings:
 		dc.l	dspmod_settings_module_name
