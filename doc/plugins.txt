@@ -1,6 +1,8 @@
 Short notes to included plugins:
 
-ace - TODO
+ace - very unstable playback. Sometimes even movement with mouse (!) can
+make it mute... no clue, I tried to contact Thomas but hasn't replied to the
+date.
 
 aon - seems to be stable on 060, most of the time :)
 
@@ -22,9 +24,10 @@ XMP can play MGTs, too!
 mp2 - no change against 1.x version. It can play some MP2s which the
 original player can't. No Direct from Disk yet.
 
-ntk - 030 only, not very stable, not very helpful :)
+ntk - 030 only, not very stable, not very helpful :) Works best (only) in TOS.
 
-snd - 030 only, dirty, dirty, dirty.
+snd - 030 only, dirty, dirty, dirty. Works best in TOS but even here it's
+quite unstable after some time.
 
 xmp - the ultimate player for all kind of modules. It can play pretty much
 everything. It's supposed to play MTMs and DMFs too but for some reason it
