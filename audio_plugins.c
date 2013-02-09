@@ -112,9 +112,9 @@ static void SortPlugins( void )
 		{
 			if( strcmp( pSAudioPlugin[i-1]->pSExtension[0].ext, pSAudioPlugin[i]->pSExtension[0].ext ) > 0 )
 			{
-				char* tmp = pSAudioPlugin[i-1]->pSExtension[0].ext;
-				pSAudioPlugin[i-1]->pSExtension[0].ext = pSAudioPlugin[i]->pSExtension[0].ext;
-				pSAudioPlugin[i]->pSExtension[0].ext = tmp;
+				struct SAudioPlugin* tmp = pSAudioPlugin[i-1];
+				pSAudioPlugin[i-1] = pSAudioPlugin[i];
+				pSAudioPlugin[i] = tmp;
 				newn = i;
 			}
 		}
