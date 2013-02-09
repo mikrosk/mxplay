@@ -74,7 +74,24 @@ gt2_init:	move.l	#98340,d0		; calculate new replayfreq data
 		addq.w	#1,d1			;
 		divu.w	d1,d0			;
 		move.w	d0,gtkr_replay_freq	;
-		moveq	#MXP_OK,d0
+
+		movea.l	$5a0.w,a0
+		tst.l	a0
+		beq.b	.end_cookie
+
+.loop:		tst.l	(a0)
+		beq.b	.end_cookie
+
+		cmpi.l	#'CT60',(a0)
+		bne.b	.next_cookie
+
+		move.w	#1,ct60
+		bra.b	.end_cookie
+
+.next_cookie:	addq.l	#8,a0
+		bra.b	.loop
+
+.end_cookie:	moveq	#MXP_OK,d0
 		rts
 
 gt2_unregister_module:
@@ -87,12 +104,15 @@ gt2_unregister_module:
 		rts
 
 gt2_start_playback:
+		tst.w	ct60
+		beq.b	.not_ct60
+
 		move.w	ct60_cache,-(sp)
 		move.w	#$c60c,-(sp)
 		trap	#14
 		addq.l	#4,sp
 
-		move.l	#gtkpl_info_track,-(sp)
+.not_ct60:	move.l	#gtkpl_info_track,-(sp)
 		move.w	#NBRVOIES_MAXI,-(sp)
 		sndkernel kernel_on
 		addq.l	#6,sp
@@ -114,12 +134,15 @@ gt2_stop_playback:
 		bsr	gtkpl_player_off
 		sndkernel kernel_off
 
+		tst.w	ct60
+		beq.b	.not_ct60
+
 		move.w	#1,-(sp)		; cache on
 		move.w	#$c60c,-(sp)
 		trap	#14
 		addq.l	#4,sp
 
-		moveq	#MXP_OK,d0
+.not_ct60:	moveq	#MXP_OK,d0
 		rts
 
 gt2_pause:	move.l	gt2_header+MXP_PLUGIN_PARAMETER,d0
@@ -318,3 +341,4 @@ gtkpl_info_track:
 repeatbuffer:	ds.b	nbrsamples_maxi*1024	; gt repeatbuffer
 
 ct60_cache:	ds.w	1			; off by default
+ct60:		ds.w	1			; 030 by default
