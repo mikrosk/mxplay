@@ -304,6 +304,9 @@ int xmp_set( void )
 	// one frame is already decoded
 	memcpy( pPhysical, fi.buffer, fi.buffer_size );
 	loadBuffer( pPhysical + fi.buffer_size, bufferSize - fi.buffer_size );
+#ifndef TIMER_A_HANDLER
+	loadBuffer( pLogical, bufferSize );
+#endif
 
 	Sndstatus( SND_RESET );
 
@@ -384,7 +387,7 @@ int xmp_feed( void )
 #else
 int xmp_feed( void )
 {
-	static int loadSampleFlag;
+	static int loadSampleFlag = 1;
 
 	SndBufPtr sPtr;
 	if( Buffptr( &sPtr ) != 0 )

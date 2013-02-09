@@ -25,7 +25,7 @@ $(TARGET): asap_asm.o asap.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:
-	rm -f *~ $(TARGET) *.o
+	rm -f *~ *.mxp *.o
 
 release: $(TARGET)
 	$(STRIP) $<
