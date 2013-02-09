@@ -8,7 +8,8 @@
 	<body>
 		<h2><p align = "center">mxPlay User's Manual</p></h2>
 		<ol>
-			<li><a href = "#1">Introduction</a></li>
+			<li><a href = "#1_1">Introduction to mxPlay 1.0.0</a></li>
+			<li><a href = "#1_2">Introduction to mxPlay 2.0</a></li>
 			<li><a href = "#2">Features</a></li>
 			<li><a href = "#3">Windows</a></li>
 			<li><a href = "#4">Keyboard Shortcuts</a></li>
@@ -18,7 +19,7 @@
 		</ol>
 		<hr>
 
-<h3><p><a name = "1">1. Introduction</a></p></h3>
+<h3><p><a name = "1_1">1. Introduction to mxPlay 1.0.0</a></p></h3>
 <p align = "justify">
 Phew... so it really happend... if you're reading this text it means
 our little child called mxPlay is finally released.
@@ -55,6 +56,52 @@ GEM. So getting touch with this kind of programming was a new
 experience for me. Secondly, every day we come with new ideas what
 should we add, my TODO list was (and still is) full of things to
 implement...
+</p>
+
+<h3><p><a name = "1_2">1. Introduction to mxPlay 2.0</a></p></h3>
+<p align = "justify">
+Unbelievable, nearly exactly seven years later and I'm updating final bits of
+the new version :) Frankly, I considered this project dead as there was very
+little of interest from Atari users and I personally don't use Atari for daily
+work anymore so I didn't really miss a software like this.
+</p>
+<p align = "justify">
+But then again, some magic has happend :) Some time in December I found a
+website with Turrican II modules and I realized that I have no clue how to
+replay this on my Linux PC. So I googled a little and found the XMP project.
+Out of curiosity I read its API documentation and I immediately realized how
+easy this would be to port over to our platform.
+</p>
+<p align = "justify">
+In about the same time someone asked on dhs about some DSPMOD usage example and
+ggn reminded him about mxPlay...
+</p>
+<p align = "justify">
+All of this somehow led me to the feeling that I should at least try to make
+the project <i>compilable</i> again and <i>perhaps</i> I could try to hack an
+XMP plugin, as a proof of concept.
+</p>
+<p align = "justify">
+Of course, I coded a simple XMP player in like few hours. So only some tweaks
+to Makefile, code a wrapper to the player and we're done, right? Right :)
+Immediately as I started mxPlay, I saw a bug here and there and a better way
+how to do this and that and ... fuck, I spent 2 months only <b>fixing bugs</b>.
+There's very few new features, if any. Only bugfixes, bugfixes, bugfixes. For
+some crazy reason I decided also to finish all the remaing plugins (as it's
+clear nobody would do that), that led to another delays and frustration.
+</p>
+<p align = "justify">
+But, in the end... I've caught really a lot of bugs, improved stability a
+<i>lot</i>, I can't understand how the player could work at all before. Now, if
+you use only ASAP and XMP plugins, you can even remove the "Super" flag from
+mxPlay.prg, it's 100% OS friendly and safe even under memory protection. This
+is a thing never seen on Atari before ;-)
+</p>
+<p align = "justify">
+Current state is a reasonable compromise between functionality and release
+date. Most of the code is still (7 years old!) mess, it made me puke several
+times. A lot of things could have been done but I really wanted to get rid of
+it. If there's any volunteer ...
 </p>
 
 <h3><p><a name = "2">2. Features</a></p></h3>
@@ -103,17 +150,17 @@ Pause playing. Please note not every plugin supports this function.
 Click on this button again to continue playing.
 </p>
 
-<h5><p>3.1.4 Rewind</p></h5>
+<h5><p>3.1.4 Previous Subsong</p></h5>
 <p align = "justify">
-Move backward in the song. Currently not implemeted.
+Playback must be active to make this work (currently ASAP plugin only).
 </p>
 
-<h5><p>3.1.5 Forward</p></h5>
+<h5><p>3.1.5 Next Subsong</p></h5>
 <p align = "justify">
-Move forward in the song. Currently not implemeted.
+Playback must be active to make this work (currently ASAP plugin only).
 </p>
 
-<h5><p>3.1.6 Next song</p></h5>
+<h5><p>3.1.6 Next Song</p></h5>
 <p align = "justify">
 Play the next song in the playlist.
 </p>
@@ -136,7 +183,9 @@ Aniplayer!
 <h5><p>3.1.8 Playtime</p></h5>
 <p align = "justify">
 By clicking on the playtime you change time addition/substraction a
-la Winamp or XMMS.
+la Winamp or XMMS. Please note that most of the plugins do not support time
+reporting so a hardcoded value is used (3 minutes). You can change this in
+mxplay.inf.
 </p>
 
 <h5><p>3.1.9 Repeat</p></h5>
@@ -152,8 +201,7 @@ Activate random song selection. 'Repeat' button has no sense then.
 
 <h5><p>3.1.11 Mute</p></h5>
 <p align = "justify">
-Mute the playing. Please note this function is not working very well
-:)
+Mute the playing. This function must be present in the plugin.
 </p>
 
 <h5><p>3.1.12 Volume Slider</p></h5>
@@ -191,8 +239,8 @@ The best playlist for our little Atari :)
 <h5><p>3.2.1 Add file</p></h5>
 <p align = "justify">
 Add file(s) to the playlist. Please note your fileselector has to
-support Selectric and/or MagiC fileselector protocol to select more
-than one file. Except the Selectric and MagiC it does Hugo for
+support Selectric and/or MagiC/XaAES fileselector protocol to select more
+than one file. Except the Selectric and MagiC/XaAES it does Hugo for
 example.
 </p>
 
@@ -345,7 +393,7 @@ Open/close playlist.
 <h4><p>5.1 ARGV</p></h4>
 <p align = "justify">
 You can assign some file type, e.g. *.mp2 to mxPlay and then just
-click on the mp2 files and mxPlay will open & play such file. The
+click on the mp2 files and mxPlay will open &amp; play such file. The
 filename could be even with spaces, bigger than 8+3 characters etc.
 Please note, not all desktops support this, see file BUGS for details.
 </p>
