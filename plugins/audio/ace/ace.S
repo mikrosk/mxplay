@@ -14,7 +14,7 @@ ace_header:	dc.l	"MXP2"
 		dc.l	ace_register_module
 		dc.l	0			; ace_get_playtime
 		dc.l	0			; ace_get_songs
-		dc.l	ace_init
+		dc.l	0			; ace_init
 		dc.l	ace_set
 		dc.l	0			; ace_feed
 		dc.l	ace_unset
@@ -39,28 +39,23 @@ ace_register_module:
 .error:		moveq	#MXP_ERROR,d0
 		rts
 
-ace_init:	suba.l	a0,a0			; FPU version
+ace_set:	;suba.l	a0,a0			; FPU version
+		lea	filter_table,a0
 		move.l	#REPLACE_INITIALIZE,d0
 		jsr	replace
 		cmp.w	#REPLACE_OK,d0
 		bne.b	.error
 
-		moveq	#MXP_OK,d0
-		rts
-
-.error:		moveq	#MXP_ERROR,d0
-		rts
-
-ace_set:	movea.l	filebuffer,a0
+		movea.l	filebuffer,a0
 		move.l	#REPLACE_INITIALIZE_MODULE,d0
 		jsr	replace
 		cmp.w	#REPLACE_OK,d0
 		bne.b	.error
 
-		move.l	#REPLACE_DELAY_ENABLE,d0
-		jsr	replace
-		cmp.w	#REPLACE_OK,d0
-		bne.b	.error
+		;move.l	#REPLACE_DELAY_ENABLE,d0
+		;jsr	replace
+		;cmp.w	#REPLACE_OK,d0
+		;bne.b	.error
 
 		move.l	#REPLACE_START_INTERRUPT,d0
 		jsr	replace
@@ -94,8 +89,8 @@ ace_unset:	move.l	#REPLACE_STOP_SONG,d0
 		cmp.w	#REPLACE_OK,d0
 		bne.b	.error
 
-		;move.l	#REPLACE_EXIT,d0
-		;jsr	replace
+		move.l	#REPLACE_EXIT,d0
+		jsr	replace
 
 		moveq	#MXP_OK,d0
 		rts
@@ -241,7 +236,7 @@ ace_info_plugin_version:
 ace_info_replay_name:
 		dc.b	"ACE Tracker Replay",0
 ace_info_replay_author:
-		dc.b	"Thomas Bergstrom / New Beat",0
+		dc.b	"Thomas / New Beat",0
 ace_info_replay_version:
 		dc.b	"0.37",0
 
@@ -262,7 +257,9 @@ ace_settings_delay:
 
 		even
 
-delay:		dc.l	1
+delay:		dc.l	0
+
+filter_table:	incbin	'f32.dat'
 
 ; ----------------------------------------------
 		section bss
