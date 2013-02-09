@@ -26,6 +26,7 @@
 #include <string.h>
 #include <osbind.h>
 #include <sys/param.h>
+#include <strings.h>
 
 #include "skins/skin.h"
 #include "mxplay.h"
@@ -150,7 +151,15 @@ void InitRsc( void )
 
 	sprintf( welcomeString, WELCOME_MESSAGE, VERSION );
 
-	set_string( licenseDialog, GPL_COPYRIGHT, copyrightString );
+	if( strcasecmp( g_rscName, "lcars.rsc" ) == 0 )
+	{
+		// this is sad ...
+		set_string( licenseDialog, 13, copyrightString );
+	}
+	else
+	{
+		set_string( licenseDialog, GPL_COPYRIGHT, copyrightString );
+	}
 
 	canRefresh = TRUE;	/* for timer */
 }
