@@ -185,6 +185,8 @@ time_t AudioPluginGetPlayTime( struct SAudioPlugin* plugin )
 int AudioPluginModulePlay( struct SAudioPlugin* plugin )
 {
 	int ret;
+	short attl = (short)Soundcmd( LTATTEN, SND_INQUIRE );
+	short attr = (short)Soundcmd( RTATTEN, SND_INQUIRE );
 
 	plugin->inBuffer.value = moduleSongNumber = 0;	// first song
 	if( ( ret = AudioPluginCallFunction( plugin->Set ) ) == MXP_OK
@@ -196,6 +198,9 @@ int AudioPluginModulePlay( struct SAudioPlugin* plugin )
 	{
 		moduleSongs = 1;
 	}
+
+	Soundcmd( LTATTEN, attl );
+	Soundcmd( RTATTEN, attr );
 
 	return ret;
 }
@@ -640,10 +645,16 @@ BOOL AudioPluginFreeResources( void )
 		}
 		if( AudioPluginIsFlagSet( MXP_FLG_USE_DMA ) && dmaLocked )
 		{
+			short attl = (short)Soundcmd( LTATTEN, SND_INQUIRE );
+			short attr = (short)Soundcmd( RTATTEN, SND_INQUIRE );
+
 			Sndstatus( SND_RESET );
 
 			extern void asm_restore_audio( void );
 			Supexec( asm_restore_audio );
+
+			Soundcmd( LTATTEN, attl );
+			Soundcmd( RTATTEN, attr );
 
 			dmaLocked = FALSE;
 			if( Unlocksnd() == -128 )
