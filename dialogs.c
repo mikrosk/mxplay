@@ -639,7 +639,6 @@ void PanelDialogRefresh( void )
 	}
 
 	/* update time first */
-	Vsync();
 	redraw_wdobj( g_winDialogs[WD_PANEL], PANEL_PLAYTIME );
 	redraw_wdobj( g_winDialogs[WD_PANEL], PANEL_SONGNAME );
 
