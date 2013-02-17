@@ -42,7 +42,6 @@ extern BOOL			IsDirectory( char* path, char* name );
 extern void			DeselectObject( WDIALOG* wd, short obj );
 extern void			SelectObject( WDIALOG* wd, short obj );
 extern void			ARGVParseArgs( int argc, char* argv[] );
-extern short		Round( float value );
 extern BOOL			IsTopWindow( WDIALOG* wd );
 extern void			SharedFileOpen( WDIALOG* wd, short obj );
 extern void			SharedDirOpen( WDIALOG* wd, short obj );

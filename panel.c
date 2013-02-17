@@ -188,7 +188,7 @@ void PanelVolumeSliderUpdate( void )
 
 	if( vol != oldVol )
 	{
-		short x = Round( ( (float)( boxWidth - sliderWidth ) / (float)VOLUME_MAX ) * (float)vol );
+		short x = (short)floor( ( (float)( boxWidth - sliderWidth ) / (float)VOLUME_MAX ) * (float)vol );
 
 		g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x = x;
 		redraw_wdobj( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );

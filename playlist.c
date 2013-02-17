@@ -23,6 +23,7 @@
 
 #include <cflib.h>
 #include <sys/param.h>	/* MIN */
+#include <math.h>
 
 #include "filelist.h"
 #include "skins/skin.h"
@@ -117,13 +118,13 @@ static void PlayListSliderSet( void )
 
 	if( g_filesCount != 0 )
 	{
-		size = MIN( 1000, Round( 1000.0 * (float)plWindowEntries / (float)g_filesCount ) );
+		size = MIN( 1000, (short)floor( 1000.0 * (float)plWindowEntries / (float)g_filesCount ) );
 		if( size <= 0 )
 		{
 			size = 1;
 		}
 
-		pos = Round( ( 1000.0 * plAbove ) / (float)( g_filesCount - plWindowEntries ) );
+		pos = (short)floor( ( 1000.0 * plAbove ) / (float)( g_filesCount - plWindowEntries ) );
 		if( pos < 0 )
 		{
 			pos = 0;
@@ -931,7 +932,7 @@ void PlayListSlider( short deltaY )
 	wind_get( g_winDialogs[WD_PLAYLIST]->win_handle, WF_VSLIDE, &oldDeltaY, &dummy, &dummy, &dummy );
 
 	delta = ( deltaY - oldDeltaY ) * ( (float)( g_filesCount - plWindowEntries ) / 1000.0 );
-	value = Round( delta );
+	value = (short)floor( delta );
 
 	if( value > 0 )
 	{

@@ -202,23 +202,6 @@ short GetObjectCount( OBJECT tree[] )
 }
 
 /*
- * Simple round function
- */
-short Round( float value )
-{
-	if( value > 0 )
-	{
-		value += 0.5;
-	}
-	else if( value < 0 )
-	{
-		value -= 0.5;
-	}
-
-	return (short)value;
-}
-
-/*
  * Disable and redraw wdialog object
  */
 void EnableObject( WDIALOG* wd, short obj )

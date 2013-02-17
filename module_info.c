@@ -23,6 +23,7 @@
 
 #include <cflib.h>
 #include <sys/param.h>	/* MIN */
+#include <math.h>
 
 #include "skins/skin.h"
 #include "audio_plugins.h"
@@ -584,13 +585,13 @@ static void ModuleInfoSliderSet( void )
 
 	if( moduleParamCount != 0 )
 	{
-		size = MIN( 1000, Round( 1000.0 * (float)currSlots / (float)moduleParamCount ) );
+		size = MIN( 1000, (short)floor( 1000.0 * (float)currSlots / (float)moduleParamCount ) );
 		if( size <= 0 )
 		{
 			size = 1;
 		}
 
-		pos = Round( (float)( 1000 * moduleInfoParamCurrent ) / (float)( moduleParamCount - currSlots ) );
+		pos = (short)floor( (float)( 1000 * moduleInfoParamCurrent ) / (float)( moduleParamCount - currSlots ) );
 		if( pos < 0 )
 		{
 			pos = 0;
@@ -923,7 +924,7 @@ void ModuleInfoSlider( short deltaY )
 		wind_get( g_winDialogs[WD_MODULE]->win_handle, WF_VSLIDE, &oldDeltaY, &dummy, &dummy, &dummy );
 
 		delta = ( deltaY - oldDeltaY ) * ( (float)( moduleParamCount - currSlots ) / 1000.0 );
-		value = Round( delta );
+		value = (short)floor( delta );
 
 		if( value > 0 )
 		{
