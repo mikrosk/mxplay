@@ -24,7 +24,7 @@
 #include <cflib.h>
 #include <string.h>
 #include <mint/falcon.h>
-
+#include <math.h>
 #include <stdio.h>
 
 #include "dialogs.h"
@@ -53,8 +53,6 @@ static BOOL		playlistOpened = FALSE;
 static BOOL		infoAppOpened = FALSE;
 static BOOL		infoModOpened = FALSE;
 static BOOL		infoPlgOpened = FALSE;
-static float	volumeSliderX;
-static short	oldVolumeData;
 
 /*
  * Select chosen object on panel, deselect all the others
@@ -100,7 +98,6 @@ static void PanelVolumeSet( short mode, short volume )
 	volume = VOLUME_MAX - volume;
 
 	Soundcmd( mode, volume << 4 );
-	oldVolumeData = volume << 4;
 }
 
 /*
@@ -179,58 +176,25 @@ static void PanelVolumeDownCommon( int count )
 }
 
 /*
- * Set the position of volume slider according to the current volume
- */
-static void PanelVolumeSliderSet( void )
-{
-	short boxWidth;
-	short sliderWidth;
-	float delta;
-	short vol;
-
-	vol = PanelVolumeGet( LTATTEN );	/* we care about left channel only */
-
-	boxWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER_BOX].ob_width;
-	sliderWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_width;
-
-	delta = (float)( boxWidth - sliderWidth ) / (float)VOLUME_MAX;
-
-	g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x = (short)( vol * delta );
-	redraw_wdobj( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );
-	redraw_wdobj( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER_BOX );
-}
-
-/*
- * Set the same attenuation for both left and right channel
- */
-void PanelVolumeInit( void )
-{
-	short data;
-
-	data = (short)Soundcmd( LTATTEN, -1 );	/* SND_INQUIRE */
-	Soundcmd( RTATTEN, data );	/* right channel must have the same value */
-	oldVolumeData = data;
-
-	PanelVolumeSliderSet();
-
-	volumeSliderX = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x;
-}
-
-/*
  * Update volume slider (only if needed)
  */
 void PanelVolumeSliderUpdate( void )
 {
-	short data;
+	static short oldVol = -1;
 
-	data = (short)Soundcmd( LTATTEN, -1 );	/* SND_INQUIRE */
+	short sliderWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_width;
+	short 	 boxWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER_BOX].ob_width;
+	short 		  vol = PanelVolumeGet( LTATTEN );	/* we care about left channel only */
 
-	if( data != oldVolumeData )
+	if( vol != oldVol )
 	{
-		PanelVolumeSliderSet();
-		volumeSliderX = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x;
+		short x = Round( ( (float)( boxWidth - sliderWidth ) / (float)VOLUME_MAX ) * (float)vol );
 
-		oldVolumeData = data;
+		g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x = x;
+		redraw_wdobj( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );
+		redraw_wdobj( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER_BOX );
+
+		oldVol = vol;
 	}
 }
 
@@ -543,8 +507,6 @@ void PanelVolumeUp( void )
 	{
 		PanelVolumeUpCommon( 1 );	/* one stage */
 	}
-
-	PanelVolumeSliderSet();
 }
 
 void PanelVolumeDown( void )
@@ -557,67 +519,44 @@ void PanelVolumeDown( void )
 	{
 		PanelVolumeDownCommon( 1 );	/* one stage */
 	}
-
-	PanelVolumeSliderSet();
 }
 
-void PanelVolumeSlider( short deltaX )
+void PanelVolumeSlider( short mx )
 {
-	short sliderX;
-	short sliderWidth;
-	short boxWidth;
-	short delta;
+	static short oldVol = -1;
 
-	sliderX = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_x;
-	sliderWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_width;
-	boxWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER_BOX].ob_width;
+	short boxX;
+	short sliderWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_width;
+	short 	 boxWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER_BOX].ob_width;
 
-	volumeSliderX += deltaX;
-	if( volumeSliderX < 0.0 )
+	objc_offset( g_winDialogs[WD_PANEL]->tree, PANEL_VOLUME_SLIDER_BOX, &boxX, NULL );
+
+	if( mx < boxX )
 	{
-		volumeSliderX = 0.0;
+		mx = boxX;
 	}
-	else if( volumeSliderX > boxWidth - sliderWidth )
+	else if( mx > boxX + boxWidth - sliderWidth )
 	{
-		volumeSliderX = boxWidth - sliderWidth;
+		mx = boxX + boxWidth - sliderWidth;
 	}
 
-	delta = Round( (float)( volumeSliderX - sliderX ) / ( (float)( boxWidth - sliderWidth ) / (float)VOLUME_MAX ) );
-
-	if( delta > 0 )
+	short vol = (short)floor( ( (float)VOLUME_MAX / (float)( boxWidth - sliderWidth ) ) * (float)( mx - boxX ) );
+	if( vol < VOLUME_MIN )
 	{
-		PanelVolumeUpCommon( delta );
+		vol = VOLUME_MIN;
 	}
-	else if( delta < 0 )
+	else if( vol > VOLUME_MAX )
 	{
-		PanelVolumeDownCommon( -delta );
-	}
-
-	if( delta != 0 )
-	{
-		PanelVolumeSliderSet();
-	}
-}
-
-void PanelVolumeSliderBox( short mx )
-{
-	short sliderWidth;
-	short ox, oy;
-
-	sliderWidth = g_winDialogs[WD_PANEL]->tree[PANEL_VOLUME_SLIDER].ob_width;
-
-	objc_offset( g_winDialogs[WD_PANEL]->tree, PANEL_VOLUME_SLIDER, &ox, &oy );
-
-	if( mx < ox )
-	{
-		PanelVolumeSlider( mx - sliderWidth / 2 - ox );
-	}
-	else if( mx > ox + sliderWidth )
-	{
-		PanelVolumeSlider( mx + sliderWidth / 2 - ( ox + sliderWidth ) );
+		vol = VOLUME_MAX;
 	}
 
-	DeselectObject( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );
+	if( vol != oldVol )
+	{
+		PanelVolumeSet( LTATTEN, vol );
+		PanelVolumeSet( RTATTEN, vol );
+
+		oldVol = vol;
+	}
 }
 
 void PanelChangeSkin( void )
@@ -712,7 +651,6 @@ void PanelChangeSkin( void )
 				}
 			}
 
-			PanelVolumeInit();
 			PlayListReinit();
 			PluginInfoReinit();
 			ModuleInfoReinit();

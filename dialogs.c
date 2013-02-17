@@ -202,7 +202,6 @@ void ShowDefaultDialogs( void )
 {
 	/* open the main panel */
 	open_wdial( g_winDialogs[WD_PANEL], g_panelX, g_panelY );
-	PanelVolumeInit();
 
 	if( g_repeat == TRUE )
 	{

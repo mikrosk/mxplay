@@ -29,7 +29,7 @@ COBJS			= main.c audio_plugins.c dialogs.c panel.c filelist.c misc.c av.c \
 
 OBJS			= $(COBJS:.c=.o) $(SOBJS:.S=.o)
 
-LIBS			= -lcflib -lgem -Wl,--traditional-format
+LIBS			= -lcflib -lgem -lm -Wl,--traditional-format
 CPU_FLAGS		= -m68020-60		# use 020+ and FPU code
 
 ifeq ($(CONFIG),Release)

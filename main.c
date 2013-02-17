@@ -210,7 +210,7 @@ void HandleMessage( short msg[8] )
 					break;
 
 					case PANEL_VOLUME_SLIDER_BOX:
-						PanelVolumeSliderBox( currMouseX );
+						PanelVolumeSlider( currMouseX );
 					break;
 				}
 			break;
@@ -378,12 +378,7 @@ int main( int argc, char* argv[] )
 		{
 			if( mc == 1 )
 			{
-				if( mx != currMouseX )
-				{
-					PanelVolumeSlider( mx - currMouseX );
-				}
-				currMouseX = mx;
-				continue;
+				PanelVolumeSlider( mx );
 			}
 			else
 			{
@@ -411,14 +406,13 @@ int main( int argc, char* argv[] )
 							SelectObject( g_winDialogs[WD_PANEL], obj );
 							graf_mouse( FLAT_HAND, NULL );
 							inVolume = TRUE;
-							continue;
 						}
 					break;
 
 					case PANEL_VOLUME_SLIDER_BOX:
 						if( mc == 1 )
 						{
-							PanelVolumeSliderBox( mx );
+							PanelVolumeSlider( mx );
 						}
 					break;
 				}
@@ -430,15 +424,13 @@ int main( int argc, char* argv[] )
 
 		g_mouseClicks = mc;
 
-		DeselectObject( g_winDialogs[WD_PANEL], PANEL_VOLUME_SLIDER );	/* yes, it has some sense :) */
-
 		/* if we reached playtime */
 		if( g_modulePlaying == TRUE && g_modulePaused == FALSE && TimerGetSubTime() <= 0 )
 		{
 			PanelNext();
 		}
 
-		/* update volume slider */
+		/* update volume slider (internal or external reason) */
 		PanelVolumeSliderUpdate();
 
 		/*
@@ -450,16 +442,22 @@ int main( int argc, char* argv[] )
 			HandleMessage( g_msgBuffer );
 		}
 
+		if( event & MU_TIMER )
+		{
+			PanelDialogRefresh();
+		}
+
+		if( mc == 1 && inVolume == TRUE )
+		{
+			// don't handle keyboard and button messages if we use the slider
+			continue;
+		}
+
 		if( event & MU_BUTTON )
 		{
 			if( !click_wdial( mc, mx, my, kstate, mb ) )
 			{
 			}
-		}
-
-		if( event & MU_TIMER )
-		{
-			PanelDialogRefresh();
 		}
 
 		if( event & MU_KEYBD )

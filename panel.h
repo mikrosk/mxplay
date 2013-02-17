@@ -67,9 +67,7 @@ extern void	PanelRepeat( void );
 extern void PanelChangeSkin( void );
 extern void	PanelVolumeDown( void );
 extern void	PanelVolumeUp( void );
-extern void	PanelVolumeInit( void );
-extern void PanelVolumeSlider( short deltaX );
-extern void	PanelVolumeSliderBox( short mx );
+extern void PanelVolumeSlider( short mx );
 extern void	PanelVolumeSliderUpdate( void );
 extern void LoadAndPlay( void );
 
