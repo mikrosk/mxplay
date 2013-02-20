@@ -378,6 +378,10 @@ void PanelInfoPlugin( void )
 	if( infoPlgOpened == TRUE )
 	{
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_INFO_PLG );
+		if( g_winDialogs[WD_PLUGIN]->mode & WD_ICON )
+		{
+			open_wdial( g_winDialogs[WD_PLUGIN], -1, -1 );
+		}
 		close_wdial( g_winDialogs[WD_PLUGIN] );
 		infoPlgOpened = FALSE;
 	}
@@ -395,6 +399,10 @@ void PanelInfoModule( void )
 	if( infoModOpened == TRUE )
 	{
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_INFO_MOD );
+		if( g_winDialogs[WD_MODULE]->mode & WD_ICON )
+		{
+			open_wdial( g_winDialogs[WD_MODULE], -1, -1 );
+		}
 		close_wdial( g_winDialogs[WD_MODULE] );
 		infoModOpened = FALSE;
 	}
@@ -412,6 +420,10 @@ void PanelInfoApp( void )
 	if( infoAppOpened == TRUE )
 	{
 		DeselectObject( g_winDialogs[WD_PANEL], PANEL_INFO_APP );
+		if( g_winDialogs[WD_ABOUT]->mode & WD_ICON )
+		{
+			open_wdial( g_winDialogs[WD_ABOUT], -1, -1 );
+		}
 		close_wdial( g_winDialogs[WD_ABOUT] );
 		infoAppOpened = FALSE;
 	}
