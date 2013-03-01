@@ -21,7 +21,7 @@
 		dc.l	"MXP2"
 _mpg_parameter:	ds.l	1
 		dc.l	_mpg_register_module
-		dc.l	0				; _mpg_get_playtime
+		dc.l	_mpg_get_playtime
 		dc.l	0				; _mpg_get_songs
 		dc.l	_mpg_init
 		dc.l	_mpg_set
@@ -32,4 +32,4 @@ _mpg_parameter:	ds.l	1
 		dc.l	_mpg_mute
 		dc.l	_mpg_info
 		dc.l	_mpg_extensions
-		dc.l	0				; _mpg_settings
+		dc.l	_mpg_settings

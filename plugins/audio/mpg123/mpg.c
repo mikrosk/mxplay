@@ -65,33 +65,185 @@ static size_t bufferSize;	// size of one buffer
 static int loadNewSample;
 #endif
 
-// static int getSongType( void )
-// {
-// 	static char* sap = "Slight Atari Player";
-// 	const char* ext = ASAPInfo_GetOriginalModuleExt( info, moduleBuffer, moduleLength );
-// 	if( ext != NULL && strlen( ext ) > 0 )
-// 	{
-// 		const char* desc = ASAPInfo_GetExtDescription( ext );
-// 		if( desc != NULL && strlen( desc ) > 0 )
-// 		{
-// 			mpg_parameter.value = (long)desc;
-// 			return MXP_OK;
-// 		}
-// 	}
-//
-// 	mpg_parameter.value = (long)sap;
-// 	return MXP_OK;
-// }
-//
-// struct SParameter		mpg_settings[] =
-// {
-// 	{ "Name", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongName },
-// 	{ "Author", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongAuthor },
-// 	{ "Type", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getSongType },
-// 	{ "Date", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSongDate },
-// 	{ "Stereo", MXP_PAR_TYPE_BOOL|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getChannels },
-// 	{ NULL, 0, NULL, NULL }
-// };
+typedef enum
+{
+	title,
+	artist,
+	album,
+	year
+} MetaParam;
+
+static int getMetaParam( MetaParam param )
+{
+	static const char* na = "n/a";
+
+	mpg123_id3v1* pV1;
+	mpg123_id3v2* pV2;
+	if( mpg123_id3( mh, &pV1, &pV2 ) == MPG123_OK )
+	{
+		switch( param )
+		{
+			// TODO: NULL termination check for ID3v1
+			// TODO: handle encoding
+			case title:
+				if( pV2 != NULL )
+					mpg_parameter.value = (long)pV2->title->p;
+				else if( pV1 != NULL )
+					mpg_parameter.value = (long)pV1->title;
+				else
+					mpg_parameter.value = (long)na;
+				break;
+
+			case artist:
+				if( pV2 != NULL )
+					mpg_parameter.value = (long)pV2->artist->p;
+				else if( pV1 != NULL )
+					mpg_parameter.value = (long)pV1->artist;
+				else
+					mpg_parameter.value = (long)na;
+				break;
+
+			case album:
+				if( pV2 != NULL )
+					mpg_parameter.value = (long)pV2->album->p;
+				else if( pV1 != NULL )
+					mpg_parameter.value = (long)pV1->album;
+				else
+					mpg_parameter.value = (long)na;
+				break;
+
+			case year:
+				if( pV2 != NULL )
+					mpg_parameter.value = (long)pV2->year->p;
+				else if( pV1 != NULL )
+					mpg_parameter.value = (long)pV1->year;
+				else
+					mpg_parameter.value = (long)na;
+				break;
+		}
+
+		return MXP_OK;
+	}
+
+	return MXP_ERROR;
+}
+
+static int getTitle( void )
+{
+	return getMetaParam( title );
+}
+static int getArtist( void )
+{
+	return getMetaParam( artist );
+}
+static int getAlbum( void )
+{
+	return getMetaParam( album );
+}
+static int getYear( void )
+{
+	return getMetaParam( year );
+}
+
+typedef enum
+{
+	layer,
+	channels,
+	sampleRate,
+	bitrate
+} Param;
+
+static int getParam( Param param, char buf[] )
+{
+	struct mpg123_frameinfo mi;
+	char* layers[] = { "I", "II", "III" };
+
+	if( mpg123_info( mh, &mi ) == MPG123_OK )
+	{
+		switch( param )
+		{
+			case layer:
+				sprintf( buf, "MPEG-1 Audio Layer %s", layers[mi.layer-1] );
+				break;
+
+			case channels:
+				switch( mi.mode )
+				{
+					case MPG123_M_STEREO:
+						sprintf( buf, "Stereo" );
+						break;
+					case MPG123_M_JOINT:
+						sprintf( buf, "Joint Stereo" );
+						break;
+					case MPG123_M_DUAL:
+						sprintf( buf, "Dual Channel" );
+						break;
+					case MPG123_M_MONO:
+						sprintf( buf, "Mono" );
+						break;
+				}
+				break;
+
+			case sampleRate:
+				sprintf( buf, "%ld Hz", mi.rate );
+				break;
+
+			case bitrate:
+				switch( mi.vbr )
+				{
+					case MPG123_CBR:
+						sprintf( buf, "%d kbps (CBR)", mi.bitrate );
+						break;
+					case MPG123_VBR:
+						sprintf( buf, "%d kbps (VBR)", mi.bitrate );
+						break;
+					case MPG123_ABR:
+						sprintf( buf, "%d kbps (ABR)", mi.bitrate );
+						break;
+				}
+				break;
+		}
+
+		mpg_parameter.value = (long)buf;
+		return MXP_OK;
+	}
+
+	return MXP_ERROR;
+}
+
+static int getLayer( void )
+{
+	static char buf[32];
+	return getParam( layer, buf );
+}
+static int getChannels( void )
+{
+	static char buf[32];
+	return getParam( channels, buf );
+}
+static int getSampleRate( void )
+{
+	static char buf[32];
+	return getParam( sampleRate, buf );
+}
+static int getBitrate( void )
+{
+	static char buf[32];
+	return getParam( bitrate, buf );
+}
+
+struct SParameter mpg_settings[] =
+{
+	{ "Title", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getTitle },
+	{ "Artist", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getArtist },
+	{ "Album", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getAlbum },
+	{ "Year", MXP_PAR_TYPE_CHAR|MXP_FLG_INFOLINE|MXP_FLG_MOD_PARAM, NULL, getYear },
+	{ "Type", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getLayer },
+	{ "Mode", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getChannels },
+	{ "Sample rate", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getSampleRate },
+	{ "Bitrate", MXP_PAR_TYPE_CHAR|MXP_FLG_MOD_PARAM, NULL, getBitrate },
+	{ NULL, 0, NULL, NULL }
+};
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
@@ -128,6 +280,27 @@ static void enableTimerASei( void )
 int mpg_register_module( void )
 {
 	moduleFilePath = mpg_parameter.pModule->p;
+	return MXP_OK;
+}
+
+int mpg_get_playtime( void )
+{
+	/** Get information about current and remaining frames/seconds.
+	 *  WARNING: This function is there because of special usage by standalone mpg123 and may be removed in the final version of libmpg123!
+	 *  You provide an offset (in frames) from now and a number of output bytes
+	 *  served by libmpg123 but not yet played. You get the projected current frame
+	 *  and seconds, as well as the remaining frames/seconds. This does _not_ care
+	 *  about skipped samples due to gapless playback. */
+	off_t current_frame;
+	off_t frames_left;
+	double current_seconds;
+	double seconds_left;
+	if( mpg123_position( mh, 0, 0, &current_frame, &frames_left, &current_seconds, &seconds_left) != MPG123_OK )
+	{
+		return MXP_ERROR;
+	}
+
+	mpg_parameter.value = (int)seconds_left;
 	return MXP_OK;
 }
 
