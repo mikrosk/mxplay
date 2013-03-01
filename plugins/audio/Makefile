@@ -1,4 +1,4 @@
-SUBDIRS = ace aon asap dspmod gt2 mgt mp2 ntk snd xmp
+SUBDIRS = ace aon asap dspmod gt2 mgt mp2 mpg123 ntk snd xmp
 
 default: release
 

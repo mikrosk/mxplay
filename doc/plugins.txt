@@ -8,9 +8,10 @@ aon - seems to be stable on 060, most of the time :)
 
 asap - great ASAP player for Atari 8-bit musics. Comes in three versions:
 asap.mxp (classic Atari), asap_cf.mxp (FireBee build) and asap_ara.mxp
-(ARAnyM build). The reason for Aranym build is that zmagxsnd.prg has some bugs
-in reporting current DMA pointer, so I used Timer A instead. Atari and CF
-versions are 100% system friendly, not a single HW access.
+(ARAnyM build). The reason for Aranym build is that even with the correct
+audio frequency, its DMA pointer sooner or later runs away which results in
+corrupted replay. With more precise Timer-A this doesn't happen. Atari and
+CF versions are 100% system friendly, not a single HW access.
 
 dspmod - marked as 030 only, as I've seen it crash on CT60. It makes no
 sense to use it on 060 anyway, there's XMP.
@@ -23,6 +24,9 @@ XMP can play MGTs, too!
 
 mp2 - no change against 1.x version. It can play some MP2s which the
 original player can't. No Direct from Disk yet.
+
+mpg123 - full featured MPEG-1 player for all three layers (aka MP1, MP2,
+MP3). Comes in three versions, see above.
 
 ntk - 030 only, not very stable, not very helpful :) Works best (only) in TOS.
 
@@ -38,3 +42,7 @@ Generally speaking, don't expect too much from the fact mxPlay is a GEM
 application. Most of the plugins rape OS vectors, timers, caches etc so maybe
 except ASAP and XMP, you'll see quite strange side effects when clicking in
 desktop.
+
+Important warning: if you want to use ASAP/MPG123/XMP on ARAnyM, don't
+forget to set 'Frequency = 49170' in ARAnyM's config file! (in [AUDIO]
+section)
