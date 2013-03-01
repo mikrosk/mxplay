@@ -34,9 +34,7 @@ snd - 030 only, dirty, dirty, dirty. Works best in TOS but even here it's
 quite unstable after some time.
 
 xmp - the ultimate player for all kind of modules. It can play pretty much
-everything. It's supposed to play MTMs and DMFs too but for some reason it
-crashes, so be careful. But these are PC formats, anyway. It comes also in
-three version, see above.
+everything. It comes also in three version, see above.
 
 Generally speaking, don't expect too much from the fact mxPlay is a GEM
 application. Most of the plugins rape OS vectors, timers, caches etc so maybe
