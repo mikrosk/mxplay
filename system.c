@@ -23,9 +23,11 @@
 
 #include <mint/cookie.h>
 #include <mint/falcon.h>
+#include <string.h>
 
 #include "debug.h"
 #include "system.h"
+#include "audio_plugins.h"
 
 BOOL  g_fastCpu = FALSE;
 BOOL g_tosClone = FALSE;
@@ -92,6 +94,16 @@ void CheckSystem( void )
 			debug( "TOS clone" );
 			g_tosClone = TRUE;
 		}
+
+#ifndef	__mcoldfire__
+		if( val == 0x00050000L )	// ARAnyM
+		{
+			strcat( g_sAudioPluginPath, "\\aranym" );
+		}
+#else
+		strcat( g_sAudioPluginPath, "\\firebee" );
+#endif
+		debug( "audio plugin path: %s", g_sAudioPluginPath );
 	}
 
 	if( Getcookie( '_MIL', &val ) == C_FOUND )	// Milan

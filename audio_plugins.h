@@ -29,8 +29,8 @@
 #include "plugins/audio/plugin.h"
 
 #define MAX_AUDIO_PLUGINS		256
-#define AUDIO_PLUGINS_PATH		"plugins\\audio"
 
+extern char					g_sAudioPluginPath[];
 extern struct SAudioPlugin*	g_pCurrAudioPlugin;
 extern char					g_currModuleFilePath[MXP_PATH_MAX+1];
 extern time_t				g_defaultPlayTime;

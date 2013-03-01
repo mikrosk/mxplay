@@ -43,6 +43,7 @@
 #include "system.h"
 #include "debug.h"
 
+char						g_sAudioPluginPath[32] = "plugins\\audio";
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
 char						g_currModuleFilePath[MXP_PATH_MAX+1] = "-";
 time_t						g_defaultPlayTime = 3 * 60;	// 3 minutes by default
@@ -485,18 +486,18 @@ void LoadAudioPlugins( void )
 	char			ext[MXP_FILENAME_MAX+1];
 	int				leftOut = 0;
 
-	pDirStream = opendir( AUDIO_PLUGINS_PATH );
+	pDirStream = opendir( g_sAudioPluginPath );
 	if( pDirStream != NULL )
 	{
 		while( ( pDirEntry = readdir( pDirStream ) ) != NULL )
 		{
-			if( IsDirectory( AUDIO_PLUGINS_PATH, pDirEntry->d_name ) == FALSE )
+			if( IsDirectory( g_sAudioPluginPath, pDirEntry->d_name ) == FALSE )
 			{
 				split_extension( pDirEntry->d_name, NULL, ext );
 				if( strcmp( ext, "mxp" ) == 0 || strcmp( ext, "MXP" ) == 0 )
 				{
 					strcpy( tempString, gl_appdir );
-					CombinePath( tempString, tempString, AUDIO_PLUGINS_PATH );	/* path\plugins\audio */
+					CombinePath( tempString, tempString, g_sAudioPluginPath );	/* path\plugins\audio */
 					CombinePath( tempString, tempString, pDirEntry->d_name );	/* path\plugins\audio\plugin.mxp */
 
 					pSAudioPlugin[audioPluginsCount] = AudioPluginLoad( tempString );

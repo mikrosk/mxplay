@@ -11,6 +11,7 @@ CFLAGS	= $(CPU) -Wall -O2 -fomit-frame-pointer -std=c99
 LDFLAGS	= $(CPU) -lxmp -lm -nostartfiles
 
 TIMER_A	= no
+DESTDIR = ..
 
 ifeq ($(TIMER_A),yes)
 CFLAGS += -DTIMER_A_HANDLER
@@ -32,14 +33,14 @@ release: $(TARGET)
 ifeq ($(TIMER_A),yes)
 	$(FLAGS) $<
 endif
-	cp $< ..
+	cp $< $(DESTDIR)
 
 aranym:
 	rm -f *.o
-	$(MAKE) TARGET=xmp_ara.mxp TIMER_A=yes release
+	$(MAKE) TARGET=xmp_ara.mxp TIMER_A=yes DESTDIR=../aranym release
 
 cf:
 	rm -f *.o
-	$(MAKE) TARGET=xmp_cf.mxp CPU='-mcpu=5475' release
+	$(MAKE) TARGET=xmp_cf.mxp CPU='-mcpu=5475' DESTDIR=../firebee release
 
 all: clean release aranym cf
