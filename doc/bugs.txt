@@ -1,9 +1,11 @@
 Known bugs:
 
-- problems with drag&drop/va-start/argv. No, this is NOT an mxPlay bug.  The
-  only desktop which handles these issues correctly is Teradesk (since I
-  flooded the author with ton of bugreports ;-).  Thing is on the second
-  place and the worst one from this point of view is Jinnee.
+- problems with drag&drop/va-start/argv like long filenames, filenames with
+  blanks, quotes etc.  mxPlay has one of the best implementations of these
+  protocols, i.e.  it's most likely a bug in your desktop.  The only desktop
+  which handles these issues correctly is Teradesk (since I flooded the
+  author with ton of bugreports ;-). Thing is on the second place and the
+  worst one from this point of view is Jinnee.
 
 - icon redraw errors under TOS. For some strange reason TOS instead 
   of selecting some icon inverts the current bitmap. This happens 
@@ -14,6 +16,11 @@ Known bugs:
 - flashing scrolling line - this isn't a bug, it's just slowness of 
   AES and/or CPU you use.. little hint: try to locate panel as on 
   bottom as possible :)
+
+- sound repeat in feed-based players (ASAP, XMP, MPG) when doing something
+  in your desktop (file selector, pushing mouse buttons for longer time,
+  ...) - unfortunately, mxPlay is hooked on the AES loop, i.e. if AES events
+  stop coming, so does the music data.
 
 - you can't drag the top border of Module Info and Playlist to resize the
   dialog. It caused redraw errors and I was lazy to invetigate :)
