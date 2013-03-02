@@ -64,6 +64,7 @@ static size_t bufferSize;	// size of one buffer
 #ifdef TIMER_A_HANDLER
 static int loadNewSample;
 #endif
+static int mute;
 
 typedef enum
 {
@@ -251,6 +252,8 @@ static int loadBuffer( char* pBuffer, size_t bufferSize )
 	switch( mpg123_read( mh, (unsigned char*)pBuffer, bufferSize, &done ) )
 	{
 		case MPG123_OK:
+			if( mute )
+				memset( pBuffer, 0, bufferSize );
 			return 0;
 
 		case MPG123_NEW_FORMAT:
@@ -501,14 +504,12 @@ int mpg_pause( void )
 
 int mpg_mute( void )
 {
-	int mute = mpg_parameter.value;
+	mute = mpg_parameter.value;
 	if( mute )
 	{
 		memset( pPhysical, 0, bufferSize );
 		memset( pLogical, 0, bufferSize );
 	}
-
-	// call mute here
 
 	return MXP_OK;
 }
