@@ -36,10 +36,11 @@ quite unstable after some time.
 xmp - the ultimate player for all kind of modules. It can play pretty much
 everything. It comes also in three version, see above.
 
-Beware, if you try to use plugins which serve the same file type (MP2, for
+Beware, if you try to use plugins which serve the same file type (MP2 for
 example), there's random priority (first come, first served). So, if you use
 030 only, feel free to disable (.mxp -> .mxx) all 060 plugins (ASAP, MPG123,
-XMP) and vice versa.
+XMP) and vice versa. You can always check in Plugin Info dialog what replay
+routine is used right now.
 
 Generally speaking, don't expect too much from the fact mxPlay is a GEM
 application. Most of the plugins rape OS vectors, timers, caches etc so maybe
