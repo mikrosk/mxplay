@@ -86,7 +86,7 @@ static int getMetaParam( MetaParam param )
 			// TODO: NULL termination check for ID3v1
 			// TODO: handle encoding
 			case title:
-				if( pV2 != NULL )
+				if( pV2 != NULL && pV2->title != NULL )
 					mpg_parameter.value = (long)pV2->title->p;
 				else if( pV1 != NULL )
 					mpg_parameter.value = (long)pV1->title;
@@ -95,7 +95,7 @@ static int getMetaParam( MetaParam param )
 				break;
 
 			case artist:
-				if( pV2 != NULL )
+				if( pV2 != NULL && pV2->artist != NULL )
 					mpg_parameter.value = (long)pV2->artist->p;
 				else if( pV1 != NULL )
 					mpg_parameter.value = (long)pV1->artist;
@@ -104,7 +104,7 @@ static int getMetaParam( MetaParam param )
 				break;
 
 			case album:
-				if( pV2 != NULL )
+				if( pV2 != NULL && pV2->album != NULL )
 					mpg_parameter.value = (long)pV2->album->p;
 				else if( pV1 != NULL )
 					mpg_parameter.value = (long)pV1->album;
@@ -113,7 +113,7 @@ static int getMetaParam( MetaParam param )
 				break;
 
 			case year:
-				if( pV2 != NULL )
+				if( pV2 != NULL && pV2->year != NULL )
 					mpg_parameter.value = (long)pV2->year->p;
 				else if( pV1 != NULL )
 					mpg_parameter.value = (long)pV1->year;
