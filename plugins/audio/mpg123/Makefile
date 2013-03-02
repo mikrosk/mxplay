@@ -4,7 +4,6 @@ AS	= vasm
 CC	= m68k-atari-mint-gcc
 STRIP	= m68k-atari-mint-strip -s
 FLAGS	= m68k-atari-mint-flags -S
-STACK	= m68k-atari-mint-stack --fix=128k
 
 CPU	= -m68020-60
 ASFLAGS	= -Faout -m68882 -m68030 -quiet
@@ -25,7 +24,6 @@ mpg_asm.o: mpg_asm.S ../mxplay.inc
 
 $(TARGET): mpg_asm.o mpg.o
 	$(CC) -o $@ $^ $(LDFLAGS)
-	$(STACK) $@
 
 clean:
 	rm -f *~ *.mxp *.o

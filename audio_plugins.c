@@ -79,7 +79,7 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 		bp->p_tlen +				/* length of text segment */
 		bp->p_dlen +				/* length of data segment */
 		bp->p_blen +				/* length of BSS segment */
-		64*1024 );					/* length of stack */
+		128*1024 );					/* length of stack */
 
 		// CT60 TOS is broken, older FreeMiNT kernels are broken, ...
 		extern void asm_invalidate_cache( void );
