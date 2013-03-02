@@ -89,6 +89,10 @@ bring you the la(te)st version of mxPlay. Generally, not much to mention:
 - oh and by the way, a plugin for full featured MPEG-1 audio layer I, II and
   III is included ;)
 
+Btw, thanks to the MPG123 plugin I discovered that sample frequency in ARAnyM
+is set wrong all the time, i.e. all ASAP and XMP modules I had heard were about
+10% slower :))) Oh my.
+
 2. Features
 -----------
 
