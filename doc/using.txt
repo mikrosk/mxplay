@@ -1,8 +1,8 @@
 mxPlay User's Manual
 ====================
 
-1. Introduction to mxPlay 1.0.0
--------------------------------
+1.1 Introduction to mxPlay 1.0.0
+--------------------------------
 
 Phew... so it really happend... if you're reading this text it means our
 little child called mxPlay is finally released.
@@ -34,8 +34,8 @@ touch with this kind of programming was a new experience for me. Secondly,
 every day we come with new ideas what should we add, my TODO list was (and
 still is) full of things to implement...
 
-1. Introduction to mxPlay 2.0
------------------------------
+1.2 Introduction to mxPlay 2.0
+------------------------------
 
 Unbelievable, nearly exactly seven years later and I'm updating final bits of
 the new version :) Frankly, I considered this project dead as there was very
@@ -74,6 +74,20 @@ Current state is a reasonable compromise between functionality and release
 date. Most of the code is still (7 years old!) mess, it made me puke several
 times. A lot of things could have been done but I really wanted to get rid of
 it. If there's any volunteer ...
+
+1.3 Introduction to mxPlay 2.1
+------------------------------
+
+Few weeks after the alpha phase (called 'release' in public ;)) I'm happy to
+bring you the la(te)st version of mxPlay. Generally, not much to mention:
+
+- 'Play' initiates playback even if no file is selected on startup
+- all dialogs are properly iconified and reopened
+- plugin path is now set separately for FireBee and ARAnyM, no more messing
+  with copy and rename
+- XMP plugin is compiled against the latest version, MTMs and DMFs yet work
+- oh and by the way, a plugin for full featured MPEG-1 audio layer I, II and
+  III is included ;)
 
 2. Features
 -----------
