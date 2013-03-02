@@ -48,6 +48,7 @@ extern void			SharedDirOpen( WDIALOG* wd, short obj );
 extern void			TrimString( char* string );
 extern void			PadString( char* string, int newLength );
 extern void			InitRandom( void );
+extern int			MyRandom( int min, int max );
 extern void			EnableObject( WDIALOG* wd, short obj );
 extern void			DisableObject( WDIALOG* wd, short obj );
 extern short		GetObjectCount( OBJECT tree[] );

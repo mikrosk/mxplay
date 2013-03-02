@@ -49,14 +49,17 @@ int		g_playlistX = -1;
 int		g_playlistY = -1;
 int		g_openPlayList = TRUE;
 
-static long	randomSeed = 0x12345678L;
-
 /*
  * Initialize random function
  */
 void InitRandom( void )
 {
-	srandom( randomSeed );
+	srand( time( NULL ) );
+}
+
+int MyRandom( int min, int max )
+{
+	return (int)( ( (double)rand() / ( (double)RAND_MAX + 1.0 ) ) * ( max - min + 1 ) + min );
 }
 
 /*
@@ -503,10 +506,6 @@ void ReadConfigFile( void )
 				fgets( g_playlistFilePath, MXP_PATH_MAX+1, fs );
 				g_playlistFilePath[strlen( g_playlistFilePath ) - 1] = '\0';	/* ignore newline char */
 			}
-			else if( strcmp( temp, "randomSeed" ) == 0 )
-			{
-				fscanf( fs, "%ld", &randomSeed );
-			}
 			else if( strcmp( temp, "timeMode" ) == 0 )
 			{
 				fscanf( fs, "%d", &g_timeMode );
@@ -580,13 +579,6 @@ void WriteConfigFile( void )
 			fprintf( fs, "%s", g_playlistFilePath );
 			fprintf( fs, "%s", "\n" );
 		}
-
-		/* new random seed */
-		randomSeed = random();
-		fprintf( fs, "%s", "randomSeed" );
-		fprintf( fs, "%s", "\t" );
-		fprintf( fs, "%ld", randomSeed );
-		fprintf( fs, "%s", "\n" );
 
 		/* playtime mode */
 		fprintf( fs, "%s", "timeMode" );

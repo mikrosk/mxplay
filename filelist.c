@@ -187,7 +187,7 @@ BOOL FileListSetNext( void )
 	}
 	else if( g_filesCount > 0 )
 	{
-		fileNumber = random() % g_filesCount;
+		fileNumber = MyRandom( 0, g_filesCount - 1 );
 
 		/* find the 'fileNumber'-th entry; this is not the same as file number! */
 		pSFile = FileListGetFirstEntry();
