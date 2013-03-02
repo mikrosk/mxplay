@@ -227,14 +227,26 @@ void PanelDirOpen( void )
 void PanelPlay( void )
 {
 	int ret;
+	static int neverPlayed = TRUE;
 
 	PanelActivateObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
 
 	/* no file loaded yet */
 	if( strcmp( g_currModuleFilePath, "-" ) == 0 )
 	{
-		DeselectObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
-		return;
+		if( FileListGetFirstEntry() == NULL || neverPlayed == FALSE )
+		{
+			DeselectObject( g_winDialogs[WD_PANEL], PANEL_PLAY );
+			return;
+		}
+		else
+		{
+			neverPlayed = FALSE;
+			FileListSetCurrFile( FileListGetFirstEntry() );
+			PlayListSetCurrFile( FileListGetFirstEntry() );
+			LoadAndPlay();
+			return;
+		}
 	}
 	else
 	{
