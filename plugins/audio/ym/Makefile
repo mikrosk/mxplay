@@ -9,7 +9,7 @@ FLAGS	= m68k-atari-mint-flags -S
 CPU	= -m68020-60
 ASFLAGS	= -Faout -m68882 -m68030 -quiet
 CFLAGS	= $(CPU) -Wall -O2 -fomit-frame-pointer -std=c99
-CXXFLAGS= $(filter-out -std=c99, $(CFLAGS))
+CXXFLAGS= $(filter-out -std=c99, $(CFLAGS)) -Wno-write-strings
 LDFLAGS	= $(CPU) -nostartfiles
 
 TIMER_A	= no
