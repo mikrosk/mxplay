@@ -27,10 +27,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <math.h>
 #include <string.h>
-#include <unistd.h>
-#include <stdint.h>
 
 #include "StSoundLibrary/StSoundLibrary.h"
 
@@ -81,8 +78,15 @@ static char* pBuffer;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
-	if( ymMusicCompute( pMusic, (ymsample*)pBuffer, bufferSize ) )
+	if( ymMusicCompute( pMusic, (ymsample*)pBuffer, bufferSize / 2 ) )
 	{
+		signed short* p1 = (signed short*)( pBuffer + bufferSize/2 );	// point past the last used word
+		signed short* p2 = (signed short*)( pBuffer + bufferSize );	// point past the last word
+		while( p1 != (signed short*)pBuffer )
+		{
+			*--p2 = *--p1;
+			*--p2 = *p1;
+		}
 		return 0;
 	}
 
@@ -124,7 +128,7 @@ int ym_set( void )
 	if( !ymMusicLoad( pMusic, moduleFilePath ) )
 		return MXP_ERROR;
 
-	ymMusicSetLoopMode( pMusic,YMFALSE );
+	ymMusicSetLoopMode( pMusic, YMFALSE );
 
 	ymMusicPlay( pMusic );
 
