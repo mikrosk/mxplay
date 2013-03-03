@@ -22,7 +22,7 @@ _ym_parameter:	ds.l	1
 		dc.l	_ym_register_module
 		dc.l	0			; _ym_get_playtime
 		dc.l	0			; 1 song per module
-		dc.l	0			; _ym_init
+		dc.l	_ym_init
 		dc.l	_ym_set
 		dc.l	_ym_feed
 		dc.l	_ym_unset
