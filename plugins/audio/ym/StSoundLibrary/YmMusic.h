@@ -122,7 +122,7 @@ class	CYmMusic
 {
 
 public:
-	CYmMusic(ymint _replayRate=44100);
+	CYmMusic(ymint _replayRate=49170);
 	~CYmMusic();
 
 	ymbool	load(const char *pName);
