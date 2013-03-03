@@ -34,7 +34,9 @@ snd - 030 only, dirty, dirty, dirty. Works best in TOS but even here it's
 quite unstable after some time.
 
 xmp - the ultimate player for all kind of modules. It can play pretty much
-everything. It comes also in three version, see above.
+everything. It comes also in three version, see above. Btw, you can play
+also archived modules (packed with zip etc) but I'm not sure if it works
+well all the time.
 
 Beware, if you try to use plugins which serve the same file type (MP2 for
 example), there's random priority (first come, first served). So, if you use
