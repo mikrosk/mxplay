@@ -511,6 +511,7 @@ void LoadAudioPlugins( void )
 							leftOut++;
 							continue;
 						}
+#ifndef	__mcoldfire__
 						else if( AudioPluginIsFlagSet( MXP_FLG_ONLY_030 ) && g_cpu > 30 )
 						{
 							debug( "Leaving out %s (reason: 040+ CPU)", pDirEntry->d_name );
@@ -518,6 +519,7 @@ void LoadAudioPlugins( void )
 							leftOut++;
 							continue;
 						}
+#endif
 
 						if( AudioPluginInit( pSAudioPlugin[audioPluginsCount] ) == MXP_ERROR )
 						{
