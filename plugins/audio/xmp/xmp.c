@@ -41,7 +41,7 @@ extern union UParameterBuffer xmp_parameter;
 struct SInfo			xmp_info =
 {
 	"MiKRO / Mystic Bytes",
-	"1.0",
+	"1.1",
 	"Extended Module Player",
 	"C.Matsuoka & H.Carraro Jr",
 	XMP_VERSION,
@@ -186,7 +186,7 @@ struct SParameter		xmp_settings[] =
 };
 
 #define SAMPLE_RATE	49170
-#define MODULE_FPS	50
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 static char* pPhysical;
 static char* pLogical;
@@ -196,16 +196,33 @@ static int loadNewSample;
 #endif
 static char* moduleFilePath;
 static char* pBuffer;
+static size_t left;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
 	int rc = 0;
 	size_t loaded = 0;
-	memset( pBuffer, 0, bufferSize );
+	struct xmp_frame_info fi;
+
+	if( left > 0 )
+	{
+		loaded = MIN( left, bufferSize );
+		left -= loaded;
+
+		xmp_get_frame_info( c, &fi );
+
+		memcpy( pBuffer, fi.buffer, loaded );
+		pBuffer += loaded;
+
+		if( left > 0 || loaded == bufferSize )
+		{
+			// nothing to decode
+			return rc;
+		}
+	}
 
 	while( loaded < bufferSize && xmp_play_frame( c ) == 0 )
 	{
-		struct xmp_frame_info fi;
 		xmp_get_frame_info( c, &fi );
 
 		if( fi.loop_count > 0 )    /* exit before looping */
@@ -214,9 +231,12 @@ static int loadBuffer( char* pBuffer, size_t bufferSize )
 			break;
 		}
 
-		memcpy( pBuffer, fi.buffer, fi.buffer_size );
-		pBuffer += fi.buffer_size;
-		loaded += fi.buffer_size;
+		size_t size = MIN( bufferSize - loaded, fi.buffer_size );
+		left = fi.buffer_size - size;
+
+		memcpy( pBuffer, fi.buffer, size );
+		pBuffer += size;
+		loaded += size;
 	}
 
 	return rc;
@@ -272,7 +292,7 @@ int xmp_init( void )
 
 int xmp_set( void )
 {
-	struct xmp_frame_info fi;
+	left = 0;
 
 	if( xmp_load_module( c, moduleFilePath ) != 0 )
 	{
@@ -281,17 +301,7 @@ int xmp_set( void )
 
 	xmp_start_player( c, SAMPLE_RATE, 0 );	// 0: stereo 16bit signed (default)
 
-	// decode one frame, to get idea about needed buffer size
-	if( xmp_play_frame( c ) != 0 )
-	{
-		return MXP_ERROR;
-	}
-
-	xmp_get_frame_info( c, &fi );
-
-	// now we know how much we need for one frame
-	// the frame is defined as: ( SAMPLE_RATE / 50 ) * 2 channels * 16 bit (approx.)
-	bufferSize = fi.buffer_size * MODULE_FPS * 1;	// 1 second
+	bufferSize = 2 * 2 * SAMPLE_RATE * 1;	// 2 channels * 16 bit * 49170 Hz * 1 second
 
 	pBuffer = (char*)Mxalloc( 2 * bufferSize, MX_STRAM );
 	if( pBuffer == NULL )
@@ -301,9 +311,7 @@ int xmp_set( void )
 	pPhysical = pBuffer;
 	pLogical = pBuffer + bufferSize;
 
-	// one frame is already decoded
-	memcpy( pPhysical, fi.buffer, fi.buffer_size );
-	loadBuffer( pPhysical + fi.buffer_size, bufferSize - fi.buffer_size );
+	loadBuffer( pPhysical, bufferSize );
 #ifndef TIMER_A_HANDLER
 	loadBuffer( pLogical, bufferSize );
 #endif
