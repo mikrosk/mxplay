@@ -8,7 +8,7 @@ $(SUBDIRS):
 
 .PHONY: clean
 clean: $(SUBDIRS)
-	rm -f *~ *.mxp
+	rm -f *~ *.mxp aranym/* firebee/*
 
 .PHONY: release
 release: $(SUBDIRS)
