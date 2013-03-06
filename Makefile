@@ -19,7 +19,7 @@ MAKE			= make
 
 DEBUG_FLAGS		= -g -DDEBUG -Wextra -Wno-sign-compare
 OPT_FLAGS		= -O2 -fomit-frame-pointer -g
-CFLAGS			= -Wall $(CPU_FLAGS) -Wno-multichar -std=c99
+CFLAGS			= -Wall $(CPU_FLAGS) -Wno-multichar -std=c99 -D_BSD_SOURCE
 ASFLAGS			= $(CPU_FLAGS)
 
 SOBJS			= dsp_fix.S asm_routines.S
