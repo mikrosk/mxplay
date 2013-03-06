@@ -206,19 +206,13 @@ static int loadBuffer( char* pBuffer, size_t bufferSize )
 
 	if( left > 0 )
 	{
-		loaded = MIN( left, bufferSize );
-		left -= loaded;
+		loaded = left;
+		left = 0;
 
 		xmp_get_frame_info( c, &fi );
 
-		memcpy( pBuffer, fi.buffer, loaded );
+		memcpy( pBuffer, fi.buffer + ( fi.buffer_size - loaded ), loaded );
 		pBuffer += loaded;
-
-		if( left > 0 || loaded == bufferSize )
-		{
-			// nothing to decode
-			return rc;
-		}
 	}
 
 	while( loaded < bufferSize && xmp_play_frame( c ) == 0 )
