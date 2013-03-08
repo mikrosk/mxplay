@@ -41,7 +41,7 @@ extern union UParameterBuffer xmp_parameter;
 struct SInfo			xmp_info =
 {
 	"MiKRO / Mystic Bytes",
-	"1.1",
+	"1.2",
 	"Extended Module Player",
 	"C.Matsuoka & H.Carraro Jr",
 	XMP_VERSION,
@@ -273,7 +273,7 @@ int xmp_get_playtime( void )
 {
 	struct xmp_frame_info fi;
 	xmp_get_frame_info( c, &fi );
-	xmp_parameter.value = fi.total_time / 1000;	// return value is in seconds
+	xmp_parameter.value = fi.total_time;	// return value is in miliseconds
 	return MXP_OK;
 }
 

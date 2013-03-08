@@ -24,7 +24,6 @@
 #ifndef _AUDIO_PLUGINS_H_
 #define _AUDIO_PLUGINS_H_
 
-#include <time.h>
 #include "mxplay.h"
 #include "plugins/audio/plugin.h"
 
@@ -33,13 +32,13 @@
 extern char					g_sAudioPluginPath[];
 extern struct SAudioPlugin*	g_pCurrAudioPlugin;
 extern char					g_currModuleFilePath[MXP_PATH_MAX+1];
-extern time_t				g_defaultPlayTime;
+extern long					g_defaultPlayTime;
 
 extern void					LoadAudioPlugins( void );
 extern struct SAudioPlugin*	LookForAudioPlugin( char* path, char* name );
 extern BOOL					LoadAudioModule( char* path, char* filename );
 
-extern time_t				AudioPluginGetPlayTime( struct SAudioPlugin* plugin );
+extern long					AudioPluginGetPlayTime( struct SAudioPlugin* plugin );
 extern int					AudioPluginModulePlay( struct SAudioPlugin* plugin );
 extern int					AudioPluginModuleFeed( struct SAudioPlugin* plugin );
 extern int					AudioPluginModuleStop( struct SAudioPlugin* plugin );

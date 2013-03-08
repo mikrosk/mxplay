@@ -40,7 +40,7 @@ extern union UParameterBuffer mpg_parameter;
 struct SInfo			mpg_info =
 {
 	"MiKRO / Mystic Bytes",
-	"1.0",
+	"1.1",
 	"mpg123",
 	"Thomas Orgis",
 	"1.15.1",
@@ -294,6 +294,18 @@ int mpg_get_playtime( void )
 	 *  served by libmpg123 but not yet played. You get the projected current frame
 	 *  and seconds, as well as the remaining frames/seconds. This does _not_ care
 	 *  about skipped samples due to gapless playback. */
+
+    /** Alternate way:
+     * mpg123_open();
+     * mpg123_scan();
+     * len = mpg123_length();
+     * ...
+     * pos = mpg123_position();
+     * remain = len-pos;
+     *
+     * From the sample count you can compute seconds with the sampling rate,
+     * of course integer seconds could use proper rounding, not just
+     * truncation, so something like int(seconds_float+0.5). */
 	off_t current_frame;
 	off_t frames_left;
 	double current_seconds;
@@ -303,7 +315,7 @@ int mpg_get_playtime( void )
 		return MXP_ERROR;
 	}
 
-	mpg_parameter.value = (int)seconds_left;
+	mpg_parameter.value = (int)( seconds_left * 1000.0 );
 	return MXP_OK;
 }
 

@@ -26,10 +26,10 @@
 
 #include "mxplay.h"
 
-extern void TimerReset( unsigned long seconds );
+extern void TimerReset( long miliseconds );
 extern void TimerPause( BOOL pause );
 
-extern unsigned long TimerGetSubTime( void );
-extern unsigned long TimerGetAddTime( void );
+extern long TimerGetSubTime( void );
+extern long TimerGetAddTime( void );
 
 #endif

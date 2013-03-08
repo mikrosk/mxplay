@@ -27,7 +27,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <mint/osbind.h>
-
+#include <time.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 
@@ -524,7 +524,7 @@ void ReadConfigFile( void )
 			}
 			else if( strcmp( temp, "defaultPlayTime" ) == 0 )
 			{
-				fscanf( fs, "%d", &g_defaultPlayTime );
+				fscanf( fs, "%ld", &g_defaultPlayTime );
 			}
 		}
 
@@ -607,7 +607,7 @@ void WriteConfigFile( void )
 		/* default playtime */
 		fprintf( fs, "%s", "defaultPlayTime" );
 		fprintf( fs, "%s", "\t" );
-		fprintf( fs, "%d", g_defaultPlayTime );
+		fprintf( fs, "%ld", g_defaultPlayTime );
 		fprintf( fs, "%s", "\n" );
 
 		fclose( fs );

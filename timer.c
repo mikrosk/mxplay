@@ -33,10 +33,10 @@ static clock_t pausedTime;
 static clock_t playTime;
 static clock_t referenceTime;
 
-void TimerReset( unsigned long seconds )
+void TimerReset( long miliseconds )
 {
 	referenceTime = clock();
-	playTime = seconds * CLOCKS_PER_SEC;
+	playTime = miliseconds * CLOCKS_PER_SEC / 1000;
 	pauseConst = 0;
 }
 
@@ -53,12 +53,12 @@ void TimerPause( BOOL pause )
 	}
 }
 
-unsigned long TimerGetSubTime( void )
+long TimerGetSubTime( void )
 {
-	return ( playTime - ( clock() - ( referenceTime + pauseConst ) ) ) / CLOCKS_PER_SEC;	/* playtime - passed */
+	return playTime - ( clock() - ( referenceTime + pauseConst ) );  /* playtime - passed */
 }
 
-unsigned long TimerGetAddTime( void )
+long TimerGetAddTime( void )
 {
-	return ( clock() - ( referenceTime + pauseConst ) ) / CLOCKS_PER_SEC;	/* current - starting */
+	return clock() - ( referenceTime + pauseConst );	/* current - starting */
 }

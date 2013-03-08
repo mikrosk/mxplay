@@ -40,7 +40,7 @@ extern union UParameterBuffer asap_parameter;
 struct SInfo			asap_info =
 {
 	"MiKRO / Mystic Bytes",
-	"1.0",
+	"1.1",
 	"Another Slight Atari Player",
 	"Piotr Fusik",
 	ASAPInfo_VERSION,
@@ -204,7 +204,7 @@ int asap_get_playtime( void )
 	}
 	else
 	{
-		asap_parameter.value = time / 1000;	// return value is in seconds
+		asap_parameter.value = time;	// return value is in miliseconds
 		return MXP_OK;
 	}
 }

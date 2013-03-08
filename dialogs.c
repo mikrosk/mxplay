@@ -27,6 +27,7 @@
 #include <osbind.h>
 #include <sys/param.h>
 #include <strings.h>
+#include <time.h>
 
 #include "skins/skin.h"
 #include "mxplay.h"
@@ -709,11 +710,11 @@ void PanelDialogRefresh( void )
 	{
 		if( g_timeMode == TIME_MODE_ADD )
 		{
-			currTime = TimerGetAddTime();
+			currTime = TimerGetAddTime() / CLOCKS_PER_SEC;
 		}
 		else
 		{
-			currTime = TimerGetSubTime();
+			currTime = TimerGetSubTime() / CLOCKS_PER_SEC;
 		}
 
 		min = currTime / 60;

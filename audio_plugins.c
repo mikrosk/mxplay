@@ -46,7 +46,7 @@
 char						g_sAudioPluginPath[32] = "plugins\\audio";
 struct SAudioPlugin*		g_pCurrAudioPlugin = NULL;
 char						g_currModuleFilePath[MXP_PATH_MAX+1] = "-";
-time_t						g_defaultPlayTime = 3 * 60;	// 3 minutes by default
+long						g_defaultPlayTime = 3 * 60;	// 3 minutes by default
 
 static struct SAudioPlugin*	pSAudioPlugin[MAX_AUDIO_PLUGINS];
 static int					audioPluginsCount;
@@ -176,9 +176,9 @@ static int AudioPluginInit( struct SAudioPlugin* plugin )
 	return AudioPluginCallFunction( plugin->Init );
 }
 
-time_t AudioPluginGetPlayTime( struct SAudioPlugin* plugin )
+long AudioPluginGetPlayTime( struct SAudioPlugin* plugin )
 {
-	plugin->inBuffer.value = g_defaultPlayTime;
+	plugin->inBuffer.value = g_defaultPlayTime * 1000;
 	AudioPluginCallFunction( plugin->PlayTime );
 	return plugin->inBuffer.value;
 }
