@@ -353,6 +353,9 @@ int mpg_set( void )
 {
 	if( mpg123_open( mh, moduleFilePath ) != MPG123_OK )
 		return MXP_ERROR;
+	
+	if( mpg123_scan( mh ) != MPG123_OK )
+		return MXP_ERROR;
 
 	bufferSize = 2 * 2 * 49170 * 1;	// 2 channels * 16 bit * 49170 Hz * 1 second
 
