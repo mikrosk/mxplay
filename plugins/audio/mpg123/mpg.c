@@ -84,7 +84,7 @@ static int getMetaParam( MetaParam param )
 	{
 		switch( param )
 		{
-			// TODO: NULL termination check for ID3v1
+			// TODO: null termination check for ID3v1
 			// TODO: handle encoding
 			case title:
 				if( pV2 != NULL && pV2->title != NULL )
