@@ -244,8 +244,9 @@ static void PlayListUpdateEntry( struct SFileListFile* pSFile, short obj )
 {
 	TEDINFO* pTed;
 
-	set_string( g_winDialogs[WD_PLAYLIST]->tree, obj, pSFile->name );
 	pTed = (TEDINFO*)get_obspec( g_winDialogs[WD_PLAYLIST]->tree, obj );
+	strncpy( pTed->te_ptext, pSFile->name, pTed->te_txtlen -1 );
+	pTed->te_ptext[pTed->te_txtlen - 1] = '\0';
 	PadString( pTed->te_ptext, pTed->te_txtlen - 1 );
 
 	if( pSFile->current == TRUE )
