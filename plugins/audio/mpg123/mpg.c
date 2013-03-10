@@ -40,7 +40,7 @@ extern union UParameterBuffer mpg_parameter;
 struct SInfo			mpg_info =
 {
 	"MiKRO / Mystic Bytes",
-	"1.1",
+	"1.2",
 	"mpg123",
 	"Thomas Orgis",
 	"1.15.1",
@@ -331,7 +331,7 @@ int mpg_init( void )
 	if( mpg123_param( mh, MPG123_FORCE_RATE, 49170, 0 ) != MPG123_OK )
 		goto error;
 
-	if( mpg123_param( mh, MPG123_FLAGS, MPG123_FORCE_STEREO, 0 ) != MPG123_OK )
+	if( mpg123_param( mh, MPG123_FLAGS, MPG123_FORCE_STEREO | MPG123_QUIET, 0 ) != MPG123_OK )
 		goto error;
 
 	if( mpg123_format_none( mh ) != MPG123_OK )
@@ -353,7 +353,7 @@ int mpg_set( void )
 {
 	if( mpg123_open( mh, moduleFilePath ) != MPG123_OK )
 		return MXP_ERROR;
-	
+
 	if( mpg123_scan( mh ) != MPG123_OK )
 		return MXP_ERROR;
 
