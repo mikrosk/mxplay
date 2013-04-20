@@ -41,7 +41,7 @@ extern union UParameterBuffer xmp_parameter;
 struct SInfo			xmp_info =
 {
 	"MiKRO / Mystic Bytes",
-	"1.2",
+	"1.3",
 	"Extended Module Player",
 	"C.Matsuoka & H.Carraro Jr",
 	XMP_VERSION,
@@ -186,7 +186,6 @@ struct SParameter		xmp_settings[] =
 };
 
 #define SAMPLE_RATE	49170
-#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 static char* pPhysical;
 static char* pLogical;
@@ -196,44 +195,10 @@ static int loadNewSample;
 #endif
 static char* moduleFilePath;
 static char* pBuffer;
-static size_t left;
 
 static int loadBuffer( char* pBuffer, size_t bufferSize )
 {
-	int rc = 0;
-	size_t loaded = 0;
-	struct xmp_frame_info fi;
-
-	if( left > 0 )
-	{
-		loaded = left;
-		left = 0;
-
-		xmp_get_frame_info( c, &fi );
-
-		memcpy( pBuffer, fi.buffer + ( fi.buffer_size - loaded ), loaded );
-		pBuffer += loaded;
-	}
-
-	while( loaded < bufferSize && xmp_play_frame( c ) == 0 )
-	{
-		xmp_get_frame_info( c, &fi );
-
-		if( fi.loop_count > 0 )    /* exit before looping */
-		{
-			rc = 1;	// end of module
-			break;
-		}
-
-		size_t size = MIN( bufferSize - loaded, fi.buffer_size );
-		left = fi.buffer_size - size;
-
-		memcpy( pBuffer, fi.buffer, size );
-		pBuffer += size;
-		loaded += size;
-	}
-
-	return rc;
+	return xmp_play_buffer( c, pBuffer, bufferSize, 0 ) == 0 ? 0 : 1;
 }
 
 double round(double number)
@@ -286,8 +251,6 @@ int xmp_init( void )
 
 int xmp_set( void )
 {
-	left = 0;
-
 	if( xmp_load_module( c, moduleFilePath ) != 0 )
 	{
 		return MXP_ERROR;
