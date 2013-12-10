@@ -322,7 +322,7 @@ int ShowPluginErrorDialog( int error )
 int ShowAudioInitErrorDialog( char* filename )
 {
 	char tempString[MXP_FILENAME_MAX+1];
-	sprintf( tempString, "[1][Failed to initialize plugin %s.][Skip]", filename );
+	sprintf( tempString, "[1][Failed to initialize plugin|%s.][Skip]", filename );
 	return do_walert( 1, TRUE, tempString, "Error" );
 }
 
