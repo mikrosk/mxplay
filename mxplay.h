@@ -71,12 +71,6 @@ typedef struct
 	long			reserved4;
 } XATTR;
 
-struct timeval
-{
-	unsigned long tv_sec;
-	unsigned long tv_usec;
-};
-
 extern BOOL		g_quitApp;
 extern short	g_msgBuffer[8];
 
