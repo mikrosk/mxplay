@@ -2,7 +2,7 @@ TARGET	= sndh.mxp
 
 AS	= vasm
 
-ASFLAGS	= -Ftos -m68030 -quiet -devpac -unnamed-sections -nosym -tos-flags=33	# super, fastload
+ASFLAGS	= -Ftos -m68020up -quiet -devpac -unnamed-sections -nosym -tos-flags=33	# super, fastload
 
 default: $(TARGET)
 

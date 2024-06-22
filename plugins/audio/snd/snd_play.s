@@ -93,7 +93,7 @@ save_hdw:	movem.l	d0-a6,-(sp)
 		move.l	vec_timer_c.w,(a0)+
 		move.l	vec_timer_a.w,(a0)+
 		move.l	vec_timer_b.w,(a0)+
-		move.l	vec_buserr.w,(a0)+		; Exceptions (fÅr Falcon!)
+		move.l	vec_buserr.w,(a0)+		; Exceptions (fÔøΩr Falcon!)
 		move.l	vec_div0.w,(a0)+		; Zero Divide
 		move.l	vec_privilege.w,(a0)+		; Privilege Violation
 
@@ -104,9 +104,15 @@ save_hdw:	movem.l	d0-a6,-(sp)
 	
 		move.w	(sp)+,sr
 		
+        ; Not sure why it saves and restores cacr on 030,
+        ; couldn't find and place where it actually modifies it.
+        ; If we need to do the same on 040/060 then it would need their
+        ; own codepaths in order to deal with copyback.
 		jsr	get_cpu_type
 		cmp.w	#20,d0
 		blt.s	.no_cache
+		cmp.w	#30,d0
+		bne.s	.no_cache
 		opt	p=68030
 		movec	cacr,d1
 		move.l	d1,(a0)+
@@ -154,6 +160,8 @@ restore_hdw:	movem.l	d0-a6,-(sp)
 		jsr	get_cpu_type
 		cmp.w	#20,d0
 		blt.s	.no_cache
+		cmp.w	#30,d0
+		bne.s	.no_cache
 		opt	p=68030
 		move.l	(a0)+,d1
 		movec	d1,cacr
