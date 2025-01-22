@@ -81,7 +81,7 @@ static struct SAudioPlugin* AudioPluginLoad( char* filename )
 		bp->p_blen +				/* length of BSS segment */
 		128*1024 );					/* length of stack */
 
-		// CT60 TOS is broken, older FreeMiNT kernels are broken, ...
+		// PE_LOAD doesn't guarantee flushing the data cache and invalidation of the instruction cache
 		extern void asm_invalidate_cache( void );
 		Supexec( asm_invalidate_cache );
 
