@@ -4,7 +4,7 @@ CROSS			= yes
 TARGET			= mxplay.app
 
 ifeq ($(CROSS),yes)
- prefix			= m68k-atari-mint-
+ prefix			= m68k-atari-mintelf-
 else
  prefix			=
 endif

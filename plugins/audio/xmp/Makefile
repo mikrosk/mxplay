@@ -1,12 +1,12 @@
 TARGET	= xmp.mxp
 
-AS	= vasm
-CC	= m68k-atari-mint-gcc
-STRIP	= m68k-atari-mint-strip -s
-FLAGS	= m68k-atari-mint-flags -S
+AS	= vasmm68k_mot
+CC	= m68k-atari-mintelf-gcc
+STRIP	= m68k-atari-mintelf-strip -s
+FLAGS	= m68k-atari-mintelf-flags -S
 
 CPU	= -m68020-60
-ASFLAGS	= -Faout -m68882 -m68030 -quiet
+ASFLAGS	= -Felf -m68020up -quiet
 CFLAGS	= $(CPU) -Wall -O2 -fomit-frame-pointer -std=c99
 LDFLAGS	= $(CPU) -lxmp -lm -nostartfiles
 

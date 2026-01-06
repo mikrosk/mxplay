@@ -1,8 +1,8 @@
 TARGET	= mp2.mxp
 
-AS	= vasm
+AS	= vasmm68k_mot
 
-ASFLAGS	= -Ftos -m68030 -quiet -devpac -unnamed-sections -tos-flags=39	# super, fastload, altram, altalloc
+ASFLAGS	= -Ftos -m68020up -quiet -devpac -tos-flags=39	# super, fastload, altram, altalloc
 
 default: $(TARGET)
 

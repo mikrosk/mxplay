@@ -1,8 +1,8 @@
 TARGET	= aon.mxp
 
-AS	= vasm
+AS	= vasmm68k_mot
 
-ASFLAGS	= -Ftos -m68030 -quiet -devpac -nosym -tos-flags=39	# super, fastload, altram, altalloc
+ASFLAGS	= -Ftos -m68020up -quiet -devpac -nosym -tos-flags=39	# super, fastload, altram, altalloc
 
 default: $(TARGET)
 

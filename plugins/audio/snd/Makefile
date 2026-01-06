@@ -1,8 +1,8 @@
 TARGET	= sndh.mxp
 
-AS	= vasm
+AS	= vasmm68k_mot
 
-ASFLAGS	= -Ftos -m68020up -quiet -devpac -unnamed-sections -nosym -tos-flags=33	# super, fastload
+ASFLAGS	= -Ftos -m68020up -quiet -devpac -nosym -tos-flags=33	# super, fastload
 
 default: $(TARGET)
 
