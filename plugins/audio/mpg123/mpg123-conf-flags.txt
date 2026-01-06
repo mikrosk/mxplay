@@ -1,1 +1,0 @@
---enable-modules=no --enable-debug=no --enable-gapless=no --enable-fifo=no --enable-ipv6=no --enable-network=no --enable-downsample=no --enable-messages=no --enable-int-quality=no --enable-8bit=no --enable-32bit=no --enable-real=no --disable-largefile --disable-feature_report --with-audio=dummy --with-optimization=1 --with-seektable=0
