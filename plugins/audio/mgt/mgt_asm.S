@@ -4,38 +4,41 @@
 
 		INCLUDE	"../mxplay.inc"
 
-		XDEF	_mgt_parameter
+		XDEF	_start
+		XDEF	mgt_parameter
 
-		XREF	_mgt_register_module
-		XREF	_mgt_set
-		XREF	_mgt_unset
-		XREF	_mgt_unregister_module
-		XREF	_mgt_pause
+		XREF	mgt_register_module
+		XREF	mgt_set
+		XREF	mgt_unset
+		XREF	mgt_unregister_module
+		XREF	mgt_pause
 
-		XREF	_mgt_info
-		XREF	_mgt_extensions
-		XREF	_mgt_settings
+		XREF	mgt_info
+		XREF	mgt_extensions
+		XREF	mgt_settings
 
-		XDEF	_mgt_settings_name_get
-		XDEF	_mgt_settings_channels_get
+		XDEF	mgt_settings_name_get
+		XDEF	mgt_settings_channels_get
 
-		XREF	_g_moduleBuffer
+		XREF	g_moduleBuffer
 
+_start:
 		dc.l	"MXP2"
-_mgt_parameter:	ds.l	1
-		dc.l	_mgt_register_module
-		dc.l	0			; _mgt_get_playtime
-		dc.l	0			; _mgt_get_songs
-		dc.l	0			; _mgt_init
-		dc.l	_mgt_set
-		dc.l	0			; _mgt_feed
-		dc.l	_mgt_unset
-		dc.l	_mgt_unregister_module
-		dc.l	_mgt_pause
-		dc.l	0			; _mgt_mute
-		dc.l	_mgt_info
-		dc.l	_mgt_extensions
-		dc.l	_mgt_settings
+mgt_parameter:
+		ds.l	1
+		dc.l	mgt_register_module
+		dc.l	0			; mgt_get_playtime
+		dc.l	0			; mgt_get_songs
+		dc.l	0			; mgt_init
+		dc.l	mgt_set
+		dc.l	0			; mgt_feed
+		dc.l	mgt_unset
+		dc.l	mgt_unregister_module
+		dc.l	mgt_pause
+		dc.l	0			; mgt_mute
+		dc.l	mgt_info
+		dc.l	mgt_extensions
+		dc.l	mgt_settings
 
 			RsReset
 MGT_Chunk		rs.b	3		; "MGT"
@@ -103,29 +106,29 @@ Sample_Reserved		rs.l	1		; 4 octets Rservs
 Sample_Size		rs.b	0		; 80 octets
 
 
-_mgt_settings_name_get:
-		movea.l	_g_moduleBuffer,a0
+mgt_settings_name_get:
+		movea.l	g_moduleBuffer,a0
 		adda.l	(MGT_Musics,a0),a0	; song #0
 		lea	(Music_Name,a0),a0
 		clr.b	(31,a0)			; terminate it
-		move.l	a0,_mgt_parameter
+		move.l	a0,mgt_parameter
 
 		moveq	#MXP_OK,d0
 		rts
 
-_mgt_settings_channels_get:
-		movea.l	_g_moduleBuffer,a0
+mgt_settings_channels_get:
+		movea.l	g_moduleBuffer,a0
 		clr.l	d0
 		move.w	(MGT_Nb_Voices,a0),d0
-		move.l	d0,_mgt_parameter
+		move.l	d0,mgt_parameter
 
 		moveq	#MXP_OK,d0
 		rts
 
 sample_get	MACRO
-		XDEF	_mgt_settings_sample\1_get
-_mgt_settings_sample\1_get:
-		movea.l	_g_moduleBuffer,a0
+		XDEF	mgt_settings_sample\1_get
+mgt_settings_sample\1_get:
+		movea.l	g_moduleBuffer,a0
 		move.w	#\1-1,d0		; zero indexed
 		cmp.w	(MGT_Nb_Samples,a0),d0
 		bge.b	.no_more
@@ -135,7 +138,7 @@ _mgt_settings_sample\1_get:
 
 		lea	(Sample_Name,a0),a0
 		clr.b	(31,a0)			; terminate it
-		move.l	a0,_mgt_parameter
+		move.l	a0,mgt_parameter
 
 		moveq	#MXP_OK,d0
 		rts

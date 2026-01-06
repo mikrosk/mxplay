@@ -17,21 +17,21 @@
 CPU_Time		equ		0		; Display CPU-Time taken by the Replay
 DSP_Buffer	equ		2048		; DSP Sample Buffer Size
 
-		XDef		_MGTK_Init_Module_Samples,_MGTK_Init_DSP
-		XDef		_MGTK_Save_Sound,_MGTK_Init_Sound,_MGTK_Restore_Sound
-		XDef		_MGTK_Set_Replay_Frequency
-		XDef		_MGTK_Play_Music,_MGTK_Pause_Music,_MGTK_Stop_Music
-		XDef		_MGTK_Previous_Music,_MGTK_Next_Music
-		XDef		_MGTK_Play_Position,_MGTK_Previous_Position
-		XDef		_MGTK_Next_Position,_MGTK_Clear_Voices
-		XDef		_MGTK_Play_FX_Module,_MGTK_Play_FX_Sample
+		XDef		MGTK_Init_Module_Samples,MGTK_Init_DSP
+		XDef		MGTK_Save_Sound,MGTK_Init_Sound,MGTK_Restore_Sound
+		XDef		MGTK_Set_Replay_Frequency
+		XDef		MGTK_Play_Music_C,MGTK_Pause_Music,MGTK_Stop_Music
+		XDef		MGTK_Previous_Music,MGTK_Next_Music
+		XDef		MGTK_Play_Position,MGTK_Previous_Position
+		XDef		MGTK_Next_Position,MGTK_Clear_Voices
+		XDef		MGTK_Play_FX_Module,MGTK_Play_FX_Sample
 
-		XDef		_MGTK_FX_Voices,_MGTK_Voices
+		XDef		MGTK_FX_Voices,MGTK_Voices
 
-		XDef		_MGTK_Restart_Loop,_MGTK_Restart_Done
-		XDef		_MGTK_Replay_Satured,_MGTK_Replay_Problem
-		XDef		_MGTK_Replay_In_Service,_MGTK_Global_Volume
-		XDef		_MGTK_Master_Volume_Left,_MGTK_Master_Volume_Right
+		XDef		MGTK_Restart_Loop,MGTK_Restart_Done
+		XDef		MGTK_Replay_Satured,MGTK_Replay_Problem
+		XDef		MGTK_Replay_In_Service,MGTK_Global_Volume
+		XDef		MGTK_Master_Volume_Left,MGTK_Master_Volume_Right
 
 ***********************************************************************
 ***********					Macros				***********
@@ -171,7 +171,7 @@ Voice_Size				rs.b		0
 ;	1 : 49170 Hz, 2 : 32780 Hz, 3 : 24585 Hz, 4 : 19668 Hz
 ;	5 : 16380 Hz, 7 : 12292 Hz, 9 : 9834 Hz, 11 : 8195 Hz
 
-_MGTK_Set_Replay_Frequency
+MGTK_Set_Replay_Frequency
 		move.l	4(sp),d0
 		move.w	d0,MGTK_Frequency_Divider
 		move.l	#25175000/256+1,d1
@@ -184,7 +184,7 @@ _MGTK_Set_Replay_Frequency
 ; En Entr‚e :
 ; d0.w = Num‚ro de la musique … jouer
 
-_MGTK_Play_Music
+MGTK_Play_Music_C
 		move.l	4(sp),d0
 MGTK_Play_Music
 		movem.l	d2-d7/a2-a6,-(sp)
@@ -211,9 +211,9 @@ MGTK_Play_Music_2
 		move.w	(a0)+,MGTK_Music_Restart
 		move.b	(a0)+,d0
 		move.b	(a0)+,d1
-		move.w	(a0)+,_MGTK_Global_Volume
-		move.b	(a0)+,_MGTK_Master_Volume_Left
-		move.b	(a0)+,_MGTK_Master_Volume_Right
+		move.w	(a0)+,MGTK_Global_Volume
+		move.b	(a0)+,MGTK_Master_Volume_Left
+		move.b	(a0)+,MGTK_Master_Volume_Right
 
 		move.b	d0,MGTK_Initial_Tempo
 		move.b	d0,MGTK_Music_Tempo
@@ -224,7 +224,7 @@ MGTK_Play_Music_2
 		bsr		MGTK_Search_Values_for_Tempo
 
 		move.w	MGTK_Nb_Voices(pc),d7
-		lea.l	_MGTK_Voices(pc),a6
+		lea.l	MGTK_Voices(pc),a6
 		subq.w	#1,d7
 MGTK_Play_Music_Panoramics
 		move.w	(a0)+,Voice_Left_Volume(a6)
@@ -244,9 +244,9 @@ MGTK_Play_Music_Panoramics
 
 		bsr		MGTKClearVoices
 
-		sf		_MGTK_Replay_In_Service
-		sf		_MGTK_Replay_Problem
-		clr.w	_MGTK_Replay_Satured
+		sf		MGTK_Replay_In_Service
+		sf		MGTK_Replay_Problem
+		clr.w	MGTK_Replay_Satured
 
 		sf		MGTK_Replay_Paused
 		sf		MGTK_Replay_Stopped
@@ -257,7 +257,7 @@ MGTK_Play_Music_Panoramics
 ;
 ; Met la Musique en Pause
 ;
-_MGTK_Pause_Music
+MGTK_Pause_Music
 		tst.b	MGTK_Replay_Stopped(pc)
 		bne.s	MGTK_Pause_Music_Ret
 		tst.b	MGTK_Replay_Paused(pc)
@@ -270,7 +270,7 @@ MGTK_Pause_Music_Ret
 ;
 ; Stoppe la musique
 ;
-_MGTK_Stop_Music
+MGTK_Stop_Music
 		sf		MGTK_Replay_Paused
 		st		MGTK_Replay_Stopped
 		bra		MGTK_Stop_IT
@@ -279,7 +279,7 @@ _MGTK_Stop_Music
 ; En Entr‚e :
 ; d0.w = Num‚ro de la position
 
-_MGTK_Play_Position
+MGTK_Play_Position
 		move.l	4(sp),d0
 		cmp.w	MGTK_Music_Length(pc),d0
 		blo.s	MGTK_Play_Position_Ok
@@ -291,14 +291,14 @@ MGTK_Play_Position_Ok
 ;
 ; Gestion des effets sp‚ciaux
 ;
-_MGTK_Play_FX_Module
-_MGTK_Play_FX_Sample
+MGTK_Play_FX_Module
+MGTK_Play_FX_Sample
 		rts
 
 ;
 ; Position pr‚c‚dente
 ;
-_MGTK_Previous_Position
+MGTK_Previous_Position
 		move.w	MGTK_Music_Position(pc),d0
 		beq.s	MGTK_Previous_Position_Skip
 		subq.w	#1,d0
@@ -309,7 +309,7 @@ MGTK_Previous_Position_Skip
 ;
 ; Position suivante
 ;
-_MGTK_Next_Position
+MGTK_Next_Position
 		move.w	MGTK_Music_Position(pc),d0
 		cmp.w	MGTK_Music_Length,d0
 		beq.s	MGTK_Next_Position_Skip
@@ -321,14 +321,14 @@ MGTK_Next_Position_Skip
 ;
 ; Musique pr‚c‚dente
 ;
-_MGTK_Previous_Music
+MGTK_Previous_Music
 		move.w	MGTK_Music(pc),d0
 		subq.w	#1,d0
 		bra		MGTK_Play_Music
 ;
 ; Musique suivante
 ;
-_MGTK_Next_Music
+MGTK_Next_Music
 		move.w	MGTK_Music(pc),d0
 		addq.w	#1,d0
 		bra		MGTK_Play_Music
@@ -336,7 +336,7 @@ _MGTK_Next_Music
 ;
 ; Remet les voies … z‚ro
 ;
-_MGTK_Clear_Voices
+MGTK_Clear_Voices
 		movem.l	d3-d4/d7/a6,-(sp)
 		bsr.s	MGTKClearVoices
 		movem.l	(sp)+,d3-d4/d7/a6
@@ -346,7 +346,7 @@ MGTKClearVoices
 		move.l	#8363,d3
 		move.l	#256*1700,d4
 
-		lea.l	_MGTK_FX_Voices(pc),a6
+		lea.l	MGTK_FX_Voices(pc),a6
 		moveq.l	#34-1,d7
 
 MGTK_Clear_A_Voice
@@ -398,7 +398,7 @@ MGTK_Clear_A_Voice
 ;     -3 si pas assez de place pour pr‚parer des Samples
 ;     -4 si pas de samples dans ce module (Song seulement)
 
-_MGTK_Init_Module_Samples
+MGTK_Init_Module_Samples
 		movea.l	4(sp),a0
 		movea.l	8(sp),a1
 		movem.l	d2-d7/a2-a6,-(sp)
@@ -660,7 +660,7 @@ MGTK_Init_Format_Error
 ; d0 = 0 si tout c'est bien pass‚
 ;     -1 si le programme DSP n'a pu ˆtre charg‚
 
-_MGTK_Init_DSP
+MGTK_Init_DSP
 		movem.l	d2/a2,-(sp)
 		pea.l	MGTKInitDSP(pc)
 		move.w	#38,-(sp)			; Supexec
@@ -711,7 +711,7 @@ MGTK_DSP_Ok
 ***********		Initialisations SystŠme Sonore		***********
 ***********************************************************************
 
-_MGTK_Init_Sound
+MGTK_Init_Sound
 		movem.l	d2/a2,-(sp)
 		pea.l	MGTKInitSound(pc)
 		move.w	#38,-(sp)			; Supexec
@@ -746,7 +746,7 @@ MGTKInitSound
 		move.b	#%10,$ffff8937.w
 		rts
 
-_MGTK_Save_Sound
+MGTK_Save_Sound
 		movem.l	d2/a2,-(sp)
 		pea.l	MGTKSaveSound(pc)
 		move.w	#38,-(sp)			; Supexec
@@ -781,7 +781,7 @@ MGTKSaveSound
 		move.w	$ffff893a.w,(a0)+		; Volumes de Sortie
 		rts
 
-_MGTK_Restore_Sound
+MGTK_Restore_Sound
 		movem.l	d2/a2,-(sp)
 		pea.l	MGTKRestoreSound(pc)
 		move.w	#38,-(sp)			; Supexec
@@ -898,10 +898,10 @@ MGTK_Replay_Timer
 		move.b	MGTK_IT_Timer_Control(pc),$fffffa19.w
 
 MGTK_Replay_IT
-		tst.b	_MGTK_Replay_In_Service(pc)
+		tst.b	MGTK_Replay_In_Service(pc)
 		beq.s	MGTK_Replay_Not_Satured
 
-		addq.w	#1,_MGTK_Replay_Satured
+		addq.w	#1,MGTK_Replay_Satured
 		bclr.b	#5,$fffffa0f.w			; … Cause du mode SEI
 		rte
 
@@ -919,24 +919,24 @@ MGTK_Replay_Not_Satured
 		cmp.l	#'MGT',d0
 		beq.s	MGTK_Replay_No_Problem
 
-		st		_MGTK_Replay_Problem
+		st		MGTK_Replay_Problem
 		bra.s	MGTK_Replay_Ret
 
 MGTK_Replay_No_Problem
-		st		_MGTK_Replay_In_Service
+		st		MGTK_Replay_In_Service
 
 ; Envoie Master Volumes
 		clr.w	(a6)
-		move.w	_MGTK_Master_Volume_Left(pc),2(a6)
+		move.w	MGTK_Master_Volume_Left(pc),2(a6)
 
 ; Envoie Global Volume
-		move.w	_MGTK_Global_Volume(pc),2(a6)
+		move.w	MGTK_Global_Volume(pc),2(a6)
 
 ; Envoie le Nombre de Voies pour le mixage (sans les 2 voies FX)
 		move.w	MGTK_Nb_Voices(pc),2(a6)
 
 ; Pr‚pare le pointeur sur les voies
-		move.l	#_MGTK_FX_Voices,MGTK_Voices_Ptr
+		move.l	#MGTK_FX_Voices,MGTK_Voices_Ptr
 
 ; Autorise interruption de r‚ception en provenance du DSP
 		move.l	#MGTK_Replay_Voices,$3fc.w
@@ -1247,7 +1247,7 @@ MGTK_Replay_030_Pos_Ok
 
 MGTK_Replay_No_More_Voices
 		move.b	MGTK_Frequency_Divider+1(pc),$ffff8935.w
-		sf		_MGTK_Replay_In_Service
+		sf		MGTK_Replay_In_Service
 
 ; S'occupe de la partition
 		move.w	MGTK_IT_Counter(pc),d0
@@ -1335,10 +1335,10 @@ MGTK_New_Position
 		bsr		MGTK_Search_Values_for_Tempo
 
 MGTK_No_Restart_Tempo
-		tst.b	_MGTK_Restart_Loop(pc)
+		tst.b	MGTK_Restart_Loop(pc)
 		bne.s	MGTK_No_Restart
 
-		st		_MGTK_Restart_Done
+		st		MGTK_Restart_Done
 		sf		MGTK_Replay_Paused
 		st		MGTK_Replay_Stopped
 		clr.b	$fffffa19.w			; Coupe Timer
@@ -1360,7 +1360,7 @@ MGTK_New_Notes
 		lea.l	([MGTK_Patterns_Adr,pc],d1.l),a4
 		move.w	(a4)+,MGTK_Pattern_Length
 
-		lea.l	_MGTK_Voices(pc),a6
+		lea.l	MGTK_Voices(pc),a6
 		move.w	MGTK_Nb_Voices(pc),d7
 		subq.w	#1,d7
 MGTK_New_Notes_Loop
@@ -1481,7 +1481,7 @@ MGTK_Check_Efx_1
 
 
 MGTK_No_New_Note
-		lea.l	_MGTK_Voices(pc),a6
+		lea.l	MGTK_Voices(pc),a6
 		move.w	MGTK_Nb_Voices(pc),d7
 		subq.w	#1,d7
 MGTK_No_New_Note_Loop
@@ -2586,18 +2586,18 @@ MGTK_Tremor_Off
 
 
 MGTK_Set_Master_Volume
-		move.b	Voice_Parameter1(a6),_MGTK_Master_Volume_Left
-		move.b	Voice_Parameter2(a6),_MGTK_Master_Volume_Right
+		move.b	Voice_Parameter1(a6),MGTK_Master_Volume_Left
+		move.b	Voice_Parameter2(a6),MGTK_Master_Volume_Right
 		rts
 
 
 MGTK_Set_Global_Volume
-		move.w	Voice_Parameter1(a6),_MGTK_Global_Volume
+		move.w	Voice_Parameter1(a6),MGTK_Global_Volume
 		rts
 
 
 MGTK_Global_Volume_Slide
-		move.w	_MGTK_Global_Volume(pc),d1
+		move.w	MGTK_Global_Volume(pc),d1
 		moveq.l	#0,d0
 		move.b	Voice_Parameter1(a6),d0
 		beq.s	MGTK_Global_Volume_Slide_Down
@@ -2607,7 +2607,7 @@ MGTK_Global_Volume_Slide_Up
 		cmp.w	#$400,d1
 		ble.s	MGTK_Global_Volume_Slide_Ok
 
-		move.w	#$400,_MGTK_Global_Volume
+		move.w	#$400,MGTK_Global_Volume
 		rts
 
 MGTK_Global_Volume_Slide_Down
@@ -2616,7 +2616,7 @@ MGTK_Global_Volume_Slide_Down
 		bpl.s	MGTK_Global_Volume_Slide_Ok
 		moveq.l	#0,d1
 MGTK_Global_Volume_Slide_Ok
-		move.w	d1,_MGTK_Global_Volume
+		move.w	d1,MGTK_Global_Volume
 		rts
 
 
@@ -2747,8 +2747,8 @@ MGTK_Music_Speed			ds.b		1
 MGTK_Music_Counter			ds.b		1
 						ds.b		1
 
-_MGTK_Restart_Loop			ds.b		1
-_MGTK_Restart_Done			ds.b		1
+MGTK_Restart_Loop			ds.b		1
+MGTK_Restart_Done			ds.b		1
 MGTK_Replay_Paused			ds.b		1
 MGTK_Replay_Stopped			ds.b		1
 MGTK_IT_Timer_Control		ds.b		1
@@ -2758,13 +2758,13 @@ MGTK_IT_Counter			ds.w		1
 MGTK_Frequency_Divider		ds.w		1
 MGTK_Replay_Frequency		ds.w		1
 
-_MGTK_Replay_Satured		ds.w		1
-_MGTK_Replay_Problem		ds.b		1
-_MGTK_Replay_In_Service		ds.b		1
+MGTK_Replay_Satured		ds.w		1
+MGTK_Replay_Problem		ds.b		1
+MGTK_Replay_In_Service		ds.b		1
 
-_MGTK_Global_Volume			ds.w		1
-_MGTK_Master_Volume_Left		ds.b		1
-_MGTK_Master_Volume_Right	ds.b		1
+MGTK_Global_Volume			ds.w		1
+MGTK_Master_Volume_Left		ds.b		1
+MGTK_Master_Volume_Right	ds.b		1
 
 MGTK_Pattern_Position		ds.w		1
 MGTK_Pattern_Length			ds.w		1
@@ -2779,5 +2779,5 @@ MGTK_Pattern_Break_Flag		ds.b		1
 MGTK_Pattern_Delay_Time		ds.b		1
 
 						Even
-_MGTK_FX_Voices			ds.b		2*Voice_Size
-_MGTK_Voices				ds.b		32*Voice_Size
+MGTK_FX_Voices			ds.b		2*Voice_Size
+MGTK_Voices				ds.b		32*Voice_Size

@@ -158,7 +158,7 @@ int mgt_set( void )
 	MGTK_Init_Sound();
 	MGTK_Set_Replay_Frequency( 1 );	// 49170 Hz
 	MGTK_Restart_Loop= -1;	// no loop
-	MGTK_Play_Music( 0 );	// song 0
+	MGTK_Play_Music_C( 0 );	// song 0
 
 	return MXP_OK;
 }

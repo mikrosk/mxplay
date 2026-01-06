@@ -53,7 +53,7 @@ extern	void	MGTK_Save_Sound(void);
 extern	void	MGTK_Init_Sound(void);
 extern	void	MGTK_Restore_Sound(void);
 extern	void	MGTK_Set_Replay_Frequency(int Frequency_Divider);
-extern	void	MGTK_Play_Music(int Music);
+extern	void	MGTK_Play_Music_C(int Music);
 extern	void	MGTK_Pause_Music(void);
 extern	void	MGTK_Stop_Music(void);
 extern	void	MGTK_Previous_Music(void);
