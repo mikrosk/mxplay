@@ -21,8 +21,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include <mint/osbind.h>
-#include <mint/ostruct.h>
 #include <mint/falcon.h>
 
 #include <stdlib.h>
@@ -58,6 +56,8 @@ struct SExtension		asap_extensions[] =
 	{ "DLT", NULL },
 	{ "FC", NULL },
 	{ "MPT", NULL },
+	{ "MD1", NULL },
+	{ "MD2", NULL },
 	{ "MPD", NULL },
 	{ "RMT", NULL },
 	{ "TMC", NULL },
@@ -125,7 +125,7 @@ static int getSongAuthor( void )
 static int getSongType( void )
 {
 	static char* sap = "Slight Atari Player";
-	const char* ext = ASAPInfo_GetOriginalModuleExt( info, moduleBuffer, moduleLength );
+	const char* ext = ASAPInfo_GetOriginalModuleExt( info );
 	if( ext != NULL && strlen( ext ) > 0 )
 	{
 		const char* desc = ASAPInfo_GetExtDescription( ext );
