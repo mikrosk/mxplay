@@ -36,11 +36,11 @@
  * bootstrap code every time -- which the TOS version does not --
  * this one does not freeze up.
  */
-		.globl	_dsp_load_program
+		.globl	dsp_load_program
 
 		.text
 
-_dsp_load_program:
+dsp_load_program:
 		#ifdef __mcoldfire__
 		moveq	#1,d0
 		rts

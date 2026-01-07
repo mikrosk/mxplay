@@ -21,31 +21,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-	.globl	_asm_safe_call
-	.globl	_asm_safe_pointer
+	.globl	asm_safe_call
+	.globl	asm_safe_pointer
 
 	// supervisor functions
-	.globl	_asm_save_audio
-	.globl	_asm_restore_audio
-	.globl	_asm_invalidate_cache
+	.globl	asm_save_audio
+	.globl	asm_restore_audio
+	.globl	asm_invalidate_cache
 
 // d0-d1 / a0-a1 are scratch registers, no need to save them
 // (and d0 is used for the return value)
 
 	.text
 
-_asm_safe_call:
+asm_safe_call:
 	lea	regs,a0
 	movem.l	d2-d7/a2-a6,(a0)
 
-	movea.l	_asm_safe_pointer,a0
+	movea.l	asm_safe_pointer,a0
 	jsr	(a0)				// return value in d0
 
 	lea	regs,a0
 	movem.l	(a0),d2-d7/a2-a6
 	rts
 
-_asm_save_audio:
+asm_save_audio:
 	lea	saveaudiobuf,a0
 	move.w	0xffff8930.w,(a0)+
 	move.w	0xffff8932.w,(a0)+
@@ -63,7 +63,7 @@ _asm_save_audio:
 	move.b	0xffff8921.w,(a0)+
 	rts
 
-_asm_restore_audio:
+asm_restore_audio:
 	lea	saveaudiobuf,a0
 	move.w	(a0)+,0xffff8930.w
 	move.w	(a0)+,0xffff8932.w
@@ -81,11 +81,11 @@ _asm_restore_audio:
 	move.b	(a0)+,0xffff8921.w
 	rts
 
-	.globl	_g_cpu
+	.globl	g_cpu
 // flush both caches as I'm lazy to implement per page/per line flush + cinv
-_asm_invalidate_cache:
+asm_invalidate_cache:
 	#ifndef	__mcoldfire__
-	cmpi.l	#40,_g_cpu
+	cmpi.l	#40,g_cpu
 	bge.b	.cpu040
 
 .cpu030:movec	cacr,d0
@@ -105,7 +105,7 @@ _asm_invalidate_cache:
 	.bss
 
 regs:	ds.l	11
-_asm_safe_pointer:
+asm_safe_pointer:
 	ds.l	1
 saveaudiobuf:
 	ds.w	8

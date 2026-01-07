@@ -17,10 +17,10 @@ FLAGS			= ${prefix}flags -l -r -a -S
 UPX			= upx
 MAKE			= make
 
-DEBUG_FLAGS		= -g -DDEBUG -Wextra -Wno-sign-compare
+DEBUG_FLAGS		= -g -DDEBUG
 OPT_FLAGS		= -O2 -fomit-frame-pointer -g
-CFLAGS			= -Wall $(CPU_FLAGS) -Wno-multichar -std=c99 -D_BSD_SOURCE
-ASFLAGS			= $(CPU_FLAGS)
+CFLAGS			= -Wall -Wextra -Wno-sign-compare $(CPU_FLAGS) -Wno-multichar -std=c99 -D_BSD_SOURCE
+ASFLAGS			= $(CPU_FLAGS) -Wa,--register-prefix-optional
 
 SOBJS			= dsp_fix.S asm_routines.S
 COBJS			= main.c audio_plugins.c dialogs.c panel.c filelist.c misc.c av.c \
