@@ -30,7 +30,7 @@ asap_parameter:
 		dc.l	asap_set
 		dc.l	asap_feed
 		dc.l	asap_unset
-		dc.l	0				; _asap_unregister
+		dc.l	0				; asap_unregister
 		dc.l	asap_pause
 		dc.l	asap_mute
 		dc.l	asap_info
