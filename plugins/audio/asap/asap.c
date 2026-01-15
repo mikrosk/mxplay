@@ -179,7 +179,7 @@ static void __attribute__((interrupt)) timerA( void )
 {
 	loadNewSample = 1;
 
-	*( (volatile unsigned char*)0xFFFFFA0FL ) &= ~( 1<<5 );	//	clear in service bit
+	*( (volatile unsigned char*)0xFFFFFA0FL ) = ~( 1<<5 );	//	clear in service bit
 }
 
 static void enableTimerASei( void )
